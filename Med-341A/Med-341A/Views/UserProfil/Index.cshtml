@@ -1,0 +1,103 @@
+﻿@using Med_341A.viewmodels
+@model VMUser
+
+@{
+    ViewBag.Title = "Profil";
+}
+
+<div class="container-fluid mt-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <img src="~/path-to-avatar.png" class="rounded-circle" alt="Profile" style="width: 150px;">
+                    <h4 class="mt-3">Bronze Member</h4>
+                    <p>Since 2020</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><a href="#">Pasien</a></li>
+                    <li class="list-group-item"><a href="#">Pembelian Obat</a></li>
+                    <li class="list-group-item"><a href="#">Rencana Kedatangan</a></li>
+                    <li class="list-group-item"><a href="#">Riwayat Chat Dokter</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4>Profil</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="profil-tab" data-toggle="tab" href="#profil" role="tab" aria-controls="profil" aria-selected="true">Profil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="alamat-tab" data-toggle="tab" href="#alamat" role="tab" aria-controls="alamat" aria-selected="false">Alamat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pembayaran-tab" data-toggle="tab" href="#pembayaran" role="tab" aria-controls="pembayaran" aria-selected="false">Pembayaran</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content mt-4" id="myTabContent">
+                        <!-- Profil Tab -->
+                        <div class="tab-pane fade show active" id="profil" role="tabpanel" aria-labelledby="profil-tab">
+                            <form>
+                                <div class="form-group row">
+                                    <label for="nama" class="col-sm-3 col-form-label">Nama Lengkap</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="nama" value="@Model.Fullname" readonly>
+                                        <a href="#">Ubah</a>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="tglLahir" class="col-sm-3 col-form-label">Tanggal Lahir</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="tglLahir" value="@Model.Dob" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="nomor" class="col-sm-3 col-form-label">Nomor Handphone</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="nomor" value="@Model.MobilePhone" readonly>
+                                        <a href="#">Ubah</a>
+                                    </div>
+                                </div>
+
+                                <h5>Data Akun</h5>
+                                <div class="form-group row">
+                                    <label for="email" class="col-sm-3 col-form-label">Email</label>
+                                    <div class="col-sm-9">
+                                        <input type="email" class="form-control" id="email" value="@Model.Email" readonly>
+                                        <a href="#">Ubah</a>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="password" class="col-sm-3 col-form-label">Password</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="password" value="@Model.Password" readonly>
+                                        <a href="#">Ubah</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Alamat Tab -->
+                        <div class="tab-pane fade" id="alamat" role="tabpanel" aria-labelledby="alamat-tab">
+                            <!-- Konten untuk alamat -->
+                        </div>
+
+                        <!-- Pembayaran Tab -->
+                        <div class="tab-pane fade" id="pembayaran" role="tabpanel" aria-labelledby="pembayaran-tab">
+                            <!-- Konten untuk pembayaran -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
