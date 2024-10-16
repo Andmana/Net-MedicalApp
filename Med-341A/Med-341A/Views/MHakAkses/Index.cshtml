@@ -8,10 +8,10 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex align-items-center">
-                <h4 class="card-title">Add Row</h4>
-                <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal" data-bs-target="#addRowModal">
+                <h4 class="card-title">Hak Akses</h4>
+                <button id="btn_create" class="btn btn-primary btn-round ms-auto">
                     <i class="fa fa-plus"></i>
-                    Add Row
+                    Tambah Data
                 </button>
             </div>
         </div>
@@ -130,19 +130,25 @@
 </div>
 
 <script>
+    $("#btn_create").click(function () {
+        $("#modal_body").empty()
+        $("#modal_body").load("/MHakAkses/Add")
+        $("#my_modal").modal("show")
+    })
+
     $(".btn_edit").click(function () {
-        // var id = $(this).attr("dataid")
+        var id = $(this).attr("dataid")
 
         $("#modal_body").empty()
-        // $("#modal_body").load("/Role/Edit?id=" + id)
+        $("#modal_body").load("/Role/Edit?id=" + id)
         $("#my_modal").modal("show")
     })
 
     $(".btn_delete").click(function () {
-        // var id = $(this).attr("dataid")
+        var id = $(this).attr("dataid")
 
         $("#modal_body").empty()
-        // $("#modal_body").load("/Role/Delete?id=" + id)
+        $("#modal_body").load("/Role/Delete?id=" + id)
         $("#my_modal").modal("show")
     })
 </script>

@@ -20,5 +20,29 @@ namespace Med_341A.Controllers
             List<MRole> data = await mHakAksesService.GetAll();
             return View(data);
         }
+
+        public async Task<IActionResult> Add()
+        {
+            MRole data = new MRole();
+            return PartialView(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(MRole dataForm)
+        {
+            dataForm.CreatedBy = idUser;
+            dataForm.CreatedOn = DateTime.Now;
+
+            VMResponse response = await mHakAksesService.Add(dataForm);
+
+            if (response.Success)
+            {
+                return Json(new { dataResponse = response });
+            }
+
+            return PartialView(dataForm);
+        }
+
+
     }
 }

@@ -1,6 +1,8 @@
-﻿using Med_341A.datamodels;
+﻿using Azure;
+using Med_341A.datamodels;
 using Med_341A.viewmodels;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Med_341A.Services
 {
@@ -9,6 +11,9 @@ namespace Med_341A.Services
         private static readonly HttpClient client = new HttpClient();
         private IConfiguration configuration;
         public string RouteAPI = "";
+
+        private VMResponse response = new VMResponse();
+
 
         public MHakAksesService(IConfiguration _configuration)
         {
@@ -23,5 +28,43 @@ namespace Med_341A.Services
 
             return data;
         }
+
+        public async Task<VMResponse> Add(MRole dataForm)
+        {
+            //Proses convert dari objext ke string
+            string json = JsonConvert.SerializeObject(dataForm);
+
+            //proses ubah string ke json
+            StringContent content = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+
+            var request = await client.PostAsync(RouteAPI + "apiMRole/Add", content);
+
+            if (request.IsSuccessStatusCode)
+            {
+                var apiResponse = await request.Content.ReadAsStringAsync();
+
+                response = JsonConvert.DeserializeObject<VMResponse>(apiResponse);
+            }
+            else
+            {
+                response.Success = false;
+                response.Message = $"{request.StatusCode} : {request.ReasonPhrase}";
+            }
+            return response;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
