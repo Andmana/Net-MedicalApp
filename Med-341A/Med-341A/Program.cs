@@ -10,6 +10,15 @@ builder.Services.AddControllersWithViews();
 // add all scope services
 builder.Services.AddScoped<DoctorService>();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSession(option =>
+{
+    option.IdleTimeout = TimeSpan.FromHours(1); // bisa disetting di appsetting
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
