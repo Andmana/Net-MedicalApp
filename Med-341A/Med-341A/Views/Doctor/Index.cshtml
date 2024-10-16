@@ -1,0 +1,12 @@
+﻿@using Med_341A.viewmodels
+@model List<VMDoctor>
+
+<div>
+    @{
+        foreach(var item in Model)
+        {
+            <h1>@item.Id</h1>
+            <h1>@item.Str</h1>
+        }
+    }
+</div>

@@ -1,0 +1,6 @@
+@Med_341A.api_HostAddress = http://localhost:5011
+
+GET {{Med_341A.api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
