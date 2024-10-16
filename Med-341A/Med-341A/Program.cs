@@ -10,6 +10,7 @@ builder.Services.AddControllersWithViews();
 // add all scope services
 builder.Services.AddScoped<DoctorService>();
 builder.Services.AddScoped<MHakAksesService>();
+builder.Services.AddScoped<UserProfileService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

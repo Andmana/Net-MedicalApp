@@ -27,6 +27,8 @@ namespace Med_341A.viewmodels
 
         public int? LoginAttempt { get; set; }
 
+        public DateOnly? Dob { get; set; }
+
         public bool? IsLocked { get; set; }
 
         public DateTime? LastLogin { get; set; }
