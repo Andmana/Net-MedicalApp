@@ -6,41 +6,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Med_341A.datamodels;
 
-[Table("m_biodata_address")]
-public partial class MBiodataAddress
+[Table("m_menu")]
+public partial class MMenu
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("biodata_id")]
-    public long? BiodataId { get; set; }
+    [Column("name")]
+    [StringLength(20)]
+    [Unicode(false)]
+    public string? Name { get; set; }
 
-    [Column("label")]
+    [Column("url")]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string? Url { get; set; }
+
+    [Column("parent_id")]
+    public long? ParentId { get; set; }
+
+    [Column("big_icon")]
     [StringLength(100)]
     [Unicode(false)]
-    public string? Label { get; set; }
+    public string? BigIcon { get; set; }
 
-    [Column("recipent")]
+    [Column("small_icon")]
     [StringLength(100)]
     [Unicode(false)]
-    public string? Recipent { get; set; }
-
-    [Column("recipent_phone_number")]
-    [StringLength(15)]
-    [Unicode(false)]
-    public string? RecipentPhoneNumber { get; set; }
-
-    [Column("location_id")]
-    public long? LocationId { get; set; }
-
-    [Column("postal_code")]
-    [StringLength(10)]
-    [Unicode(false)]
-    public string? PostalCode { get; set; }
-
-    [Column("address", TypeName = "text")]
-    public string? Address { get; set; }
+    public string? SmallIcon { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }

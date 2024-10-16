@@ -6,41 +6,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Med_341A.datamodels;
 
-[Table("m_biodata_address")]
-public partial class MBiodataAddress
+[Table("t_token")]
+public partial class TToken
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("biodata_id")]
-    public long? BiodataId { get; set; }
-
-    [Column("label")]
+    [Column("email")]
     [StringLength(100)]
     [Unicode(false)]
-    public string? Label { get; set; }
+    public string? Email { get; set; }
 
-    [Column("recipent")]
-    [StringLength(100)]
+    [Column("user_id")]
+    public long? UserId { get; set; }
+
+    [Column("reset_for")]
+    [StringLength(20)]
     [Unicode(false)]
-    public string? Recipent { get; set; }
+    public string? ResetFor { get; set; }
 
-    [Column("recipent_phone_number")]
-    [StringLength(15)]
+    [Column("token")]
+    [StringLength(50)]
     [Unicode(false)]
-    public string? RecipentPhoneNumber { get; set; }
+    public string? Token { get; set; }
 
-    [Column("location_id")]
-    public long? LocationId { get; set; }
+    [Column("expired_on", TypeName = "datetime")]
+    public DateTime? ExpiredOn { get; set; }
 
-    [Column("postal_code")]
-    [StringLength(10)]
+    [Column("is_expired")]
+    public bool? IsExpired { get; set; }
+
+    [Column("used_for")]
+    [StringLength(20)]
     [Unicode(false)]
-    public string? PostalCode { get; set; }
-
-    [Column("address", TypeName = "text")]
-    public string? Address { get; set; }
+    public string? UsedFor { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }

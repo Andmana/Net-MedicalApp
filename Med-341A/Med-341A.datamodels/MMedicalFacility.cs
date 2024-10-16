@@ -6,41 +6,46 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Med_341A.datamodels;
 
-[Table("m_biodata_address")]
-public partial class MBiodataAddress
+[Table("m_medical_facility")]
+public partial class MMedicalFacility
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("biodata_id")]
-    public long? BiodataId { get; set; }
-
-    [Column("label")]
-    [StringLength(100)]
+    [Column("name")]
+    [StringLength(50)]
     [Unicode(false)]
-    public string? Label { get; set; }
+    public string? Name { get; set; }
 
-    [Column("recipent")]
-    [StringLength(100)]
-    [Unicode(false)]
-    public string? Recipent { get; set; }
-
-    [Column("recipent_phone_number")]
-    [StringLength(15)]
-    [Unicode(false)]
-    public string? RecipentPhoneNumber { get; set; }
+    [Column("medical_facility_category_id")]
+    public long? MedicalFacilityCategoryId { get; set; }
 
     [Column("location_id")]
     public long? LocationId { get; set; }
 
-    [Column("postal_code")]
+    [Column("full_address", TypeName = "text")]
+    public string? FullAddress { get; set; }
+
+    [Column("email")]
+    [StringLength(100)]
+    [Unicode(false)]
+    public string? Email { get; set; }
+
+    [Column("phone_code")]
     [StringLength(10)]
     [Unicode(false)]
-    public string? PostalCode { get; set; }
+    public string? PhoneCode { get; set; }
 
-    [Column("address", TypeName = "text")]
-    public string? Address { get; set; }
+    [Column("phone")]
+    [StringLength(15)]
+    [Unicode(false)]
+    public string? Phone { get; set; }
+
+    [Column("fax")]
+    [StringLength(15)]
+    [Unicode(false)]
+    public string? Fax { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }

@@ -6,41 +6,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Med_341A.datamodels;
 
-[Table("m_biodata_address")]
-public partial class MBiodataAddress
+[Table("t_customer_wallet_withdraw")]
+public partial class TCustomerWalletWithdraw
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("biodata_id")]
-    public long? BiodataId { get; set; }
+    [Column("customer_id")]
+    public long? CustomerId { get; set; }
 
-    [Column("label")]
-    [StringLength(100)]
+    [Column("wallet_default_nominal_id")]
+    public long? WalletDefaultNominalId { get; set; }
+
+    [Column("amount")]
+    public int? Amount { get; set; }
+
+    [Column("bank_name")]
+    [StringLength(50)]
     [Unicode(false)]
-    public string? Label { get; set; }
+    public string? BankName { get; set; }
 
-    [Column("recipent")]
-    [StringLength(100)]
+    [Column("account_number")]
+    [StringLength(50)]
     [Unicode(false)]
-    public string? Recipent { get; set; }
+    public string? AccountNumber { get; set; }
 
-    [Column("recipent_phone_number")]
-    [StringLength(15)]
+    [Column("account_name")]
+    [StringLength(255)]
     [Unicode(false)]
-    public string? RecipentPhoneNumber { get; set; }
+    public string? AccountName { get; set; }
 
-    [Column("location_id")]
-    public long? LocationId { get; set; }
-
-    [Column("postal_code")]
-    [StringLength(10)]
-    [Unicode(false)]
-    public string? PostalCode { get; set; }
-
-    [Column("address", TypeName = "text")]
-    public string? Address { get; set; }
+    [Column("otp")]
+    public int Otp { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }

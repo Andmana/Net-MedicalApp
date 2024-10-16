@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Med_341A.datamodels;
 
-[Table("m_biodata_address")]
-public partial class MBiodataAddress
+[Table("m_user")]
+public partial class MUser
 {
     [Key]
     [Column("id")]
@@ -16,31 +16,27 @@ public partial class MBiodataAddress
     [Column("biodata_id")]
     public long? BiodataId { get; set; }
 
-    [Column("label")]
+    [Column("role_id")]
+    public long? RoleId { get; set; }
+
+    [Column("email")]
     [StringLength(100)]
     [Unicode(false)]
-    public string? Label { get; set; }
+    public string? Email { get; set; }
 
-    [Column("recipent")]
-    [StringLength(100)]
+    [Column("password")]
+    [StringLength(255)]
     [Unicode(false)]
-    public string? Recipent { get; set; }
+    public string? Password { get; set; }
 
-    [Column("recipent_phone_number")]
-    [StringLength(15)]
-    [Unicode(false)]
-    public string? RecipentPhoneNumber { get; set; }
+    [Column("login_attempt")]
+    public int? LoginAttempt { get; set; }
 
-    [Column("location_id")]
-    public long? LocationId { get; set; }
+    [Column("is_locked")]
+    public bool? IsLocked { get; set; }
 
-    [Column("postal_code")]
-    [StringLength(10)]
-    [Unicode(false)]
-    public string? PostalCode { get; set; }
-
-    [Column("address", TypeName = "text")]
-    public string? Address { get; set; }
+    [Column("last_login", TypeName = "datetime")]
+    public DateTime? LastLogin { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }

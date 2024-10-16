@@ -21,6 +21,8 @@ public partial class Med341aContext : DbContext
 
     public virtual DbSet<MBiodataAddress> MBiodataAddresses { get; set; }
 
+    public virtual DbSet<MBiodataAttachment> MBiodataAttachments { get; set; }
+
     public virtual DbSet<MBiodatum> MBiodata { get; set; }
 
     public virtual DbSet<MBloodGroup> MBloodGroups { get; set; }
@@ -37,7 +39,87 @@ public partial class Med341aContext : DbContext
 
     public virtual DbSet<MDoctor> MDoctors { get; set; }
 
+    public virtual DbSet<MDoctorEducation> MDoctorEducations { get; set; }
+
+    public virtual DbSet<MEducationLevel> MEducationLevels { get; set; }
+
+    public virtual DbSet<MLocation> MLocations { get; set; }
+
+    public virtual DbSet<MLocationLevel> MLocationLevels { get; set; }
+
+    public virtual DbSet<MMedicalFacility> MMedicalFacilities { get; set; }
+
+    public virtual DbSet<MMedicalFacilityCategory> MMedicalFacilityCategories { get; set; }
+
+    public virtual DbSet<MMedicalFacilitySchedule> MMedicalFacilitySchedules { get; set; }
+
+    public virtual DbSet<MMedicalItem> MMedicalItems { get; set; }
+
+    public virtual DbSet<MMedicalItemCategory> MMedicalItemCategories { get; set; }
+
+    public virtual DbSet<MMedicalItemSegmentation> MMedicalItemSegmentations { get; set; }
+
+    public virtual DbSet<MMenu> MMenus { get; set; }
+
+    public virtual DbSet<MMenuRole> MMenuRoles { get; set; }
+
+    public virtual DbSet<MPaymentMethod> MPaymentMethods { get; set; }
+
+    public virtual DbSet<MRole> MRoles { get; set; }
+
+    public virtual DbSet<MSpecialization> MSpecializations { get; set; }
+
+    public virtual DbSet<MUser> MUsers { get; set; }
+
+    public virtual DbSet<MWalletDefaultNominal> MWalletDefaultNominals { get; set; }
+
+    public virtual DbSet<TAppointment> TAppointments { get; set; }
+
+    public virtual DbSet<TAppointmentCancellation> TAppointmentCancellations { get; set; }
+
+    public virtual DbSet<TAppointmentDone> TAppointmentDones { get; set; }
+
+    public virtual DbSet<TAppointmentRescheduleHistory> TAppointmentRescheduleHistories { get; set; }
+
     public virtual DbSet<TCourierDiscount> TCourierDiscounts { get; set; }
+
+    public virtual DbSet<TCurrentDoctorSpecialization> TCurrentDoctorSpecializations { get; set; }
+
+    public virtual DbSet<TCustomerChat> TCustomerChats { get; set; }
+
+    public virtual DbSet<TCustomerChatHistory> TCustomerChatHistories { get; set; }
+
+    public virtual DbSet<TCustomerChatNominal> TCustomerChatNominals { get; set; }
+
+    public virtual DbSet<TCustomerRegisteredCard> TCustomerRegisteredCards { get; set; }
+
+    public virtual DbSet<TCustomerVa> TCustomerVas { get; set; }
+
+    public virtual DbSet<TCustomerVaHistory> TCustomerVaHistories { get; set; }
+
+    public virtual DbSet<TCustomerWallet> TCustomerWallets { get; set; }
+
+    public virtual DbSet<TCustomerWalletTopup> TCustomerWalletTopups { get; set; }
+
+    public virtual DbSet<TCustomerWalletWithdraw> TCustomerWalletWithdraws { get; set; }
+
+    public virtual DbSet<TDoctorOffice> TDoctorOffices { get; set; }
+
+    public virtual DbSet<TDoctorOfficeSchedule> TDoctorOfficeSchedules { get; set; }
+
+    public virtual DbSet<TDoctorOfficeTreatment> TDoctorOfficeTreatments { get; set; }
+
+    public virtual DbSet<TDoctorTreatment> TDoctorTreatments { get; set; }
+
+    public virtual DbSet<TMedicalItemPurchase> TMedicalItemPurchases { get; set; }
+
+    public virtual DbSet<TMedicalItemPurchaseDetail> TMedicalItemPurchaseDetails { get; set; }
+
+    public virtual DbSet<TResetPassword> TResetPasswords { get; set; }
+
+    public virtual DbSet<TToken> TTokens { get; set; }
+
+    public virtual DbSet<TTreatmentDiscount> TTreatmentDiscounts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -47,363 +129,271 @@ public partial class Med341aContext : DbContext
     {
         modelBuilder.Entity<MAdmin>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_admin__3213E83F5BE50C9F");
-
-            entity.ToTable("m_admin");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BiodataId).HasColumnName("biodata_id");
-            entity.Property(e => e.Code)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("code");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
+            entity.HasKey(e => e.Id).HasName("PK__m_admin__3213E83F59AB3BE3");
         });
 
         modelBuilder.Entity<MBank>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_bank__3213E83F41793FD9");
-
-            entity.ToTable("m_bank");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("name");
-            entity.Property(e => e.VaCode)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("va_code");
+            entity.HasKey(e => e.Id).HasName("PK__m_bank__3213E83F04F31EF0");
         });
 
         modelBuilder.Entity<MBiodataAddress>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_biodat__3213E83FB6CE4106");
+            entity.HasKey(e => e.Id).HasName("PK__m_biodat__3213E83F53EC9EA3");
+        });
 
-            entity.ToTable("m_biodata_address");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Address)
-                .HasColumnType("text")
-                .HasColumnName("address");
-            entity.Property(e => e.BiodataId).HasColumnName("biodata_id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.Label)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("label");
-            entity.Property(e => e.LocationId).HasColumnName("location_id");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
-            entity.Property(e => e.PostalCode)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("postal_code");
-            entity.Property(e => e.Recipent)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("recipent");
-            entity.Property(e => e.RecipentPhoneNumber)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("recipent_phone_number");
+        modelBuilder.Entity<MBiodataAttachment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_biodat__3213E83FC93AE946");
         });
 
         modelBuilder.Entity<MBiodatum>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_biodat__3213E83FB425FAEA");
-
-            entity.ToTable("m_biodata");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.Fullname)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("fullname");
-            entity.Property(e => e.Image).HasColumnName("image");
-            entity.Property(e => e.ImagePath)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("image_path");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.MobilePhone)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("mobile_phone");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
+            entity.HasKey(e => e.Id).HasName("PK__m_biodat__3213E83FBED4C8E7");
         });
 
         modelBuilder.Entity<MBloodGroup>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_blood___3213E83FB4F80D80");
-
-            entity.ToTable("m_blood_group");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Code)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .HasColumnName("code");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.Description)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("description");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
+            entity.HasKey(e => e.Id).HasName("PK__m_blood___3213E83F90DDE2C3");
         });
 
         modelBuilder.Entity<MCourier>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_courie__3213E83F87406629");
-
-            entity.ToTable("m_courier");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("name");
+            entity.HasKey(e => e.Id).HasName("PK__m_courie__3213E83FA11418F2");
         });
 
         modelBuilder.Entity<MCourierType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_courie__3213E83FFD67A6AD");
-
-            entity.ToTable("m_courier_type");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CourierId).HasColumnName("courier_id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
-            entity.Property(e => e.Name)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("name");
+            entity.HasKey(e => e.Id).HasName("PK__m_courie__3213E83F38AEB480");
         });
 
         modelBuilder.Entity<MCustomer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_custom__3213E83FA3E40E2A");
-
-            entity.ToTable("m_customer");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BiodataId).HasColumnName("biodata_id");
-            entity.Property(e => e.BloodGroupId).HasColumnName("blood_group_id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.Dob).HasColumnName("dob");
-            entity.Property(e => e.Gender)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("gender");
-            entity.Property(e => e.Height)
-                .HasColumnType("decimal(18, 0)")
-                .HasColumnName("height");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
-            entity.Property(e => e.RhesusType)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .HasColumnName("rhesus_type");
-            entity.Property(e => e.Weight)
-                .HasColumnType("decimal(18, 0)")
-                .HasColumnName("weight");
+            entity.HasKey(e => e.Id).HasName("PK__m_custom__3213E83F103512FE");
         });
 
         modelBuilder.Entity<MCustomerMember>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_custom__3213E83F1803CB1E");
-
-            entity.ToTable("m_customer_member");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
-            entity.Property(e => e.CustomerRelationId).HasColumnName("customer_relation_id");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
-            entity.Property(e => e.ParentBiodataId).HasColumnName("parent_biodata_id");
+            entity.HasKey(e => e.Id).HasName("PK__m_custom__3213E83F9BBA1B5A");
         });
 
         modelBuilder.Entity<MCustomerRelation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_custom__3213E83FED1A7042");
-
-            entity.ToTable("m_customer_relation");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("name");
+            entity.HasKey(e => e.Id).HasName("PK__m_custom__3213E83F890206BB");
         });
 
         modelBuilder.Entity<MDoctor>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__m_doctor__3213E83F69E42855");
+            entity.HasKey(e => e.Id).HasName("PK__m_doctor__3213E83F7D718851");
+        });
 
-            entity.ToTable("m_doctor");
+        modelBuilder.Entity<MDoctorEducation>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_doctor__3213E83F44B2B8EE");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BiodataId).HasColumnName("biodata_id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
-            entity.Property(e => e.Str)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("str");
+            entity.Property(e => e.IsLastEducation).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<MEducationLevel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_educat__3213E83F9C78F7A2");
+        });
+
+        modelBuilder.Entity<MLocation>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_locati__3213E83F43166E99");
+        });
+
+        modelBuilder.Entity<MLocationLevel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_locati__3213E83F55B245A7");
+        });
+
+        modelBuilder.Entity<MMedicalFacility>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_medica__3213E83FF52229AA");
+        });
+
+        modelBuilder.Entity<MMedicalFacilityCategory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_medica__3213E83FE7E55C0D");
+        });
+
+        modelBuilder.Entity<MMedicalFacilitySchedule>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_medica__3213E83FB25869E1");
+        });
+
+        modelBuilder.Entity<MMedicalItem>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_medica__3213E83F2E0416CE");
+        });
+
+        modelBuilder.Entity<MMedicalItemCategory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_medica__3213E83FA9BB83AE");
+        });
+
+        modelBuilder.Entity<MMedicalItemSegmentation>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_medica__3213E83FD92E333D");
+        });
+
+        modelBuilder.Entity<MMenu>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_menu__3213E83F98ECE147");
+        });
+
+        modelBuilder.Entity<MMenuRole>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_menu_r__3213E83F579FEAF8");
+        });
+
+        modelBuilder.Entity<MPaymentMethod>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_paymen__3213E83F7DD79E79");
+        });
+
+        modelBuilder.Entity<MRole>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_role__3213E83FDDC73EDB");
+        });
+
+        modelBuilder.Entity<MSpecialization>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_specia__3213E83F4F1D13CE");
+        });
+
+        modelBuilder.Entity<MUser>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_user__3213E83FC888DCEA");
+        });
+
+        modelBuilder.Entity<MWalletDefaultNominal>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__m_wallet__3213E83FF12CA286");
+        });
+
+        modelBuilder.Entity<TAppointment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_appoin__3213E83FFEE083D2");
+        });
+
+        modelBuilder.Entity<TAppointmentCancellation>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_appoin__3213E83F8BB5E48D");
+        });
+
+        modelBuilder.Entity<TAppointmentDone>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_appoin__3213E83F14FB12AC");
+        });
+
+        modelBuilder.Entity<TAppointmentRescheduleHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_appoin__3213E83F9425F9C8");
         });
 
         modelBuilder.Entity<TCourierDiscount>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__t_courie__3213E83F87941E28");
+            entity.HasKey(e => e.Id).HasName("PK__t_courie__3213E83F7F6B720A");
+        });
 
-            entity.ToTable("t_courier_discount");
+        modelBuilder.Entity<TCurrentDoctorSpecialization>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_curren__3213E83F98CCE984");
+        });
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CourierTypeId).HasColumnName("courier_type_id");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.CreatedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("created_on");
-            entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            entity.Property(e => e.DeletedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("deleted_on");
-            entity.Property(e => e.IsDelete).HasColumnName("is_delete");
-            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
-            entity.Property(e => e.ModifiedOn)
-                .HasColumnType("datetime")
-                .HasColumnName("modified_on");
-            entity.Property(e => e.Value)
-                .HasColumnType("decimal(18, 0)")
-                .HasColumnName("value");
+        modelBuilder.Entity<TCustomerChat>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_custom__3213E83FB7C0F4E8");
+        });
+
+        modelBuilder.Entity<TCustomerChatHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_custom__3213E83F21C9AE47");
+        });
+
+        modelBuilder.Entity<TCustomerChatNominal>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_custom__3213E83F18150402");
+        });
+
+        modelBuilder.Entity<TCustomerRegisteredCard>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_custom__3213E83F214BA7ED");
+        });
+
+        modelBuilder.Entity<TCustomerVa>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_custom__3213E83FAE2F4AC1");
+        });
+
+        modelBuilder.Entity<TCustomerVaHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_custom__3213E83F1241481E");
+        });
+
+        modelBuilder.Entity<TCustomerWallet>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_custom__3213E83F2D7EB22C");
+
+            entity.Property(e => e.IsBlocked).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<TCustomerWalletTopup>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_custom__3213E83FC0C6374F");
+        });
+
+        modelBuilder.Entity<TCustomerWalletWithdraw>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_custom__3213E83FE173D058");
+        });
+
+        modelBuilder.Entity<TDoctorOffice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_doctor__3213E83F5FD8AA25");
+        });
+
+        modelBuilder.Entity<TDoctorOfficeSchedule>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_doctor__3213E83F9C961BFB");
+        });
+
+        modelBuilder.Entity<TDoctorOfficeTreatment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_doctor__3213E83F49844F51");
+        });
+
+        modelBuilder.Entity<TDoctorTreatment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_doctor__3213E83F1A89990E");
+        });
+
+        modelBuilder.Entity<TMedicalItemPurchase>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_medica__3213E83F04653190");
+        });
+
+        modelBuilder.Entity<TMedicalItemPurchaseDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_medica__3213E83F43BFD694");
+        });
+
+        modelBuilder.Entity<TResetPassword>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_reset___3213E83F63BE2EA3");
+        });
+
+        modelBuilder.Entity<TToken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_token__3213E83F21859B9E");
+        });
+
+        modelBuilder.Entity<TTreatmentDiscount>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__t_treatm__3213E83F1F10C995");
         });
 
         OnModelCreatingPartial(modelBuilder);

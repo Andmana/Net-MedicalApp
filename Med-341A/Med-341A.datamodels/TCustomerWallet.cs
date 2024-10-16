@@ -6,41 +6,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Med_341A.datamodels;
 
-[Table("m_biodata_address")]
-public partial class MBiodataAddress
+[Table("t_customer_wallet")]
+public partial class TCustomerWallet
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("biodata_id")]
-    public long? BiodataId { get; set; }
+    [Column("customer_id")]
+    public long? CustomerId { get; set; }
 
-    [Column("label")]
-    [StringLength(100)]
+    [Column("pin")]
+    [StringLength(6)]
     [Unicode(false)]
-    public string? Label { get; set; }
+    public string? Pin { get; set; }
 
-    [Column("recipent")]
-    [StringLength(100)]
+    [Column("balance", TypeName = "decimal(18, 0)")]
+    public decimal? Balance { get; set; }
+
+    [Column("barcode")]
+    [StringLength(50)]
     [Unicode(false)]
-    public string? Recipent { get; set; }
+    public string? Barcode { get; set; }
 
-    [Column("recipent_phone_number")]
-    [StringLength(15)]
-    [Unicode(false)]
-    public string? RecipentPhoneNumber { get; set; }
+    [Column("points", TypeName = "decimal(18, 0)")]
+    public decimal? Points { get; set; }
 
-    [Column("location_id")]
-    public long? LocationId { get; set; }
+    [Column("pin_attempt")]
+    public int? PinAttempt { get; set; }
 
-    [Column("postal_code")]
-    [StringLength(10)]
-    [Unicode(false)]
-    public string? PostalCode { get; set; }
+    [Column("block_ends", TypeName = "datetime")]
+    public DateTime? BlockEnds { get; set; }
 
-    [Column("address", TypeName = "text")]
-    public string? Address { get; set; }
+    [Column("is_blocked")]
+    public bool? IsBlocked { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }

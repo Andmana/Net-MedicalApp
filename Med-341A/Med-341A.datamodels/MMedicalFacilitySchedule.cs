@@ -6,41 +6,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Med_341A.datamodels;
 
-[Table("m_biodata_address")]
-public partial class MBiodataAddress
+[Table("m_medical_facility_schedule")]
+public partial class MMedicalFacilitySchedule
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("biodata_id")]
-    public long? BiodataId { get; set; }
+    [Column("medical_facility_id")]
+    public long? MedicalFacilityId { get; set; }
 
-    [Column("label")]
-    [StringLength(100)]
-    [Unicode(false)]
-    public string? Label { get; set; }
-
-    [Column("recipent")]
-    [StringLength(100)]
-    [Unicode(false)]
-    public string? Recipent { get; set; }
-
-    [Column("recipent_phone_number")]
-    [StringLength(15)]
-    [Unicode(false)]
-    public string? RecipentPhoneNumber { get; set; }
-
-    [Column("location_id")]
-    public long? LocationId { get; set; }
-
-    [Column("postal_code")]
+    [Column("day")]
     [StringLength(10)]
     [Unicode(false)]
-    public string? PostalCode { get; set; }
+    public string? Day { get; set; }
 
-    [Column("address", TypeName = "text")]
-    public string? Address { get; set; }
+    [Column("time_schedule_start")]
+    [StringLength(10)]
+    [Unicode(false)]
+    public string? TimeScheduleStart { get; set; }
+
+    [Column("time_schedule_end")]
+    [StringLength(10)]
+    [Unicode(false)]
+    public string? TimeScheduleEnd { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }

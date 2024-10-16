@@ -6,41 +6,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Med_341A.datamodels;
 
-[Table("m_biodata_address")]
-public partial class MBiodataAddress
+[Table("t_customer_va_history")]
+public partial class TCustomerVaHistory
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("biodata_id")]
-    public long? BiodataId { get; set; }
+    [Column("customer_va_id")]
+    public long? CustomerVaId { get; set; }
 
-    [Column("label")]
-    [StringLength(100)]
+    [Column("amount", TypeName = "decimal(18, 0)")]
+    public decimal? Amount { get; set; }
+
+    [Column("expired_on", TypeName = "datetime")]
+    public DateTime? ExpiredOn { get; set; }
+
+    [Column("cvv")]
+    [StringLength(5)]
     [Unicode(false)]
-    public string? Label { get; set; }
-
-    [Column("recipent")]
-    [StringLength(100)]
-    [Unicode(false)]
-    public string? Recipent { get; set; }
-
-    [Column("recipent_phone_number")]
-    [StringLength(15)]
-    [Unicode(false)]
-    public string? RecipentPhoneNumber { get; set; }
-
-    [Column("location_id")]
-    public long? LocationId { get; set; }
-
-    [Column("postal_code")]
-    [StringLength(10)]
-    [Unicode(false)]
-    public string? PostalCode { get; set; }
-
-    [Column("address", TypeName = "text")]
-    public string? Address { get; set; }
+    public string? Cvv { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }

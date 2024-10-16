@@ -6,41 +6,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Med_341A.datamodels;
 
-[Table("m_biodata_address")]
-public partial class MBiodataAddress
+[Table("m_doctor_education")]
+public partial class MDoctorEducation
 {
     [Key]
     [Column("id")]
     public long Id { get; set; }
 
-    [Column("biodata_id")]
-    public long? BiodataId { get; set; }
+    [Column("doctor_id")]
+    public long? DoctorId { get; set; }
 
-    [Column("label")]
+    [Column("education_level_id")]
+    public long? EducationLevelId { get; set; }
+
+    [Column("institution_name")]
     [StringLength(100)]
     [Unicode(false)]
-    public string? Label { get; set; }
+    public string? InstitutionName { get; set; }
 
-    [Column("recipent")]
+    [Column("major")]
     [StringLength(100)]
     [Unicode(false)]
-    public string? Recipent { get; set; }
+    public string? Major { get; set; }
 
-    [Column("recipent_phone_number")]
-    [StringLength(15)]
+    [Column("start_year")]
+    [StringLength(4)]
     [Unicode(false)]
-    public string? RecipentPhoneNumber { get; set; }
+    public string? StartYear { get; set; }
 
-    [Column("location_id")]
-    public long? LocationId { get; set; }
-
-    [Column("postal_code")]
-    [StringLength(10)]
+    [Column("end_year")]
+    [StringLength(4)]
     [Unicode(false)]
-    public string? PostalCode { get; set; }
+    public string? EndYear { get; set; }
 
-    [Column("address", TypeName = "text")]
-    public string? Address { get; set; }
+    [Column("is_last_education")]
+    public bool? IsLastEducation { get; set; }
 
     [Column("created_by")]
     public long CreatedBy { get; set; }
