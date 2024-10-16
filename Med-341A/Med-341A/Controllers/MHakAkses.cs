@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Med_341A.Controllers
 {
-    public class MHakAksess : Controller
+    public class MHakAkses : Controller
     {
         private MHakAksesService mHakAksesService;
         private int idUser = 1;
 
-        public MHakAksess(MHakAksesService _mHakAksesService)
+        public MHakAkses(MHakAksesService _mHakAksesService)
         {
             mHakAksesService = _mHakAksesService;
         }
