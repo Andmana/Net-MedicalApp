@@ -2,12 +2,15 @@
 using Med_341A.Services;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace Med_341A.Controllers
 {
     public class MHakAksesController : Controller
     {
+        private static VPage page = new VPage();
         private MHakAksesService mHakAksesService;
+
         private int idUser = 1;
 
         public MHakAksesController(MHakAksesService _mHakAksesService)
@@ -15,10 +18,54 @@ namespace Med_341A.Controllers
             mHakAksesService = _mHakAksesService;
         }
 
-        public async Task< IActionResult > Index()
+        public async Task< IActionResult > Index(VPage page)
         {
+            //
+            page.showData = page.showData ?? 5;
+
+            ViewBag.nameSort = string.IsNullOrEmpty(page.sortOrder) ? "name_desc" : "";
+            ViewBag.codeSort = page.sortOrder == "code" ? "code_desc" : "code";
+            ViewBag.currentSort = page.sortOrder;
+            ViewBag.currentShowData = page.showData;
+
+            if (page.searchString != null)
+            {
+
+            }
+            else
+            {
+                page.currentFilter = page.searchString;
+            }
+
+            ViewBag.currentFilter = page.searchString;
+
             List<MRole> data = await mHakAksesService.GetAll();
-            return View(data);
+
+            if (!string.IsNullOrEmpty(page.searchString))
+            {
+                data = data.Where(a => a.Name.ToLower().Contains( page.searchString.ToLower() )
+                                    || a.Code.ToLower().Contains( page.searchString.ToLower() ))
+                           .ToList();
+            }
+
+            switch (page.sortOrder)
+            {
+                case "code_desc":
+                    data = data.OrderByDescending(a => a.Code).ToList();
+                    break;
+                case "code":
+                    data = data.OrderBy(a => a.Code).ToList();
+                    break;
+                case "name_desc":
+                    data = data.OrderByDescending(a => a.Name).ToList();
+                    break;
+                default:
+                    data = data.OrderBy(a => a.Name).ToList();
+                    break;
+            }
+
+
+            return View(VPaginatedList<MRole>.CreateAsync(data, page.pageNumber ?? 1, page.showData ?? 5));
         }
 
         public async Task<IActionResult> Add()
