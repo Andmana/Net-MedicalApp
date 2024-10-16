@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Med_341A.Controllers
 {
-    public class MHakAkses : Controller
+    public class MHakAksesController : Controller
     {
         private MHakAksesService mHakAksesService;
         private int idUser = 1;
 
-        public MHakAkses(MHakAksesService _mHakAksesService)
+        public MHakAksesController(MHakAksesService _mHakAksesService)
         {
             mHakAksesService = _mHakAksesService;
         }
@@ -18,7 +18,7 @@ namespace Med_341A.Controllers
         public async Task< IActionResult > Index()
         {
             List<MRole> data = await mHakAksesService.GetAll();
-            return View();
+            return View(data);
         }
     }
 }
