@@ -26,5 +26,10 @@ namespace Med_341A.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+        public async Task<IActionResult> UbahPribadi(int id)
+        {
+            VMUser data = await userProfileService.GetDataUser(id);
+            return PartialView(data);
+        }
     }
 }

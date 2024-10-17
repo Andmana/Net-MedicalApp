@@ -1,0 +1,127 @@
+﻿@using Med_341A.viewmodels
+@model VMUser
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="UbahPribadi" method="post" id="form_input">
+            <input type="hidden" name="id" id="id" value="@Model.Id" />
+
+            <!-- Nama Lengkap -->
+            <div class="form-group">
+                <label for="Fullname" class="form-label">Nama Lengkap*</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="Fullname" name="Fullname" value="@Model.Fullname" placeholder="Masukkan Nama Lengkap...">
+                </div>
+                <span class="text-danger" id="Fullname-error"></span>
+            </div>
+
+            <!-- Tanggal Lahir -->
+            <div class="form-group">
+                <label for="Dob" class="form-label">Tanggal Lahir*</label>
+                <div class="input-group">
+                    <input type="date" class="form-control" id="Dob" name="Dob" value="@Model.Dob" placeholder="Masukkan Tanggal Lahir...">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+                <span class="text-danger" id="Dob-error"></span>
+            </div>
+
+            <!-- Nomor Handphone -->
+            <div class="form-group">
+                <label for="MobilePhone" class="form-label">Nomor Handphone*</label>
+                <div class="input-group">
+                    <span class="input-group-text">+62</span>
+                    <input type="text" class="form-control" id="MobilePhone" name="MobilePhone" value="@Model.MobilePhone" placeholder="8123....">
+                </div>
+                <span class="text-danger" id="Mobilephone-error"></span>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Fungsi untuk mendapatkan tanggal hari ini dalam format YYYY-MM-DD
+        function getTodayDate() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); // Januari = 0
+            var yyyy = today.getFullYear();
+            return yyyy + '-' + mm + '-' + dd;
+        }
+        function formatDateToText(date) {
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(date).toLocaleDateString('id-ID', options);
+        }
+
+        // Saat input focus (klik), ubah type menjadi 'date'
+        $('#Dob').focus(function () {
+            $(this).attr('type', 'date');
+        });
+
+        // Saat input blur (keluar dari fokus), ubah type menjadi 'text' dan format tanggal
+        $('#Dob').blur(function () {
+            var selectedDate = $(this).val();
+            if (selectedDate) {
+                var formattedDate = formatDateToText(selectedDate);
+                $(this).attr('type', 'text');
+                $(this).val(formattedDate);  // Set tanggal dengan format teks
+            }
+        });
+
+        // Set max attribute untuk input tanggal lahir
+        var todayDate = getTodayDate();
+        $('#Dob').attr('max', todayDate);
+
+        // Validasi form menggunakan jQuery Validate
+        $("#form_input").validate({
+            errorClass: "is-invalid text-danger",
+            rules: {
+                Fullname: {
+                    required: true,
+                    minlength: 2
+                },
+                Dob: {
+                    required: true,
+                    date: true,
+                    max: todayDate // memastikan tanggal tidak melebihi hari ini
+                },
+                MobilePhone: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 15
+                }
+            },
+            messages: {
+                Fullname: {
+                    required: "Tolong diisi nama lengkap",
+                    minlength: "Panjang minimal 2 karakter"
+                },
+                Dob: {
+                    required: "Tolong diisi Tanggal Lahir",
+                    max: "Tanggal lahir tidak boleh lebih dari hari ini"
+                },
+                MobilePhone: {
+                    required: "Tolong diisi Nomor Handphone",
+                    digits: "Hanya menerima angka",
+                    minlength: "Panjang minimal 10 angka",
+                    maxlength: "Panjang maksimal 15 angka"
+                }
+            },
+            errorPlacement: function (error, element) {
+                // Tempatkan pesan validasi di bawah elemen input yang sesuai
+                error.appendTo(element.parent().next('span'));
+            },
+            submitHandler: function (form) {
+                // Form siap di-submit
+                form.submit();
+            }
+        });
+    });
+</script>
