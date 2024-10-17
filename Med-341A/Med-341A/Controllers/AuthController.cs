@@ -58,5 +58,12 @@ namespace Med_341A.Controllers
             return Json(data);
         }
 
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }

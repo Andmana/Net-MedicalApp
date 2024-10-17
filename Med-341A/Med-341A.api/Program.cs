@@ -1,3 +1,4 @@
+using Med_341A.api.Services;
 using Med_341A.datamodels;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// Register EmailService for dependency injection
+builder.Services.AddTransient<EmailService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<Med341aContext>(option =>
 {
