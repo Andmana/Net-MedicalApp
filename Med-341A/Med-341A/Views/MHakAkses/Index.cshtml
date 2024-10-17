@@ -228,4 +228,11 @@
         $("#my_modal").modal("show")
     })
 
+    $(".btn_delete").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#modal_body").empty()
+        $("#modal_body").load("/MHakAkses/Delete?id=" + id)
+        $("#my_modal").modal("show")
+    })
 </script>

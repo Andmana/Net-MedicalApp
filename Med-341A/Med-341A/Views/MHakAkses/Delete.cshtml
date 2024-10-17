@@ -19,9 +19,8 @@
             <input type="hidden" name="Id" Id="Id" value="@Model.Id" />
 
             <div class="modal-footer">
-
+                <a class="btn btn-light fw-bold" asp-controller="MHakAkses" asp-action="Index"> Batal</a>
                 <button type="submit" class="btn btn-danger">Yes</button>
-                <a class="btn btn-light" asp-controller="Product" asp-action="Index">NO</a>
             </div>
         </form>
 
@@ -44,13 +43,17 @@
 
                     if (data.success) {
                         $("#my_modal").modal("hide")
-                        Swal.fire({
-                            position: "top-end",
-                            title: data.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(function () {
-                            window.location.reload()
+                        swal({
+                            title: "Success!",
+                            text: data.message,
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-success",
+                                },
+                            },
+                        }).then((value) => {
+                            // This callback runs when the user clicks the confirm button
+                            window.location.reload();
                         });
                     }
                     else {
