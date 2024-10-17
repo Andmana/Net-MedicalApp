@@ -28,7 +28,7 @@ namespace Med_341A.Controllers
 
             if (user != null)
             {
-                response.Message = $"Hello, {user.Fullname} Welcome to XPOS";
+                response.Message = $"Hello, {user.Fullname} Welcome to Med 341";
                 HttpContext.Session.SetInt32("IdUser", (Int32)user.Id);
                 HttpContext.Session.SetString("NameUser", user.Fullname ?? "");
                 HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));

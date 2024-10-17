@@ -14,7 +14,7 @@ namespace Med_341A.Services
         public UserProfileService(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.RouteAPI = this.configuration["RouteAPI"];
+            this.RouteAPI = this.configuration["RouteAPI"]!;
         }
 
         //Mendapatkan data akun dan data biodata berdasarkan id user
