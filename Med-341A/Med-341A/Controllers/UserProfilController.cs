@@ -16,8 +16,15 @@ namespace Med_341A.Controllers
         public async Task<IActionResult> Index()
         {
             int idUser = HttpContext.Session.GetInt32("IdUser") ?? 0;
-            VMUser data = await userProfileService.GetDataUser(idUser);
-            return View(data);
+            if(idUser != 0)
+            {
+                VMUser data = await userProfileService.GetDataUser(idUser);
+                return View(data);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }
