@@ -38,8 +38,11 @@
                             <div class="col-sm-12 col-md-6">
                                 <div id="add-row_filter" class="dataTables_filter">
                                     <label>Search:
-                                        <input type="search" class="form-control form-control-sm" placeholder="" aria-controls="add-row">
+                                        <input type="search" id="searchString" name="searchString" class="form-control form-control-sm" placeholder="" aria-controls="add-row">
                                     </label>
+                                    <div class="btn btn-icon btn-round btn-primary" style="cursor:pointer" id="btn_search">
+                                        <i class="fas fa-search"></i>
+                                    </div>
                                     <div id="btn_reset" class="btn btn-icon btn-round btn-info">
                                         <i class=" fas fa-redo"></i>
                                     </div>
@@ -162,7 +165,7 @@
                                                asp-route-currentFilter="@ViewBag.currentFilter"
                                                asp-route-showData="@ViewBag.currentShowData"
                                                asp-route-searchString="@ViewBag.currentFilter"
-                                               class="page-link @prevDisabled">
+                                               class="page-link text-primary @prevDisabled">
                                                 Previous
                                             </a>
                                         </li>
@@ -176,7 +179,7 @@
                                                asp-route-currentFilter="@ViewBag.currentFilter"
                                                asp-route-showData="@ViewBag.currentShowData"
                                                asp-route-searchString="@ViewBag.currentFilter"
-                                               class="page-link @nextDisabled">
+                                               class="page-link text-primary @nextDisabled">
                                                 Next
                                             </a>
                                         </li>
@@ -200,6 +203,11 @@
         $("#form_search").submit()
     })
 
+    $("#btn_search").click(function () {
+        $("#sort_change").val("@ViewBag.currentSort")
+        $("#form_search").submit()
+    })
+
     $("#btn_reset").click(function () {
         $("#sort_change").val("")
         $("#searchString").val("")
@@ -216,15 +224,8 @@
         var id = $(this).attr("dataid")
 
         $("#modal_body").empty()
-        $("#modal_body").load("/Role/Edit?id=" + id)
+        $("#modal_body").load("/MHakAkses/Edit?id=" + id)
         $("#my_modal").modal("show")
     })
 
-    $(".btn_delete").click(function () {
-        var id = $(this).attr("dataid")
-
-        $("#modal_body").empty()
-        $("#modal_body").load("/Role/Delete?id=" + id)
-        $("#my_modal").modal("show")
-    })
 </script>
