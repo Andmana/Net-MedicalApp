@@ -90,6 +90,27 @@ namespace Med_341A.Controllers
             return PartialView(dataForm);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            MRole data = await mHakAksesService.GetById(id);
 
+            return PartialView(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(MRole dataForm)
+        {
+            dataForm.ModifiedBy = idUser;
+            dataForm.ModifiedOn = DateTime.Now;
+
+            VMResponse response = await mHakAksesService.Edit(dataForm);
+
+            if (response.Success)
+            {
+                return Json(new { dataResponse = response });
+            }
+
+            return PartialView(dataForm);
+        }
     }
 }

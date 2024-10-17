@@ -2,22 +2,24 @@
 @model MRole
 @{
 }
-<form asp-action="Add" method="post" id="form_add" >
+<form asp-action="Add" method="post" id="form-edit">
     <div class="card">
-	    <div class="card-header">
-            <h4 class="card-title">Tambah Role</h4>
-	    </div>
-	    <div class="card-body">
+        <div class="card-header">
+            <h4 class="card-title">Edit Role</h4>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="id" name="id" value="@Model.Id" />
+
             <div class="form-group form-group-default">
                 <label>Nama Role</label>
-                <input id="name" name="name" type="text" class="form-control bg-secondary border-bottom-1 " placeholder="Isi nama role">
+                <input id="name" name="name" type="text" value="@Model.Name" class="form-control bg-secondary border-bottom-1 " placeholder="Isi nama role">
             </div>
 
             <div class="form-group form-group-default">
                 <label>Kode Role</label>
-                <input id="code" name="code" type="text" class="form-control bg-secondary border-bottom-1" placeholder="Isi kode">
+                <input id="code" name="code" type="text" value="@Model.Code" class="form-control bg-secondary border-bottom-1" placeholder="Isi kode">
             </div>
-	    </div>
+        </div>
         <div class="card-action d-flex justify-content-end gap-2    ">
             <a class="btn btn-danger fw-bold" asp-controller="MHakAkses" asp-action="Index"> Batal</a>
             <button type="submit" class="btn btn-success">Simpan</button>
@@ -26,7 +28,7 @@
 </form>
 
 <script>
-    $("#form_add").validate({
+    $("#form-edit").validate({
         errorClass: "is-invalid text-danger",
         rules: {
             name: {
@@ -45,7 +47,7 @@
 
 
             $.ajax({
-                url: '/MHakAkses/Add',
+                url: '/MHakAkses/Edit',
                 type: 'post',
                 data: dataForm,
                 datatype: 'json',
