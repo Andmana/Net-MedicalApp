@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<DoctorService>();
 builder.Services.AddScoped<MHakAksesService>();
 builder.Services.AddScoped<UserProfileService>();
+builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

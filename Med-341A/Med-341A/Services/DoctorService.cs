@@ -1,7 +1,5 @@
-﻿using Azure;
-using Med_341A.viewmodels;
+﻿using Med_341A.viewmodels;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace Med_341A.Services
 {
