@@ -88,6 +88,25 @@ namespace Med_341A.Services
             return response;
         }
 
+        public async Task<VMResponse> Delete(int id, int idUser)
+        {
+            var request = await client.DeleteAsync(RouteAPI + $"apiMRole/Delete/{id}/{idUser}");
+
+            if (request.IsSuccessStatusCode)
+            {
+                var apiResponse = await request.Content.ReadAsStringAsync();
+
+                response = JsonConvert.DeserializeObject<VMResponse>(apiResponse);
+            }
+            else
+            {
+                response.Success = false;
+                response.Message = $"{request.StatusCode} : {request.ReasonPhrase}";
+            }
+
+            return response;
+        }
+
 
 
 

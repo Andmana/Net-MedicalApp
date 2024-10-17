@@ -112,5 +112,23 @@ namespace Med_341A.Controllers
 
             return PartialView(dataForm);
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            MRole data = await mHakAksesService.GetById(id);
+            return PartialView(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SureDelete(int id)
+        {
+            VMResponse response = await mHakAksesService.Delete(id, idUser);
+
+            if (response.Success)
+            {
+                return Json(new { dataResponse = response });
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

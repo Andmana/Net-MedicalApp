@@ -1,6 +1,7 @@
 ﻿@using Med_341A.datamodels
 @model MRole
 @{
+    ViewData["Title"] = "Tambah Role";
 }
 <form asp-action="Add" method="post" id="form_add" >
     <div class="card">
@@ -74,6 +75,8 @@
                         })
                     }
 
+                }, error: function (response) {
+                    console.log(response)
                 }
 
             })

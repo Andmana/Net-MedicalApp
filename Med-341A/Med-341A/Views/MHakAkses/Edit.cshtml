@@ -1,6 +1,7 @@
 ﻿@using Med_341A.datamodels
 @model MRole
 @{
+    ViewData["Title"] = "Edit Role";
 }
 <form asp-action="Add" method="post" id="form-edit">
     <div class="card">
@@ -45,7 +46,6 @@
         submitHandler: function (form) {
             var dataForm = $(form).serialize()
 
-
             $.ajax({
                 url: '/MHakAkses/Edit',
                 type: 'post',
@@ -76,6 +76,8 @@
                         })
                     }
 
+                }, error: function (response) {
+                    console.log(response)
                 }
 
             })

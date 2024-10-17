@@ -1,0 +1,70 @@
+﻿@using Med_341A.datamodels
+@model MRole
+
+@{
+    ViewData["Title"] = "Hapus Role";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Edit Role</h4>
+    </div>
+    <div class="card-body">
+
+        <form asp-action="SureDelete" id="form_delete" method="post">
+            <input type="hidden" id="id" name="id" value="@Model.Id" />
+
+            <div class="mb-4">Apakah kamu yakin, manghapus role <strong>@Model.Name</strong> </div>
+
+            <input type="hidden" name="Id" Id="Id" value="@Model.Id" />
+
+            <div class="modal-footer">
+
+                <button type="submit" class="btn btn-danger">Yes</button>
+                <a class="btn btn-light" asp-controller="Product" asp-action="Index">NO</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<script>
+    $("#form_delete").validate({
+        submitHandler: function (form) {
+            var id = $("#Id").val()
+
+            $.ajax({
+                url: "MHakAkses/SureDelete",
+                type: "post",
+                data: { id: id },
+                dataType: "json",
+                success: function (res) {
+                    var data = res.dataResponse
+
+                    if (data.success) {
+                        $("#my_modal").modal("hide")
+                        Swal.fire({
+                            position: "top-end",
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function () {
+                            window.location.reload()
+                        });
+                    }
+                    else {
+                        swal({
+                            icon: "error",
+                            title: 'Warning!',
+                            text: data.message
+                        })
+                    }
+                }
+                , error: function (res) {
+                    console.log(res)
+                }
+            })
+        }
+    })
+</script>
