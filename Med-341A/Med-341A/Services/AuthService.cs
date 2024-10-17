@@ -26,7 +26,7 @@ namespace Med_341A.Services
 
         public async Task<bool> CheckEmailIsRegistered(string email)
         {
-            string apiResponse = await client.GetStringAsync($"{routeApi}apiMAuth/CheckEmailIsValid/{email}");
+            string apiResponse = await client.GetStringAsync($"{routeApi}apiMAuth/CheckEmailIsRegistered/{email}");
 
             bool data = JsonConvert.DeserializeObject<bool>(apiResponse);
 
