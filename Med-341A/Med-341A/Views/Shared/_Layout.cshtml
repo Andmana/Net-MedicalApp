@@ -43,21 +43,23 @@
 
 </head>
 <body>
-    @* Sidebar *@
-    <partial name="_Sidebar" />
+    <div class="wrapper">
+        @* Sidebar *@
+        <partial name="_Sidebar" />
 
-    <div class="main-panel">
-        @* Header *@
-        <partial name="_Header" />
+        <div class="main-panel">
+            @* Header *@
+            <partial name="_Header" />
 
-        <div class="container">
-            <main role="main" class="mt-1 pb-3">
-                @RenderBody()
-            </main>
+            <div class="container">
+                <main role="main" class="mt-1 pb-3">
+                    @RenderBody()
+                </main>
+            </div>
+
+            <footer class="footer">
+            </footer>
         </div>
-
-        <footer class="footer">
-        </footer>
     </div>
 
     <!-- Button trigger modal -->
