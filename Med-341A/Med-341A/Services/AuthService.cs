@@ -24,7 +24,7 @@ namespace Med_341A.Services
             return data;
         }
 
-        public async Task<bool> CheckEmailIsValid(string email)
+        public async Task<bool> CheckEmailIsRegistered(string email)
         {
             string apiResponse = await client.GetStringAsync($"{routeApi}apiMAuth/CheckEmailIsValid/{email}");
 

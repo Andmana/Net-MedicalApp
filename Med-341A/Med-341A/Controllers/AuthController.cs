@@ -43,9 +43,9 @@ namespace Med_341A.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> CheckEmailIsValid(string email)
+        public async Task<JsonResult> CheckEmailIsRegistered(string email)
         {
-            var data = await authService.CheckEmailIsValid(email);
+            var data = await authService.CheckEmailIsRegistered(email);
 
             return Json(data);
         }

@@ -46,5 +46,12 @@ namespace Med_341A.api.Services
                 Console.WriteLine($"Error sending email: {ex.Message}");
             }
         }
+
+        // Generate 6-digit OTP
+        public string GenerateOtp()
+        {
+            var random = new Random();
+            return random.Next(100000, 999999).ToString(); // Generate OTP 6 digit
+        }
     }
 }

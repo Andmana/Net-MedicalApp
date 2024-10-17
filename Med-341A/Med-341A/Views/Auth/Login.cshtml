@@ -63,7 +63,7 @@
             var isPasswordValid = false
 
             var emailCheck = $.ajax({
-                url: "/Auth/CheckEmailIsValid",
+                url: "/Auth/CheckEmailIsRegistered",
                 type: "GET",
                 data: { email },
                 dataType: "json",

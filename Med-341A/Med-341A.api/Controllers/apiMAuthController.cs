@@ -37,8 +37,8 @@ namespace Med_341A.api.Controllers
             return data;
         }
 
-        [HttpGet("CheckEmailIsValid/{email}")]
-        public bool CheckEmailIsValid(string email)
+        [HttpGet("CheckEmailIsRegistered/{email}")]
+        public bool CheckEmailIsRegistered(string email)
         {
             var data = db.MUsers.Where(a => a.IsDelete == false && a.Email == email).FirstOrDefault()!;
 
@@ -58,8 +58,8 @@ namespace Med_341A.api.Controllers
 		public VMResponse Register(string email)
 		{
 			// Periksa apakah email sudah terdaftar
-			var existingUser = db.MUsers.FirstOrDefault(u => u.Email == email && u.IsDelete == false);
-			if (existingUser != null)
+			var existingUser = CheckEmailIsRegistered(email);
+            if (existingUser)
 			{
 				response.Success = false;
 				response.Message = "Email already registered.";
@@ -67,7 +67,7 @@ namespace Med_341A.api.Controllers
 			}
 
 			// Jika email belum terdaftar, generate OTP dan simpan di database
-			var otp = GenerateOtp();
+			var otp = emailService.GenerateOtp();
 			var token = new TToken
 			{
 				Email = email,
@@ -173,12 +173,5 @@ namespace Med_341A.api.Controllers
 		//	response.Message = "New OTP has been sent.";
 		//	return response;
 		//}
-
-		// Generate 6-digit OTP
-		private string GenerateOtp()
-		{
-			var random = new Random();
-			return random.Next(100000, 999999).ToString(); // Generate OTP 6 digit
-		}
     }
 }
