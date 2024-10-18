@@ -34,7 +34,6 @@ namespace Med_341A.Controllers
             {
                 HttpContext.Session.SetString("email", email);
             }
-
             return Json(data);
         }
 

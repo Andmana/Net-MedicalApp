@@ -11,21 +11,24 @@ namespace Med_341A.api.Controllers
     {
         private readonly Med341aContext db;
         private readonly EmailService emailService;
+        private readonly AuthService authService;
         private VMResponse response = new VMResponse();
 
-        public apiMAuthController(Med341aContext _db, EmailService _emailService)
+        public apiMAuthController(Med341aContext _db, EmailService _emailService, AuthService _authService)
         {
             this.db = _db;
             this.emailService = _emailService;
+            this.authService = _authService;
         }
 
         [HttpGet("CheckLogin/{email}/{password}")]
         public VMUser CheckLogin(string email, string password)
         {
             VMUser data = (from user in db.MUsers
-                           join bio in db.MBiodata 
+                           join bio in db.MBiodata
                            on user.BiodataId equals bio.Id
-                           into biouser from bio in biouser.DefaultIfEmpty()
+                           into biouser
+                           from bio in biouser.DefaultIfEmpty()
                            where user.IsDelete == false && user.Email == email && user.Password == password
                            select new VMUser
                            {
@@ -54,124 +57,121 @@ namespace Med_341A.api.Controllers
         }
 
         // API Register
-		[HttpPost("Register")]
-		public VMResponse Register(string email)
-		{
-			// Periksa apakah email sudah terdaftar
-			var existingUser = CheckEmailIsRegistered(email);
-            if (existingUser)
-			{
-				response.Success = false;
-				response.Message = "Email already registered.";
-				return response;
-			}
+        [HttpPost("RequestOTP")]
+        public VMResponse RequestOTP(OTPValidationRequestBody request)
+        {
+            var otp = emailService.GenerateOtp();
+            var token = new TToken
+            {
+                Email = request.Email,
+                Token = otp,
+                ExpiredOn = DateTime.Now.AddMinutes(10),
+                IsExpired = false,
+                CreatedOn = DateTime.Now,
+                UsedFor = "Register"
+            };
+            db.TTokens.Add(token);
+            db.SaveChanges();
 
-			// Jika email belum terdaftar, generate OTP dan simpan di database
-			var otp = emailService.GenerateOtp();
-			var token = new TToken
-			{
-				Email = email,
-				Token = otp,
-				ExpiredOn = DateTime.Now.AddMinutes(10),
-				IsExpired = false,
-				CreatedOn = DateTime.Now,
-				UsedFor = "Register"
-			};
-			db.TTokens.Add(token);
-			db.SaveChanges();
+            // Kirim OTP ke email pengguna
+            emailService.SendOtpEmail(request.Email, otp);
 
-			// Kirim OTP ke email pengguna
-			emailService.SendOtpEmail(email, otp);
+            response.Success = true;
+            response.Message = "OTP sent to email. Please verify your email.";
+            return response;
+        }
 
-			response.Success = true;
-			response.Message = "OTP sent to email. Please verify your email.";
-			return response;
-		}
+        // Verify OTP
+        [HttpPost("VerifyOTP")]
+        public VMResponse VerifyOTP(OTPValidationRequestBody request)
+        {
+            var token = db.TTokens.Where(t => t.Email == request.Email && t.IsExpired == false && t.UsedFor == "Register")
+                                  .OrderByDescending(t => t.CreatedOn)
+                                  .FirstOrDefault();
 
-		// Verify OTP
-		[HttpPost("VerifyOtp")]
-		public VMResponse VerifyOtp(string email, string otp)
-		{
-			var token = db.TTokens.Where(t => t.Email == email && t.IsExpired == false && t.UsedFor == "Register")
-								  .OrderByDescending(t => t.CreatedOn)
-								  .FirstOrDefault();
+            if (token == null)
+            {
+                response.Success = false;
+                response.Message = "OTP not found or expired.";
+                return response;
+            }
 
-			if (token == null)
-			{
-				response.Success = false;
-				response.Message = "OTP not found or expired.";
-				return response;
-			}
+            if (token.ExpiredOn < DateTime.Now)
+            {
+                response.Success = false;
+                response.Message = "OTP expired.";
+                token.IsExpired = true;
+                db.SaveChanges();
+                return response;
+            }
 
-			if (token.ExpiredOn < DateTime.Now)
-			{
-				response.Success = false;
-				response.Message = "OTP expired.";
-				token.IsExpired = true;
-				db.SaveChanges();
-				return response;
-			}
+            if (token.Token != request.Otp)
+            {
+                response.Success = false;
+                response.Message = "Incorrect OTP.";
+                return response;
+            }
 
-			if (token.Token != otp)
-			{
-				response.Success = false;
-				response.Message = "Incorrect OTP.";
-				return response;
-			}
+            // OTP is valid, mark as expired
+            token.IsExpired = true;
+            db.SaveChanges();
 
-			// OTP is valid, mark as expired
-			token.IsExpired = true;
-			db.SaveChanges();
+            response.Success = true;
+            response.Message = "OTP verification successful. Proceed to set a new password.";
+            return response;
+        }
 
-			response.Success = true;
-			response.Message = "OTP verification successful. Proceed to set a new password.";
-			return response;
-		}
 
-		// Resend OTP with a 3-minute cooldown
-		//[HttpPost("ResendOtp")]
-		//public VMResponse ResendOtp(string email)
-		//{
-		//	var lastToken = db.TTokens.Where(t => t.Email == email && t.IsExpired == false && t.UsedFor == "Email Verification")
-		//							  .OrderByDescending(t => t.CreatedOn)
-		//							  .FirstOrDefault();
+        // Temporary Create New
+        [HttpPost("RegisterNewUser")]
+        public VMResponse RegisterNewUser(VMUser dataUserProfile)
+        {
 
-		//	if (lastToken != null && lastToken.CreatedOn.AddMinutes(ResendCooldownInMinutes) > DateTime.Now)
-		//	{
-		//		response.Success = false;
-		//		response.Message = $"Please wait for {ResendCooldownInMinutes} minutes before requesting a new OTP.";
-		//		return response;
-		//	}
+            try
+            {
+                // Create biodata data first
+                MBiodatum biodata = new();
 
-		//	// Generate new OTP
-		//	var newOtp = GenerateOtp(OtpLength);
+                // manual mapping ke entity biodata
+                biodata.Fullname = dataUserProfile.Fullname;
+                biodata.MobilePhone = dataUserProfile.MobilePhone;
+                biodata.CreatedOn = DateTime.Now;
 
-		//	// Mark previous OTP as expired
-		//	if (lastToken != null)
-		//	{
-		//		lastToken.IsExpired = true;
-		//	}
+                // add to db
+                db.Add(biodata);
 
-		//	// Save new OTP
-		//	TToken newToken = new TToken
-		//	{
-		//		Email = email,
-		//		Token = newOtp,
-		//		ExpiredOn = DateTime.Now.AddMinutes(OtpExpiryTimeInMinutes),
-		//		IsExpired = false,
-		//		UsedFor = "Email Verification",
-		//		CreatedBy = 1,
-		//		CreatedOn = DateTime.Now
-		//	};
-		//	db.TTokens.Add(newToken);
-		//	db.SaveChanges();
+                string hashedPassword = authService.HashPassword(dataUserProfile.Password);
 
-		//	// Send new OTP to Email
-		//	SendOtpEmail(email, newOtp);
+                MUser user = new();
+                // manual mapping ke entity user
+                user.BiodataId = biodata.Id;
+                user.Email = dataUserProfile.Email;
+                user.Password = hashedPassword;
+                user.RoleId = dataUserProfile.RoleId;
+                user.CreatedOn = DateTime.Now;
 
-		//	response.Success = true;
-		//	response.Message = "New OTP has been sent.";
-		//	return response;
-		//}
+                // add to db
+                db.Add(user);
+
+                // save changes
+                db.SaveChanges();
+
+                response.Message = "Berhasil Register";
+            }
+            catch (Exception ex)
+            {
+
+                response.Message = "Register tidak berhasil " + ex.Message;
+                response.Success = false;
+            }
+
+            return response;
+        }
+    }
+
+    public class OTPValidationRequestBody
+    {
+        public string Email { get; set; }
+        public string? Otp { get; set; }
     }
 }

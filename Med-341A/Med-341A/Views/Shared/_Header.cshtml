@@ -48,7 +48,7 @@
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                 <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                       aria-expanded="false" aria-haspopup="true">
+                        aria-expanded="false" aria-haspopup="true">
                         <i class="fa fa-search"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-search animated fadeIn">
@@ -69,7 +69,7 @@
 
                     <li class="nav-item topbar-icon dropdown hidden-caret">
                         <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-envelope"></i>
                         </a>
                         <ul class="dropdown-menu messages-notif-box animated fadeIn" aria-labelledby="messageDropdown">
@@ -79,7 +79,7 @@
 
                     <li class="nav-item topbar-icon dropdown hidden-caret">
                         <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-bell"></i>
                             <span class="notification">4</span>
                         </a>
@@ -118,12 +118,12 @@
                                         @if (namaRole.ToLower() == "pasien")
                                         {
                                             <a asp-controller="UserProfil" asp-action="Index"
-                                               class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                         }
                                         else if (namaRole.ToLower() == "dokter")
                                         {
                                             <a asp-controller="DokterProfil" asp-action="Index"
-                                               class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                         }
                                     </div>
                                 </div>
@@ -142,8 +142,8 @@
                 else
                 {
                     <div>
-                        <button class="btn btn-primary" id="btn_login">Masuk</button>
-                        <button class="btn btn-primary" id="btn_login">Daftar</button>
+                        <button class="btn btn-primary" onclick="openLoginModal()">Masuk</button>
+                        <button class="btn btn-primary" onclick="openRegisterModal()" id="btn_daftar">Daftar</button>
                     </div>
                 }
             </ul>
@@ -153,9 +153,15 @@
 </div>
 
 <script>
-    $("#btn_login").click(function () {
-        $(".modal-body").empty();
-        $(".modal-body").load("/Auth/Login");
+    function openLoginModal() {
+        $("#modal_body").empty();
+        $("#modal_body").load("/Auth/Login");
         $("#my_modal").modal("show");
-    });
+    }
+
+    function openRegisterModal() {
+        $("#modal_body").empty()
+        $("#modal_body").load("/Register/EmailVerification")
+        $("#my_modal").modal("show");
+    }
 </script>
