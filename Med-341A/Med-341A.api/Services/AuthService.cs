@@ -24,7 +24,6 @@ public class AuthService
         // Verifikasi password
         var result = _passwordHasher.VerifyHashedPassword("secret", request.HashedPassword, request.PlainPassword);
 
-
         return result == PasswordVerificationResult.Success;
     }
 

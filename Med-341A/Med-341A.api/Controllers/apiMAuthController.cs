@@ -68,7 +68,7 @@ namespace Med_341A.api.Controllers
                 ExpiredOn = DateTime.Now.AddMinutes(10),
                 IsExpired = false,
                 CreatedOn = DateTime.Now,
-                UsedFor = "Register"
+                UsedFor = request.usedFor
             };
             db.TTokens.Add(token);
             db.SaveChanges();
@@ -126,52 +126,57 @@ namespace Med_341A.api.Controllers
         [HttpPost("RegisterNewUser")]
         public VMResponse RegisterNewUser(VMUser dataUserProfile)
         {
+            bool isEmailHasRegistered = CheckEmailIsRegistered(dataUserProfile.Email);
 
-            try
+            if (!isEmailHasRegistered)
             {
-                // Create biodata data first
-                MBiodatum biodata = new();
+                try
+                {
+                    // Create biodata data first
+                    MBiodatum biodata = new();
 
-                // manual mapping ke entity biodata
-                biodata.Fullname = dataUserProfile.Fullname;
-                biodata.MobilePhone = dataUserProfile.MobilePhone;
-                biodata.CreatedOn = DateTime.Now;
+                    // manual mapping ke entity biodata
+                    biodata.Fullname = dataUserProfile.Fullname;
+                    biodata.MobilePhone = dataUserProfile.MobilePhone;
+                    biodata.CreatedOn = DateTime.Now;
 
-                // add to db
-                db.Add(biodata);
+                    // add to db
+                    db.Add(biodata);
 
-                string hashedPassword = authService.HashPassword(dataUserProfile.Password);
+                    string hashedPassword = authService.HashPassword(dataUserProfile.Password);
 
-                MUser user = new();
-                // manual mapping ke entity user
-                user.BiodataId = biodata.Id;
-                user.Email = dataUserProfile.Email;
-                user.Password = hashedPassword;
-                user.RoleId = dataUserProfile.RoleId;
-                user.CreatedOn = DateTime.Now;
+                    MUser user = new();
+                    // manual mapping ke entity user
+                    user.BiodataId = biodata.Id;
+                    user.Email = dataUserProfile.Email;
+                    user.Password = hashedPassword;
+                    user.RoleId = dataUserProfile.RoleId;
+                    user.CreatedOn = DateTime.Now;
 
-                // add to db
-                db.Add(user);
+                    // add to db
+                    db.Add(user);
 
-                // save changes
-                db.SaveChanges();
+                    // save changes
+                    db.SaveChanges();
 
-                response.Message = "Berhasil Register";
+                    response.Message = "Berhasil Register";
+                }
+                catch (Exception ex)
+                {
+
+                    response.Message = "Register tidak berhasil " + ex.Message;
+                    response.Success = false;
+                }
             }
-            catch (Exception ex)
+            else
             {
-
-                response.Message = "Register tidak berhasil " + ex.Message;
                 response.Success = false;
+                response.Message = "Email telah terdaftar";
             }
 
             return response;
         }
     }
 
-    public class OTPValidationRequestBody
-    {
-        public string Email { get; set; }
-        public string? Otp { get; set; }
-    }
+
 }

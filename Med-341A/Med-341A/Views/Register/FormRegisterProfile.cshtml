@@ -84,13 +84,13 @@
                     if (response.success) {
                         $("#modal_body").modal("hide")
 
-                        Swal.fire({
-                            title: '@ViewData["title"]',
-                            text: response.message,
-                            icon: "success"
-                        }).then(function () {
-                            removeSession()
-                            window.location.reload()
+                        swal("Register", data.message, {
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-success'
+                                }
+                            },
                         });
                     }
                 }

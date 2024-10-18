@@ -22,7 +22,7 @@ public class RegisterService
 
     public async Task<VMResponse> RequestOTP(string email)
     {
-        var userRequest = new { Email = email };
+        var userRequest = new { Email = email, usedFor = "register new account" };
         var json = JsonConvert.SerializeObject(userRequest);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
