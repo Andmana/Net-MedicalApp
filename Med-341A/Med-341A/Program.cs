@@ -13,6 +13,7 @@ builder.Services.AddScoped<MHakAksesService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<RegisterService>();
+builder.Services.AddScoped<ResetPasswordService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
