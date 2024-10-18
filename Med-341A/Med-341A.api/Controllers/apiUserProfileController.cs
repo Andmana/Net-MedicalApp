@@ -32,14 +32,52 @@ namespace Med_341A.api.Controllers
                            {
                                Id = u.Id,
                                Fullname = b.Fullname,
+                               BiodataId = u.BiodataId,
                                MobilePhone = b.MobilePhone,
                                ImagePath = b.ImagePath,
                                Dob = c.Dob,
                                Email = u.Email,
-                               Password = u.Password
-
+                               Password = u.Password,
+                               CreatedOn = b.CreatedOn,
+                               CreatedBy = b.CreatedBy
                            }).FirstOrDefault()!;
             return data;
+        }
+        [HttpPut("UbahPribadi")]
+        public VMResponse UbahPribadi(VMUser dataAwal)
+        {
+            MBiodatum dataBio = db.MBiodata.Where(a => a.Id == dataAwal.BiodataId).FirstOrDefault()!;
+            MCustomer dataCust = db.MCustomers.Where(a => a.BiodataId == dataAwal.BiodataId).FirstOrDefault()!;
+            if(dataBio != null && dataCust != null)
+            {
+                dataBio.Fullname = dataAwal.Fullname;
+                dataBio.MobilePhone = dataAwal.MobilePhone;
+                dataBio.ModifiedBy = dataAwal.Id;
+                dataBio.ModifiedOn = DateTime.Now;
+
+                dataCust.Dob = dataAwal.Dob;
+                dataCust.ModifiedBy = dataAwal.Id;
+                dataCust.ModifiedOn = DateTime.Now;
+                try
+                {
+                    db.Update(dataBio);
+                    db.Update(dataCust);
+                    db.SaveChanges();
+                    respon.Message = "Data Success Updated";
+                }
+                catch(Exception ex)
+                {
+                    respon.Success = false;
+                    respon.Message = "Failed Updated" + ex.Message;
+                }
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = "Data Not Found";
+            }
+            return respon;
+
         }
     }
 }
