@@ -52,7 +52,7 @@ namespace Med_341A.Controllers
             }
 
             return Json(new { dataResponse = response });
-        }
+        } 
 
         public IActionResult SetPassword()
         {

@@ -1,5 +1,7 @@
-﻿using Med_341A.viewmodels;
+﻿using System.Text;
+using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
 
 namespace Med_341A.Services
@@ -36,6 +38,36 @@ namespace Med_341A.Services
         public async Task<bool> CheckPasswordIsValid(string email, string password)
         {
             string apiResponse = await client.GetStringAsync($"{routeApi}apiMAuth/CheckPasswordIsValid/{email}/{password}");
+
+            bool data = JsonConvert.DeserializeObject<bool>(apiResponse);
+
+            return data;
+        }
+
+        public async Task<VMUser> CheckLoginV2(string email, string password)
+        {
+            string json = JsonConvert.SerializeObject(new { Email = email, Password = password });
+
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var request = await client.PostAsync($"{routeApi}apiMAuth/CheckLoginV2", content);
+
+            string apiResponse = await request.Content.ReadAsStringAsync();
+
+            VMUser data = JsonConvert.DeserializeObject<VMUser>(apiResponse)!;
+
+            return data;
+        }
+
+        public async Task<bool> CheckPasswordIsValidV2(string email, string password)
+        {
+            string json = JsonConvert.SerializeObject(new { Email = email, Password = password });
+
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var request = await client.PostAsync($"{routeApi}apiMAuth/CheckPasswordIsValidV2", content);
+
+            string apiResponse = await request.Content.ReadAsStringAsync();
 
             bool data = JsonConvert.DeserializeObject<bool>(apiResponse);
 

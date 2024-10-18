@@ -65,7 +65,7 @@
                     MRole roleData = await hakAsesService.GetById(idRole);
                     string namaRole = roleData.Name!;
                     VMUser userData = await userProfileService.GetDataUser(idUser);
-                    string email = userData.Email;
+                    string email = userData.Email!;
 
                     <li class="nav-item topbar-icon dropdown hidden-caret">
                         <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button"

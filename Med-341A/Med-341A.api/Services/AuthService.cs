@@ -19,18 +19,11 @@ public class AuthService
         return hashedPassword;
     }
 
-    public bool VerifyPassword(PasswordVerificationRequest request)
+    public bool VerifyPassword(string HashedPassword, string PlainPassword)
     {
         // Verifikasi password
-        var result = _passwordHasher.VerifyHashedPassword("secret", request.HashedPassword, request.PlainPassword);
+        var result = _passwordHasher.VerifyHashedPassword("secret", HashedPassword, PlainPassword);
 
         return result == PasswordVerificationResult.Success;
     }
-
-    public class PasswordVerificationRequest
-    {
-        public string HashedPassword { get; set; }
-        public string PlainPassword { get; set; }
-    }
-
 }

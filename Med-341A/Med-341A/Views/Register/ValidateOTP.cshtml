@@ -98,12 +98,17 @@
                 data: { email: "@ViewBag.Email", otp },
                 datatype: 'json',
                 success: function (response) {
-                    if (response) {
+                    console.log(response)
+
+                    var data = response.dataResponse
+
+                    if (data.success) {
+
                         $("#modal_body").empty()
                         $("#modal_body").load("/Register/SetPassword")
                         $("#my_modal").modal("show")
                     } else {
-                        return true
+                        $("#OTPValidation_info").text(data.message)
                     }
                 },
                 error: function (response) {

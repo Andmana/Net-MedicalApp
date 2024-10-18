@@ -80,15 +80,25 @@
                 dataType: "json",
                 data: { fullName, MobilePhone, RoleId, email: "@email", password: "@password" },
                 success: function (response) {
+                    var data = response.dataResponse
 
-                    if (response.success) {
-                        $("#modal_body").modal("hide")
+                    if (data.success) {
+                        $("#my_modal").modal("hide")
 
                         swal("Register", data.message, {
                             icon: "success",
                             buttons: {
                                 confirm: {
                                     className: 'btn btn-success'
+                                }
+                            },
+                        });
+                    } else {
+                        swal("Register", data.message, {
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-warning'
                                 }
                             },
                         });

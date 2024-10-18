@@ -22,7 +22,7 @@ public class RegisterService
 
     public async Task<VMResponse> RequestOTP(string email)
     {
-        var userRequest = new { Email = email, usedFor = "register new account" };
+        var userRequest = new { Email = email, usedFor = "Register" };
         var json = JsonConvert.SerializeObject(userRequest);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -37,7 +37,7 @@ public class RegisterService
 
     public async Task<VMResponse> VerifyOTP(string email, string otp)
     {
-        var userRequest = new { Email = email, OTP = otp };
+        var userRequest = new { Email = email, OTP = otp, usedFor = "Register" };
         var json = JsonConvert.SerializeObject(userRequest);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 

@@ -1,7 +1,9 @@
 ﻿using Med_341A.api.Services;
 using Med_341A.datamodels;
 using Med_341A.viewmodels;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace Med_341A.api.Controllers
 {
@@ -21,6 +23,7 @@ namespace Med_341A.api.Controllers
             this.authService = _authService;
         }
 
+        [Obsolete("This API is deprecated. Please use the new CheckLoginV2 API.")]
         [HttpGet("CheckLogin/{email}/{password}")]
         public VMUser CheckLogin(string email, string password)
         {
@@ -40,18 +43,89 @@ namespace Med_341A.api.Controllers
             return data;
         }
 
-        [HttpGet("CheckEmailIsRegistered/{email}")]
-        public bool CheckEmailIsRegistered(string email)
+        [Obsolete("This API is deprecated. Please use the new CheckLoginV2 API.")]
+        [HttpGet("CheckPasswordIsValid/{email}/{password}")]
+        public bool CheckPasswordIsValidV2(string email, string password)
         {
-            var data = db.MUsers.Where(a => a.IsDelete == false && a.Email == email).FirstOrDefault()!;
+            var data = db.MUsers.Where(a => a.IsDelete == false && a.Email == email && a.Password == password).FirstOrDefault()!;
 
             return data != null;
         }
 
-        [HttpGet("CheckPasswordIsValid/{email}/{password}")]
-        public bool CheckPasswordIsValid(string email, string password)
+        [HttpPost("CheckLoginV2")]
+        public VMUser CheckLoginV2(AuthLoginRequestBody loginRequest)
         {
-            var data = db.MUsers.Where(a => a.IsDelete == false && a.Email == email && a.Password == password).FirstOrDefault()!;
+            MUser checkUser = db.MUsers.Where(a => a.IsDelete == false && a.Email == loginRequest.Email).FirstOrDefault()!;
+
+            var isPasswordValid = authService.VerifyPassword(checkUser.Password, loginRequest.Password);
+
+            VMUser? data = new();
+
+            if (!isPasswordValid)
+            {
+                if (checkUser.LoginAttempt != null)
+                {
+                    if (checkUser.LoginAttempt > 5)
+                    {
+                        checkUser.IsLocked = true;
+                    }
+                    checkUser.LoginAttempt = checkUser.LoginAttempt + 1;
+                }
+                else
+                {
+                    checkUser.LoginAttempt = 1;
+                }
+
+                db.Update(checkUser);
+                db.SaveChanges();
+
+                data = null;
+            }
+            else
+            {
+                data = (from user in db.MUsers
+                        join bio in db.MBiodata
+                        on user.BiodataId equals bio.Id
+                        into biouser
+                        from bio in biouser.DefaultIfEmpty()
+                        where user.IsDelete == false && user.Email == loginRequest.Email &&
+                        user.IsLocked == false || user.IsLocked == null
+                        select new VMUser
+                        {
+                            Id = user.Id,
+                            RoleId = user.RoleId,
+                            Fullname = bio.Fullname,
+                        }).FirstOrDefault()!;
+
+                checkUser.LoginAttempt = 0;
+                checkUser.LastLogin = DateTime.Now;
+
+                db.Update(checkUser);
+                db.SaveChanges();
+            }
+
+            return data;
+        }
+
+        [HttpPost("CheckPasswordIsValidV2")]
+        public bool CheckPasswordIsValidV2(AuthLoginRequestBody loginRequest)
+        {
+            var data = db.MUsers.Where(a => a.IsDelete == false && a.Email == loginRequest.Email).FirstOrDefault()!;
+
+            if (data != null)
+            {
+                return authService.VerifyPassword(data.Password, loginRequest.Password);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        [HttpGet("CheckEmailIsRegistered/{email}")]
+        public bool CheckEmailIsRegistered(string email)
+        {
+            var data = db.MUsers.Where(a => a.IsDelete == false && a.Email == email).FirstOrDefault()!;
 
             return data != null;
         }
@@ -85,7 +159,7 @@ namespace Med_341A.api.Controllers
         [HttpPost("VerifyOTP")]
         public VMResponse VerifyOTP(OTPValidationRequestBody request)
         {
-            var token = db.TTokens.Where(t => t.Email == request.Email && t.IsExpired == false && t.UsedFor == "Register")
+            var token = db.TTokens.Where(t => t.Email == request.Email && t.IsExpired == false && t.UsedFor == request.usedFor)
                                   .OrderByDescending(t => t.CreatedOn)
                                   .FirstOrDefault();
 
@@ -178,5 +252,9 @@ namespace Med_341A.api.Controllers
         }
     }
 
-
+    public class AuthLoginRequestBody
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
 }

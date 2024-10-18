@@ -7,7 +7,6 @@ namespace Med_341A.Controllers
 {
     public class AuthController : Controller
     {
-
         private readonly AuthService authService;
         private VMResponse response = new();
 
@@ -42,6 +41,27 @@ namespace Med_341A.Controllers
             return Json(new { dataResponse = response });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> LoginSubmitV2(string email, string password)
+        {
+            VMUser user = await authService.CheckLoginV2(email, password);
+
+            if (user != null)
+            {
+                response.Message = $"Hello, {user.Fullname} Welcome to Med 341";
+                HttpContext.Session.SetInt32("IdUser", (Int32)user.Id);
+                HttpContext.Session.SetString("NameUser", user.Fullname ?? "");
+                HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));
+            }
+            else
+            {
+                response.Success = false;
+                response.Message = $"Oops, {email} not found or password is wrong, please check it";
+            }
+
+            return Json(new { dataResponse = response });
+        }
+
         [HttpGet]
         public async Task<JsonResult> CheckEmailIsRegistered(string email)
         {
@@ -54,6 +74,14 @@ namespace Med_341A.Controllers
         public async Task<JsonResult> CheckPasswordIsValid(string email, string password)
         {
             var data = await authService.CheckPasswordIsValid(email, password);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CheckPasswordIsValidV2(string email, string password)
+        {
+            var data = await authService.CheckPasswordIsValidV2(email, password);
 
             return Json(data);
         }
