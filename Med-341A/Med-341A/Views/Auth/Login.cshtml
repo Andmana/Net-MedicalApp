@@ -59,6 +59,8 @@
             Password: "Please fill password"
         },
         submitHandler: function (form) {
+            $("#validate_password").text(``);
+
             var email = $("#Email").val()
             var password = $("#Password").val()
 

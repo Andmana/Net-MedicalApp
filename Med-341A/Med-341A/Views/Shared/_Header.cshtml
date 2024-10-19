@@ -8,6 +8,11 @@
     int idUser = Context.Session.GetInt32("IdUser") ?? 0;
     int idRole = Context.Session.GetInt32("IdRole") ?? 0;
     string namaUser = Context.Session.GetString("NameUser")!;
+    string email = Context.Session.GetString("Email")!;
+    string namaRole = Context.Session.GetString("NameRole")!;
+
+
+    Console.WriteLine($"{idUser}, {idRole}, {namaUser}, {email}, {namaRole}");
 }
 
 <div class="main-header">
@@ -62,10 +67,10 @@
 
                 @if (idUser != 0)
                 {
-                    MRole roleData = await hakAsesService.GetById(idRole);
+                    @* MRole roleData = await hakAsesService.GetById(idRole);
                     string namaRole = roleData.Name!;
                     VMUser userData = await userProfileService.GetDataUser(idUser);
-                    string email = userData.Email!;
+                    string email = userData.Email!; *@
 
                     <li class="nav-item topbar-icon dropdown hidden-caret">
                         <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button"

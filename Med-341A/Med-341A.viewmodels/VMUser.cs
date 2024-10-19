@@ -21,6 +21,8 @@ namespace Med_341A.viewmodels
 
         public long? RoleId { get; set; }
 
+        public string? NameRole {get; set;}
+
         public string? Email { get; set; }
 
         public string? Password { get; set; }

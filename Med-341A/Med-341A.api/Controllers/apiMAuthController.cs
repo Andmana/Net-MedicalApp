@@ -32,12 +32,18 @@ namespace Med_341A.api.Controllers
                            on user.BiodataId equals bio.Id
                            into biouser
                            from bio in biouser.DefaultIfEmpty()
-                           where user.IsDelete == false && user.Email == email && user.Password == password
+                           join role in db.MRoles
+                           on user.RoleId equals role.Id
+                           where user.IsDelete == false && user.Email == email &&
+                           (user.IsLocked == false || user.IsLocked == null)
                            select new VMUser
                            {
                                Id = user.Id,
                                RoleId = user.RoleId,
                                Fullname = bio.Fullname,
+                               Email = user.Email,
+                               NameRole = role.Name
+
                            }).FirstOrDefault()!;
 
             return data;
@@ -53,11 +59,11 @@ namespace Med_341A.api.Controllers
         }
 
         [HttpPost("CheckLoginV2")]
-        public VMUser CheckLoginV2(AuthLoginRequestBody loginRequest)
+        public VMUser? CheckLoginV2(AuthLoginRequestBody loginRequest)
         {
             MUser checkUser = db.MUsers.Where(a => a.IsDelete == false && a.Email == loginRequest.Email).FirstOrDefault()!;
 
-            var isPasswordValid = authService.VerifyPassword(checkUser.Password, loginRequest.Password);
+            var isPasswordValid = authService.VerifyPassword(checkUser.Password ?? "", loginRequest.Password);
 
             VMUser? data = new();
 
@@ -88,13 +94,17 @@ namespace Med_341A.api.Controllers
                         on user.BiodataId equals bio.Id
                         into biouser
                         from bio in biouser.DefaultIfEmpty()
+                        join role in db.MRoles
+                        on user.RoleId equals role.Id
                         where user.IsDelete == false && user.Email == loginRequest.Email &&
-                        user.IsLocked == false || user.IsLocked == null
+                        (user.IsLocked == false || user.IsLocked == null)
                         select new VMUser
                         {
                             Id = user.Id,
                             RoleId = user.RoleId,
                             Fullname = bio.Fullname,
+                            Email = user.Email,
+                            NameRole = role.Name
                         }).FirstOrDefault()!;
 
                 checkUser.LoginAttempt = 0;
@@ -114,7 +124,7 @@ namespace Med_341A.api.Controllers
 
             if (data != null)
             {
-                return authService.VerifyPassword(data.Password, loginRequest.Password);
+                return authService.VerifyPassword(data.Password ?? "", loginRequest.Password);
             }
             else
             {
@@ -200,7 +210,7 @@ namespace Med_341A.api.Controllers
         [HttpPost("RegisterNewUser")]
         public VMResponse RegisterNewUser(VMUser dataUserProfile)
         {
-            bool isEmailHasRegistered = CheckEmailIsRegistered(dataUserProfile.Email);
+            bool isEmailHasRegistered = CheckEmailIsRegistered(dataUserProfile.Email ?? "");
 
             if (!isEmailHasRegistered)
             {
@@ -216,8 +226,9 @@ namespace Med_341A.api.Controllers
 
                     // add to db
                     db.Add(biodata);
+                    db.SaveChanges();
 
-                    string hashedPassword = authService.HashPassword(dataUserProfile.Password);
+                    string hashedPassword = authService.HashPassword(dataUserProfile.Password ?? "");
 
                     MUser user = new();
                     // manual mapping ke entity user
@@ -229,8 +240,6 @@ namespace Med_341A.api.Controllers
 
                     // add to db
                     db.Add(user);
-
-                    // save changes
                     db.SaveChanges();
 
                     response.Message = "Berhasil Register";
@@ -254,7 +263,7 @@ namespace Med_341A.api.Controllers
 
     public class AuthLoginRequestBody
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
     }
 }

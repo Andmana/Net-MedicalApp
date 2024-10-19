@@ -30,12 +30,14 @@ namespace Med_341A.Controllers
                 response.Message = $"Hello, {user.Fullname} Welcome to Med 341";
                 HttpContext.Session.SetInt32("IdUser", (Int32)user.Id);
                 HttpContext.Session.SetString("NameUser", user.Fullname ?? "");
+                HttpContext.Session.SetString("Email", user.Email ?? "");
+                HttpContext.Session.SetString("NameRole", user.NameRole ?? "");
                 HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));
             }
             else
             {
                 response.Success = false;
-                response.Message = $"Oops, {email} not found or password is wrong, please check it";
+                response.Message = $"Oops, password is wrong, please enter valid password";
             }
 
             return Json(new { dataResponse = response });
@@ -51,6 +53,8 @@ namespace Med_341A.Controllers
                 response.Message = $"Hello, {user.Fullname} Welcome to Med 341";
                 HttpContext.Session.SetInt32("IdUser", (Int32)user.Id);
                 HttpContext.Session.SetString("NameUser", user.Fullname ?? "");
+                HttpContext.Session.SetString("Email", user.Email ?? "");
+                HttpContext.Session.SetString("NameRole", user.NameRole ?? "");
                 HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));
             }
             else
