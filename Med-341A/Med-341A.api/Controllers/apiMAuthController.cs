@@ -1,9 +1,7 @@
 ﻿using Med_341A.api.Services;
 using Med_341A.datamodels;
 using Med_341A.viewmodels;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace Med_341A.api.Controllers
 {
@@ -49,7 +47,7 @@ namespace Med_341A.api.Controllers
             return data;
         }
 
-        [Obsolete("This API is deprecated. Please use the new CheckLoginV2 API.")]
+        [Obsolete("This API is deprecated. Please use the new CheckPasswordIsValidV2 API.")]
         [HttpGet("CheckPasswordIsValid/{email}/{password}")]
         public bool CheckPasswordIsValidV2(string email, string password)
         {

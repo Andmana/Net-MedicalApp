@@ -1,5 +1,4 @@
-﻿using Azure;
-using Med_341A.Services;
+﻿using Med_341A.Services;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
 
