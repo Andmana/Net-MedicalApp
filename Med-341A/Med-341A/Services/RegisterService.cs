@@ -14,7 +14,7 @@ public class RegisterService
     public RegisterService(IConfiguration _configuration)
     {
         this.configuration = _configuration;
-        this.RouteAPI = configuration["RouteApi"];
+        this.RouteAPI = configuration["RouteApi"]!;
     }
 
     public async Task<VMResponse> RequestOTP(string email)
@@ -22,7 +22,7 @@ public class RegisterService
         var userRequest = new { Email = email, usedFor = "Register" };
 
         var json = JsonConvert.SerializeObject(userRequest);
-        
+
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var request = await client.PostAsync($"{RouteAPI}apiMAuth/RequestOTP", content);

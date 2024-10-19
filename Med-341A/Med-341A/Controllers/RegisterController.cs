@@ -52,7 +52,7 @@ namespace Med_341A.Controllers
             }
 
             return Json(new { dataResponse = response });
-        } 
+        }
 
         public IActionResult SetPassword()
         {
@@ -74,6 +74,12 @@ namespace Med_341A.Controllers
         {
 
             response = await registerService.RegisterNewUser(dataForm);
+
+            if (response.Success)
+            {
+                HttpContext.Session.Remove("emailToRegister");
+                HttpContext.Session.Remove("passwordToRegister");
+            }
 
             return Json(new { dataResponse = response });
         }
