@@ -23,10 +23,10 @@
             </div>
 
             <div class="col-lg-12 text-center mt-5">
-                <button type="submit" id="form_validateOtp" class="btn btn-black">
+                <button type="submit" id="btn_confirm" class="btn btn-black">
                     Konfirmasi OTP
                 </button>
-                <a class="btn btn-ligth fw-bold" asp-controller="Auth" asp-action="Login">Batal</a>
+                <a class="btn btn-ligth fw-bold" id="btn_cancel">Batal</a>
             </div>
         </form>
 
@@ -71,6 +71,10 @@
                 $("#OTPValidation_info").text(data.message);
             }
         })
+    })
+
+    $("#btn_cancel").click(function() {
+        $("#my_modal").modal("hide");
     })
 
     $("#form_validateOTP").validate({

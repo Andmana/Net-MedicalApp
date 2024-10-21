@@ -17,9 +17,13 @@
             </div>
 
             <div class="form-group">
-                <label class="text-dark" for="MobilePhone">Nomor Telephone</label>
-                <input class="form-control" id="MobilePhone" type="tel" placeholder="Masukan nomor telephone"
-                    name="MobilePhone">
+                <label for="MobilePhone" class="form-label">Nomor Handphone*</label>
+                <div class="input-group">
+                    <span class="input-group-text">+62</span>
+                    <input type="tel" class="form-control MobilePhone" id="MobilePhone" name="MobilePhone"
+                        placeholder="Masukan nomor telephone">
+                </div>
+                <span class="text-danger" id="Mobilephone-error"></span>
             </div>
 
             <div class="form-group">
@@ -43,6 +47,14 @@
 </div>
 
 <script>
+    $("#MobilePhone").on('input', function () {
+        var nilai = $(this).val()
+        if (nilai.startsWith('0')) {
+            nilai = nilai.replace(/^0+/, '');
+        }
+        $(this).val(nilai)
+    })
+
     $("#form_registerProfile").validate({
         errorClass: "is-invalid text-danger",
         rules: {
@@ -51,7 +63,9 @@
                 minlength: 4,
             },
             MobilePhone: {
-                required: true
+                required: true,
+                minlength: 10,
+                maxlength: 15
             },
             RoleId: {
                 required: true
@@ -63,7 +77,10 @@
                 minlength: "Minimal character 4",
             },
             MobilePhone: {
-                required: "Harap masukan nomor handphone"
+                required: "Nomor handphone tidak boleh kosong",
+                digits: "Hanya menerima angka",
+                minlength: "Panjang minimal 10 angka",
+                maxlength: "Panjang maksimal 15 angka"
             },
             RoleId: {
                 required: "Role tidak boleh kosong"
