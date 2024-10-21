@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Med-341A.viewmodels\Med-341A.viewmodels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

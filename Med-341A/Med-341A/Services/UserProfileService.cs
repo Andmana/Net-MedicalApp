@@ -53,5 +53,25 @@ namespace Med_341A.Services
             bool data = JsonConvert.DeserializeObject<bool>(apiResponse);
             return data;
         }
+        public async Task<VMResponse> UbahGambar(VMUser dataParam)
+        {
+            string json = JsonConvert.SerializeObject(dataParam);
+            StringContent content = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            var request = await client.PutAsync(RouteAPI + "apiUserProfile/UbahGambar", content);
+
+            if (request.IsSuccessStatusCode)
+            {
+                var apiRespon = await request.Content.ReadAsStringAsync();
+
+                respon = JsonConvert.DeserializeObject<VMResponse>(apiRespon);
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = $"{request.StatusCode} : {request.ReasonPhrase}";
+            }
+
+            return respon;
+        }
     }
 }

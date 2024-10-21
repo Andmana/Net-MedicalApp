@@ -79,5 +79,36 @@ namespace Med_341A.api.Controllers
             return respon;
 
         }
+        [HttpPut("UbahGambar")]
+        public VMResponse UbahGambar(VMUploadGambar dataInput)
+        {
+            MBiodatum data = db.MBiodata.Where(a => a.Id == dataInput.BiodataId).FirstOrDefault()!;
+            if(data != null)
+            {
+                if (dataInput.ImagePath != null)
+                {
+                    data.ImagePath = dataInput.ImagePath;
+                }
+                data.ModifiedBy = dataInput.Id;
+                data.ModifiedOn = DateTime.Now;
+                try
+                {
+                    db.Update(data);
+                    db.SaveChanges();
+                    respon.Message = "Unggah Gambar Berhasil";
+                }
+                catch (Exception ex)
+                {
+                    respon.Success = false;
+                    respon.Message = "Gagal Unggah, Pesan Error: " + ex.Message;
+                }
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = "Data Tidak Ditemukan";
+            }
+            return respon;
+        }
     }
 }

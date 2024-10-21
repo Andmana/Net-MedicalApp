@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Med_341A.viewmodels
 {
@@ -35,9 +36,9 @@ namespace Med_341A.viewmodels
 
         public DateTime? LastLogin { get; set; }
 
-        public long CreatedBy { get; set; }
+        public long? CreatedBy { get; set; }
 
-        public DateTime CreatedOn { get; set; }
+        public DateTime? CreatedOn { get; set; }
 
         public long? ModifiedBy { get; set; }
 
@@ -47,6 +48,8 @@ namespace Med_341A.viewmodels
 
         public DateTime? DeletedOn { get; set; }
 
-        public bool IsDelete { get; set; }
+        public bool? IsDelete { get; set; }
+        //Untuk Upload Gambar
+        public IFormFile? ImageFile { get; set; }
     }
 }

@@ -8,6 +8,7 @@
     string namaUser = Context.Session.GetString("NameUser")!;
     string email = Context.Session.GetString("Email")!;
     string namaRole = Context.Session.GetString("NameRole")!;
+    string imagePath = Context.Session.GetString("ImagePath") ?? "";
 }
 
 <div class="main-header">
@@ -95,7 +96,7 @@
                     <li class="nav-item topbar-user dropdown hidden-caret">
                         <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                             <div class="avatar-sm">
-                                <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
+                                <img src="~/images/@imagePath" alt="..." class="avatar-img rounded-circle" />
                             </div>
                             <span class="profile-username">
                                 <span class="op-7">Hi,</span>
@@ -106,7 +107,7 @@
                             <li>
                                 <div class="user-box">
                                     <div class="avatar-lg">
-                                        <img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
+                                        <img src="~/images/@imagePath" alt="image profile" class="avatar-img rounded" />
                                     </div>
                                     <div class="u-text">
                                         <h4>@namaUser</h4>
@@ -118,13 +119,22 @@
                                         else if (namaRole.ToLower() == "dokter")
                                         {
                                             <a asp-controller="DokterProfil" asp-action="Index"
-                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                            class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                        }
+                                        else if (namaRole.ToLower() == "admin")
+                                        {
+                                            <a asp-controller="AdminProfil" asp-action="Index"
+                                            class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Home" asp-action="Index"
+                                            class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                         }
                                     </div>
                                 </div>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">My Profile</a>
                                 <a class="dropdown-item" href="#">My Balance</a>
                                 <a class="dropdown-item" href="#">Inbox</a>
                                 <div class="dropdown-divider"></div>

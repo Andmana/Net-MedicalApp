@@ -8,10 +8,12 @@ namespace Med_341A.Controllers
     {
         private readonly AuthService authService;
         private VMResponse response = new();
+        private UserProfileService userProfilService;
 
-        public AuthController(AuthService _authService)
+        public AuthController(AuthService _authService, UserProfileService _userProfileService)
         {
             this.authService = _authService;
+            this.userProfilService = _userProfileService;
         }
 
         public IActionResult Login()
@@ -46,7 +48,7 @@ namespace Med_341A.Controllers
         public async Task<JsonResult> LoginSubmitV2(string email, string password)
         {
             VMUser user = await authService.CheckLoginV2(email, password);
-
+            VMUser imagePath = await userProfilService.GetDataUser((Int32)user.Id);
             if (user != null)
             {
                 response.Message = $"Hello, {user.Fullname} Welcome to Med 341";
@@ -55,6 +57,7 @@ namespace Med_341A.Controllers
                 HttpContext.Session.SetString("Email", user.Email ?? "");
                 HttpContext.Session.SetString("NameRole", user.NameRole ?? "");
                 HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));
+                HttpContext.Session.SetString("ImagePath", imagePath.ImagePath);
             }
             else
             {

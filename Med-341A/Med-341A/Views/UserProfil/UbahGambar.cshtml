@@ -1,0 +1,116 @@
+﻿ @using Med_341A.viewmodels
+ @model VMUser
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="UbahGambar" method="post" id="form_input" enctype="multipart/form-data" >
+            <input type="hidden" name="BiodataId" id="BiodataId" value="@Model.BiodataId">
+            <input type="hidden" name="Id" id="Id" value="@Model.Id">
+            <!-- Ubah Gambar -->
+            <div class="mb-4 row">
+                <label for="ImageFile" class="col-sm-4 col-form-label">Unggah Gambar</label>
+                <div class="col-sm-8">
+                    <input type="file" class="form-control" id="ImageFile" name="ImageFile">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $("#form_input").validate({
+        errorClass: "is-invalid text-danger",
+        rules:{
+            ImageFile:{
+                required: true,
+                typeFile: "jpeg|jpg|png",
+                sizeFile: true
+            }
+        },
+        messages: {
+            ImageFile: {
+                required: "Pilih gambar untuk di unggah",
+                typeFile: "Hanya menerima gambar dengan tipe format *.jpeg / *.jpg / *.png",
+                sizeFile: "Maksimal ukuran gambar sebesar 2MB"
+            }
+        },
+        submitHandler: function(form){
+            var dataForm = $(form).serializeArray()
+            var formData = new FormData();
+            // var file = $("#ImageFile").prop("files")[0];
+            $.each(dataForm, function (index, input) {
+                formData.append(input.name, input.value)
+            })
+            var file = $("#ImageFile").prop("files")
+            if (file.length > 0) {
+                formData.append("ImageFile", file[0])
+            }
+
+            $.ajax({
+                url: "/UserProfil/UbahGambar",
+                type: "post",
+                data: formData,
+                dataType: "json",
+                contentType: false,
+                processData: false,
+                success: function(respon){
+                    var data = respon.dataRespon
+                    if (data.success) {
+                        $("#my_modal").modal("hide")
+                        swal(
+                            "Success",
+                            data.message, {
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-success",
+                                },
+                            },
+                        }
+                        ).then((clickconfirm) => {
+                            if (clickconfirm) {
+                                window.location.reload()
+                            }
+                        })
+                    }
+                    else {
+                        $("#my_modal").modal("hide")
+                        swal(
+                            "Failed",
+                            data.message, {
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-danger",
+                                },
+                            },
+                        }
+                        ).then((clickconfirm) => {
+                            if (clickconfirm) {
+                                $("#my_modal").modal("show")
+                            }
+                        })
+                    }
+                }
+            })
+        }
+    })
+    jQuery.validator.addMethod("typeFile", function (value, element, param) {
+        return value.match(new RegExp("." + param + "$"));
+    });
+
+    jQuery.validator.addMethod("sizeFile", function (val, element) {
+        var size = element.files[0].size;
+        if (size > 2097152)// checks the file more than 2 MB
+        {
+            return false;
+        } else {
+            return true;
+        }
+    });
+
+</script>

@@ -1,17 +1,21 @@
 ﻿using Med_341A.Services;
 using Med_341A.viewmodels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using System.Drawing.Text;
+using System.Net;
 
 namespace Med_341A.Controllers
 {
     public class UserProfilController : Controller
     {
         private UserProfileService userProfileService;
-        public UserProfilController(UserProfileService userProfileService)
+        private readonly IWebHostEnvironment webHostEnvironment;
+        public UserProfilController(UserProfileService userProfileService, IWebHostEnvironment webHostEnvironment)
         {
             this.userProfileService = userProfileService;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -26,6 +30,41 @@ namespace Med_341A.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+        }
+        public string Upload(IFormFile ImageFile)
+        {
+
+            string uniqueFileName = "";
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                string uploadFolder = Path.Combine(webHostEnvironment.WebRootPath, "images"); //Path folder untuk tempat gambar
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(ImageFile.FileName);
+                string filePath = Path.Combine(uploadFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    ImageFile.CopyTo(fileStream);
+                };
+            }
+            return uniqueFileName;
+        }
+        public async Task<IActionResult> UbahGambar(int id)
+        {
+            VMUser data = await userProfileService.GetDataUser(id);
+            return PartialView(data);
+
+        }
+        [HttpPost]
+        public async Task<JsonResult> UbahGambar(VMUser dataParam)
+        {
+            if(dataParam.ImageFile != null)
+            {
+                dataParam.ImagePath = Upload(dataParam.ImageFile);
+            }
+            
+            VMResponse respon = await userProfileService.UbahGambar(dataParam);
+            HttpContext.Session.SetString("ImagePath", dataParam.ImagePath);
+            return Json(new { dataRespon = respon });
+
         }
         public async Task<IActionResult> UbahPribadi(int id)
         {
