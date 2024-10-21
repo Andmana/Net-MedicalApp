@@ -27,6 +27,13 @@ namespace Med_341A.Services
             return data;
         }
 
+        public async Task<VMUploadGambar> GetDataGambar(int id)
+        {
+            string apiResponse = await client.GetStringAsync(RouteAPI + $"apiUserProfile/GetDataGambar/{id}");
+            VMUploadGambar data = JsonConvert.DeserializeObject<VMUploadGambar>(apiResponse)!;
+            return data;
+        }
+
         public async Task<VMResponse> UbahPribadi(VMUser dataParam)
         {
             string json = JsonConvert.SerializeObject(dataParam);
@@ -53,7 +60,7 @@ namespace Med_341A.Services
             bool data = JsonConvert.DeserializeObject<bool>(apiResponse);
             return data;
         }
-        public async Task<VMResponse> UbahGambar(VMUser dataParam)
+        public async Task<VMResponse> UbahGambar(VMUploadGambar dataParam)
         {
             string json = JsonConvert.SerializeObject(dataParam);
             StringContent content = new StringContent(json, UnicodeEncoding.UTF8, "application/json");

@@ -43,12 +43,28 @@ namespace Med_341A.api.Controllers
                            }).FirstOrDefault()!;
             return data;
         }
+        [HttpGet("GetDataGambar/{id}")]
+        public VMUploadGambar GetDataGambar(int id)
+        {
+            VMUploadGambar data = (from u in db.MUsers
+                                   join b in db.MBiodata
+                                   on u.BiodataId equals b.Id
+                                   where u.Id == id && u.IsDelete == false
+                                   select new VMUploadGambar
+                                   {
+                                       Id = u.Id,
+                                       BiodataId = u.BiodataId,
+                                       ImagePath = b.ImagePath
+                                   }).FirstOrDefault()!;
+            return data;
+        }
+
         [HttpPut("UbahPribadi")]
         public VMResponse UbahPribadi(VMUser dataAwal)
         {
             MBiodatum dataBio = db.MBiodata.Where(a => a.Id == dataAwal.BiodataId).FirstOrDefault()!;
             MCustomer dataCust = db.MCustomers.Where(a => a.BiodataId == dataAwal.BiodataId).FirstOrDefault()!;
-            if(dataBio != null && dataCust != null)
+            if (dataBio != null && dataCust != null)
             {
                 dataBio.Fullname = dataAwal.Fullname;
                 dataBio.MobilePhone = dataAwal.MobilePhone;
@@ -65,7 +81,7 @@ namespace Med_341A.api.Controllers
                     db.SaveChanges();
                     respon.Message = "Data Success Updated";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     respon.Success = false;
                     respon.Message = "Failed Updated" + ex.Message;
@@ -83,7 +99,7 @@ namespace Med_341A.api.Controllers
         public VMResponse UbahGambar(VMUploadGambar dataInput)
         {
             MBiodatum data = db.MBiodata.Where(a => a.Id == dataInput.BiodataId).FirstOrDefault()!;
-            if(data != null)
+            if (data != null)
             {
                 if (dataInput.ImagePath != null)
                 {

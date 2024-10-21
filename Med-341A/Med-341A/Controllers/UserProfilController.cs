@@ -31,34 +31,47 @@ namespace Med_341A.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-        public string Upload(IFormFile ImageFile)
-        {
+        //public string Upload(IFormFile ImageFile)
+        //{
 
-            string uniqueFileName = "";
+        //    string uniqueFileName = "";
+        //    if (ImageFile != null && ImageFile.Length > 0)
+        //    {
+        //        string uploadFolder = Path.Combine(webHostEnvironment.WebRootPath, "images"); //Path folder untuk tempat gambar
+        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(ImageFile.FileName);
+        //        string filePath = Path.Combine(uploadFolder, uniqueFileName);
+        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            ImageFile.CopyTo(fileStream);
+        //        };
+        //    }
+        //    return uniqueFileName;
+        //}
+        public byte[] Upload(IFormFile ImageFile)
+        {
+            byte[] imageData = null;
             if (ImageFile != null && ImageFile.Length > 0)
             {
-                string uploadFolder = Path.Combine(webHostEnvironment.WebRootPath, "images"); //Path folder untuk tempat gambar
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(ImageFile.FileName);
-                string filePath = Path.Combine(uploadFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                using (var memoryStream = new MemoryStream())
                 {
-                    ImageFile.CopyTo(fileStream);
-                };
+                    ImageFile.CopyTo(memoryStream);
+                    imageData = memoryStream.ToArray();
+                }
             }
-            return uniqueFileName;
+            return imageData;
         }
         public async Task<IActionResult> UbahGambar(int id)
         {
-            VMUser data = await userProfileService.GetDataUser(id);
+            VMUploadGambar data = await userProfileService.GetDataGambar(id);
             return PartialView(data);
 
         }
         [HttpPost]
-        public async Task<JsonResult> UbahGambar(VMUser dataParam)
+        public async Task<JsonResult> UbahGambar(VMUploadGambar dataParam)
         {
             if(dataParam.ImageFile != null)
             {
-                dataParam.ImagePath = Upload(dataParam.ImageFile);
+                dataParam.Image = Upload(dataParam.ImageFile);
             }
             
             VMResponse respon = await userProfileService.UbahGambar(dataParam);
