@@ -221,6 +221,7 @@ namespace Med_341A.api.Controllers
                     biodata.Fullname = dataUserProfile.Fullname;
                     biodata.MobilePhone = dataUserProfile.MobilePhone;
                     biodata.CreatedOn = DateTime.Now;
+                    biodata.IsDelete = false;
 
                     // add to db
                     db.Add(biodata);
@@ -235,10 +236,62 @@ namespace Med_341A.api.Controllers
                     user.Password = hashedPassword;
                     user.RoleId = dataUserProfile.RoleId;
                     user.CreatedOn = DateTime.Now;
+                    user.IsDelete = false;
 
                     // add to db
                     db.Add(user);
                     db.SaveChanges();
+
+                    // update user createdBy and biodata createdby
+                    user.CreatedBy = user.Id;
+                    biodata.CreatedBy = user.Id;
+                    
+                    // update createdBy user
+                    db.Update(user);
+                    db.SaveChanges();
+
+                    // update createdBy biodata
+                    db.Update(biodata);
+                    db.SaveChanges();
+
+                    switch (dataUserProfile.RoleId)
+                    {
+                        case 1:
+                            MCustomer customer = new();
+
+                            customer.BiodataId = biodata.Id;
+                            customer.CreatedBy = user.Id;
+                            customer.CreatedOn = DateTime.Now;
+                            customer.IsDelete = false;
+
+                            db.Add(customer);
+                            db.SaveChanges();
+
+                            break;
+                        case 2:
+                            MDoctor doctor = new();
+
+                            doctor.BiodataId = biodata.Id;
+                            doctor.CreatedBy = user.Id;
+                            doctor.CreatedOn = DateTime.Now;
+                            doctor.IsDelete = false;
+
+                            db.Add(doctor);
+                            db.SaveChanges();
+
+                            break;
+                        default:
+                            MAdmin admin = new();
+
+                            admin.BiodataId = biodata.Id;
+                            admin.CreatedBy = user.Id;
+                            admin.CreatedOn = DateTime.Now;
+                            admin.IsDelete = false;
+
+                            db.Add(admin);
+                            db.SaveChanges();
+                            break;
+                    }
 
                     response.Message = "Berhasil Register";
                 }
