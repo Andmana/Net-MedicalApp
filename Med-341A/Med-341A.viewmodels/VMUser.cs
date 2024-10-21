@@ -22,7 +22,7 @@ namespace Med_341A.viewmodels
 
         public long? RoleId { get; set; }
 
-        public string? NameRole {get; set;}
+        public string? NameRole { get; set; }
 
         public string? Email { get; set; }
 
@@ -50,6 +50,6 @@ namespace Med_341A.viewmodels
 
         public bool? IsDelete { get; set; }
         //Untuk Upload Gambar
-        public IFormFile? ImageFile { get; set; }
+        
     }
 }
