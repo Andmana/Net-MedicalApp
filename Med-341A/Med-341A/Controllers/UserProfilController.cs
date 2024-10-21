@@ -31,35 +31,41 @@ namespace Med_341A.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-        //public string Upload(IFormFile ImageFile)
-        //{
-
-        //    string uniqueFileName = "";
-        //    if (ImageFile != null && ImageFile.Length > 0)
-        //    {
-        //        string uploadFolder = Path.Combine(webHostEnvironment.WebRootPath, "images"); //Path folder untuk tempat gambar
-        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(ImageFile.FileName);
-        //        string filePath = Path.Combine(uploadFolder, uniqueFileName);
-        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            ImageFile.CopyTo(fileStream);
-        //        };
-        //    }
-        //    return uniqueFileName;
-        //}
-        public byte[] Upload(IFormFile ImageFile)
+        public async Task<string> Upload(IFormFile imageFile)
         {
-            byte[] imageData = null;
-            if (ImageFile != null && ImageFile.Length > 0)
+            string uniqueFileName = "";
+
+            if (imageFile != null)
             {
-                using (var memoryStream = new MemoryStream())
+                // Buat path untuk menyimpan file di wwwroot/images
+                var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+
+                // Pastikan folder 'images' ada, jika tidak, buat foldernya
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    ImageFile.CopyTo(memoryStream);
-                    imageData = memoryStream.ToArray();
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // Ambil ekstensi file (misal: .jpg, .png)
+                //var extension = Path.GetExtension(imageFile.FileName);
+
+                // Buat nama file unik menggunakan waktu dan kode mesin
+                //uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmss}_{Environment.MachineName}";
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+
+                // Gabungkan folder path dan nama file unik
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                // Simpan file ke folder wwwroot/images
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
                 }
             }
-            return imageData;
+
+            return uniqueFileName;
         }
+
         public async Task<IActionResult> UbahGambar(int id)
         {
             VMUploadGambar data = await userProfileService.GetDataGambar(id);
@@ -69,13 +75,13 @@ namespace Med_341A.Controllers
         [HttpPost]
         public async Task<JsonResult> UbahGambar(VMUploadGambar dataParam)
         {
-            if(dataParam.ImageFile != null)
+            if (dataParam.ImageFile != null)
             {
-                dataParam.Image = Upload(dataParam.ImageFile);
+                dataParam.ImagePath = await Upload(dataParam.ImageFile);
             }
-            
+
             VMResponse respon = await userProfileService.UbahGambar(dataParam);
-            HttpContext.Session.SetString("ImagePath", dataParam.ImagePath);
+            HttpContext.Session.SetString("ImagePath", dataParam.ImagePath!);
             return Json(new { dataRespon = respon });
 
         }
@@ -107,6 +113,13 @@ namespace Med_341A.Controllers
         {
             VMUser data = await userProfileService.GetDataUser(id);
             return PartialView(data);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(VMUser data)
+        {
+            VMResponse respon = await userProfileService.UpdatePassword(data);
+            HttpContext.Session.Clear();
+            return Json(new { dataRespon = respon });
         }
     }
 }

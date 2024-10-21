@@ -48,11 +48,11 @@ namespace Med_341A.Controllers
         public async Task<JsonResult> LoginSubmitV2(string email, string password)
         {
             VMUser user = await authService.CheckLoginV2(email, password);
-            VMUser imagePath = await userProfilService.GetDataUser((Int32)user.Id);
             if (user != null)
             {
                 response.Message = $"Hello, {user.Fullname} Welcome to Med 341";
                 HttpContext.Session.SetInt32("IdUser", (Int32)user.Id);
+                VMUser imagePath = await userProfilService.GetDataUser((Int32)user.Id);
                 HttpContext.Session.SetString("NameUser", user.Fullname ?? "");
                 HttpContext.Session.SetString("Email", user.Email ?? "");
                 HttpContext.Session.SetString("NameRole", user.NameRole ?? "");

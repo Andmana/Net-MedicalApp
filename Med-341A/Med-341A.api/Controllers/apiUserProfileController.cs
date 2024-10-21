@@ -1,4 +1,5 @@
-﻿using Med_341A.datamodels;
+﻿using Med_341A.api.Services;
+using Med_341A.datamodels;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,11 @@ namespace Med_341A.api.Controllers
     {
         private readonly Med341aContext db;
         private VMResponse respon = new VMResponse();
-        public apiUserProfileController(Med341aContext db)
+        private readonly AuthService authService;
+        public apiUserProfileController(Med341aContext db, AuthService authService)
         {
             this.db = db;
+            this.authService = authService;
         }
 
         //Mendapatkan semua data akun dan biodata user berdasarkan id user
@@ -59,6 +62,52 @@ namespace Med_341A.api.Controllers
             return data;
         }
 
+        [HttpPost("UpdatePassword")]
+        public VMResponse UpdatePassword (VMUser dataAwal)
+        {
+            MUser data = db.MUsers.Where(a => a.Id == dataAwal.Id).FirstOrDefault();
+            TResetPassword updatePassword = new();
+            if (data != null)
+            {
+                data.ModifiedOn = DateTime.Now;
+                data.ModifiedBy = dataAwal.Id;
+
+                updatePassword.CreatedOn = DateTime.Now;
+                updatePassword.CreatedBy = dataAwal.Id;
+                updatePassword.ResetFor = "Update_Password";
+
+                updatePassword.OldPassword = data.Password;
+                updatePassword.IsDelete = false;
+
+                string hashedPassword = authService.HashPassword(dataAwal.Password ?? "");
+
+                data.Password = hashedPassword;
+                updatePassword.NewPassword = hashedPassword;
+
+                try
+                {
+                    db.Add(updatePassword);
+                    db.SaveChanges();
+
+                    db.Update(data);
+                    db.SaveChanges();
+
+                    respon.Message = "Password berhasil update, silahkan login ulang menggunakan password baru";
+                }
+                catch (Exception ex)
+                {
+                    respon.Success = false;
+                    respon.Message = "Failed Updated" + ex.Message;
+                }
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = "Data Not Found";
+            }
+            return respon;
+        }
+
         [HttpPut("UbahPribadi")]
         public VMResponse UbahPribadi(VMUser dataAwal)
         {
@@ -96,7 +145,7 @@ namespace Med_341A.api.Controllers
 
         }
         [HttpPut("UbahGambar")]
-        public VMResponse UbahGambar(VMUploadGambar dataInput)
+        public VMResponse UbahGambar([FromForm] VMUploadGambar dataInput)
         {
             MBiodatum data = db.MBiodata.Where(a => a.Id == dataInput.BiodataId).FirstOrDefault()!;
             if (data != null)

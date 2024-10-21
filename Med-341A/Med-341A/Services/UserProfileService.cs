@@ -1,6 +1,7 @@
 ﻿using Med_341A.viewmodels;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
@@ -56,21 +57,43 @@ namespace Med_341A.Services
 
         public async Task<bool> CheckPassword(string email, string password)
         {
-            string apiResponse = await client.GetStringAsync(RouteAPI + $"apiMAuth/CheckPasswordIsValid/{email}/{password}");
+            string json = JsonConvert.SerializeObject(new { Email = email, Password = password });
+
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var request = await client.PostAsync(RouteAPI + "apiMAuth/CheckPasswordIsValidV2", content);
+
+            string apiResponse = await request.Content.ReadAsStringAsync();
+
             bool data = JsonConvert.DeserializeObject<bool>(apiResponse);
+
             return data;
         }
         public async Task<VMResponse> UbahGambar(VMUploadGambar dataParam)
         {
-            string json = JsonConvert.SerializeObject(dataParam);
-            StringContent content = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            var content = new MultipartFormDataContent();
+
+            // Add the file to the form content
+            if (dataParam.ImageFile != null)
+            {
+                var fileContent = new StreamContent(dataParam.ImageFile.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(dataParam.ImageFile.ContentType);
+                content.Add(fileContent, "File", dataParam.ImageFile.FileName);
+            }
+
+            // Add other fields as form data
+            content.Add(new StringContent(dataParam.BiodataId.ToString()!), "BiodataId");
+            content.Add(new StringContent(dataParam.Id.ToString()), "Id");
+            content.Add(new StringContent(dataParam.ImagePath ?? ""), "ImagePath");
+
+            // Make the API request
             var request = await client.PutAsync(RouteAPI + "apiUserProfile/UbahGambar", content);
 
             if (request.IsSuccessStatusCode)
             {
                 var apiRespon = await request.Content.ReadAsStringAsync();
 
-                respon = JsonConvert.DeserializeObject<VMResponse>(apiRespon);
+                respon = JsonConvert.DeserializeObject<VMResponse>(apiRespon)!;
             }
             else
             {
@@ -79,6 +102,20 @@ namespace Med_341A.Services
             }
 
             return respon;
+        }
+        public async Task<VMResponse> UpdatePassword(VMUser userData)
+        {
+            var json = JsonConvert.SerializeObject(userData);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var request = await client.PostAsync(RouteAPI + "apiUserProfile/UpdatePassword", content);
+
+            var apiResponse = await request.Content.ReadAsStringAsync();
+
+            VMResponse data = JsonConvert.DeserializeObject<VMResponse>(apiResponse)!;
+
+            return data;
+
         }
     }
 }
