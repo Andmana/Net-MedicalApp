@@ -9,11 +9,12 @@ builder.Services.AddControllersWithViews();
 
 // add all scope services
 builder.Services.AddScoped<DoctorService>();
-builder.Services.AddScoped<MHakAksesService>();
+builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<RegisterService>();
 builder.Services.AddScoped<ResetPasswordService>();
+//builder.Services.AddScoped<MenuRoleService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

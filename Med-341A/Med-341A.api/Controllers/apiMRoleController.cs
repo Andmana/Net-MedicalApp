@@ -19,10 +19,21 @@ namespace Med_341A.api.Controllers
         }
 
         [HttpGet("GetAll")]
-        public List<MRole> GetAll()
+        public List<VRole> GetAll()
         {
-            List<MRole> data = db.MRoles.Where(a => a.IsDelete == false)
-                                        .ToList();
+            List<VRole> data = (from r in db.MRoles 
+                                where r.IsDelete == false
+                                select new VRole
+                                {
+                                    Id = r.Id,
+                                    Name = r.Name,
+                                    Code = r.Code,
+                                    CreatedBy = r.CreatedBy,
+                                    CreatedOn = r.CreatedOn,
+                                    ModifiedBy = r.ModifiedBy,
+                                    ModifiedOn = r.ModifiedOn,
+                                }                                
+                               ).ToList();
             return data;
         }
 

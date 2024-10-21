@@ -8,14 +8,14 @@ namespace Med_341A.Controllers
     {
         public readonly RegisterService registerService;
         public readonly AuthService authService;
-        public readonly MHakAksesService mHakAksesService;
+        public readonly RoleService roleService;
         public VMResponse response = new();
 
-        public RegisterController(RegisterService _registerService, AuthService _authService, MHakAksesService _mHakAksesService)
+        public RegisterController(RegisterService _registerService, AuthService _authService, RoleService _roleService)
         {
             this.registerService = _registerService;
             this.authService = _authService;
-            this.mHakAksesService = _mHakAksesService;
+            this.roleService = _roleService;
         }
 
         public IActionResult EmailVerification()
@@ -64,7 +64,7 @@ namespace Med_341A.Controllers
         {
             HttpContext.Session.SetString("passwordToRegister", password);
 
-            ViewBag.DropdownRole = await mHakAksesService.GetAll();
+            ViewBag.DropdownRole = await roleService.GetAll();
 
             return PartialView();
         }

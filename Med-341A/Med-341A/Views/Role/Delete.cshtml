@@ -19,7 +19,7 @@
             <input type="hidden" name="Id" Id="Id" value="@Model.Id" />
 
             <div class="modal-footer">
-                <a class="btn btn-light fw-bold" asp-controller="MHakAkses" asp-action="Index"> Batal</a>
+                <a class="btn btn-light fw-bold" asp-controller="Role" asp-action="Index"> Batal</a>
                 <button type="submit" class="btn btn-danger">Yes</button>
             </div>
         </form>
@@ -34,7 +34,7 @@
             var id = $("#Id").val()
 
             $.ajax({
-                url: "MHakAkses/SureDelete",
+                url: "/Role/SureDelete",
                 type: "post",
                 data: { id: id },
                 dataType: "json",

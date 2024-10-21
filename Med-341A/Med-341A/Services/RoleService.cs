@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Med_341A.Services
 {
-    public class MHakAksesService
+    public class RoleService
     {
         private static readonly HttpClient client = new HttpClient();
         private IConfiguration configuration;
@@ -15,16 +15,16 @@ namespace Med_341A.Services
         private VMResponse response = new VMResponse();
 
 
-        public MHakAksesService(IConfiguration _configuration)
+        public RoleService(IConfiguration _configuration)
         {
             configuration = _configuration;
             RouteAPI = configuration["RouteAPI"];
         }
 
-        public async Task<List<MRole>> GetAll()
+        public async Task<List<VRole>> GetAll()
         {
             string apiResponse = await client.GetStringAsync(RouteAPI + $"apiMRole/GetAll");
-            List<MRole> data = JsonConvert.DeserializeObject<List<MRole>>(apiResponse)!;
+            List<VRole> data = JsonConvert.DeserializeObject<List<VRole>>(apiResponse)!;
 
             return data;
         }
