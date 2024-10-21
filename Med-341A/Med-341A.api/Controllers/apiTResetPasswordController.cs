@@ -106,22 +106,37 @@ namespace Med_341A.api.Controllers
             {
                 response.Success=false;
                 response.Message = "Akun tidak ditemukan";
+
+                return response;
             }
             else
             {
-                TResetPassword resetPW = new TResetPassword();
+                if (authService.VerifyPassword(data.Password, request.Password))
+                {
+                    response.Success = false;
+                    response.Message = "Password tidak boleh sama dengan yang sebelumnya";
+                    return response;
+                }
 
-                resetPW.OldPassword = data.Password;
-                resetPW.NewPassword = request.Password;
-                resetPW.CreatedBy = data.Id;
-                resetPW.CreatedOn = DateTime.Now;
-                resetPW.ResetFor = request.usedFor;
+                
 
                 try
                 {
-                    data.Password = request.Password;
-
+                    string newPassHash = authService.HashPassword(request.Password);
+                    string oldPass = data.Password;
+                    
+                    // Add new record 
+                    TResetPassword resetPW = new TResetPassword();
+                    resetPW.OldPassword = oldPass;
+                    resetPW.NewPassword = newPassHash;
+                    resetPW.CreatedBy = data.Id;
+                    resetPW.CreatedOn = DateTime.Now;
+                    resetPW.ResetFor = request.usedFor;
                     db.Add(resetPW);
+
+
+                    // Set new Password
+                    data.Password = newPassHash;
                     db.Update(data);
 
                     db.SaveChanges();
@@ -133,8 +148,9 @@ namespace Med_341A.api.Controllers
                 response.Success = true;
                 response.Message = "Reset kata sandi berhasil.";
 
+                return response;
+
             }
-            return response;
         }
 
     }
