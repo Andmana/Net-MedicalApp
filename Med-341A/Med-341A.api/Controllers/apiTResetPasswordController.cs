@@ -137,6 +137,8 @@ namespace Med_341A.api.Controllers
 
                     // Set new Password
                     data.Password = newPassHash;
+                    data.ModifiedBy = data.Id;
+                    data.ModifiedOn = DateTime.Now;
                     db.Update(data);
 
                     db.SaveChanges();
