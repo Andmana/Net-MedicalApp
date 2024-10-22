@@ -49,7 +49,8 @@ namespace Med_341A.api.Controllers
                     ExpiredOn = DateTime.Now.AddMinutes(10),
                     IsExpired = false,
                     CreatedOn = DateTime.Now,
-                    UsedFor = request.usedFor
+                    UsedFor = request.usedFor,
+                    UserId = data.Id
                 };
                 db.TTokens.Add(token);
                 db.SaveChanges();
@@ -129,6 +130,12 @@ namespace Med_341A.api.Controllers
                     return response;
                 }
 
+                if (IsEqual_PrevPass(data.Id, request.Password))
+                {
+                    response.Success = false;
+                    response.Message = "Password tidak boleh sama dengan yang sebelumnya1";
+                    return response;
+                }
                 
 
                 try
@@ -164,6 +171,23 @@ namespace Med_341A.api.Controllers
                 return response;
 
             }
+
+        }
+        public bool IsEqual_PrevPass(long idUser, string password)
+        {
+            List<TResetPassword> datas = db.TResetPasswords.Where(a => a.CreatedBy == idUser)
+                                                            .OrderByDescending(t => t.CreatedOn)
+                                                            .Take(3)
+                                                            .ToList();
+
+            foreach (TResetPassword data in datas)
+            {
+                if (authService.VerifyPassword(data.NewPassword, password))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
     }
