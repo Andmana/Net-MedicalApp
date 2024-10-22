@@ -100,8 +100,6 @@
                     var data = response.dataResponse
 
                     if (data.success) {
-                        $("#my_modal").modal("hide")
-
                         swal("Register", data.message, {
                             icon: "success",
                             buttons: {
@@ -109,6 +107,9 @@
                                     className: 'btn btn-success'
                                 }
                             },
+                        }).then(function () {
+                            $("#modal_body").load("/Auth/Login")
+                            $("#my_modal").modal("show")
                         });
                     } else {
                         swal("Register", data.message, {
