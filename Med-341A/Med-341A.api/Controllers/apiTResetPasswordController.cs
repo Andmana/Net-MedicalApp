@@ -17,13 +17,16 @@ namespace Med_341A.api.Controllers
         private readonly Med341aContext db;
         private readonly EmailService emailService;
         private readonly AuthService authService;
+        private readonly ResetPasswordService resetPasswordService;
         private VMResponse response = new VMResponse();
 
-        public apiTResetPasswordController(Med341aContext _db, EmailService _emailService, AuthService _authService)
+        public apiTResetPasswordController(Med341aContext _db, EmailService _emailService, 
+                                            AuthService _authService, ResetPasswordService _resetPasswordService)
         {
             this.db = _db;
             this.emailService = _emailService;
             this.authService = _authService;
+            this.resetPasswordService = _resetPasswordService;
         }
 
         [HttpPost("VerifyEmail_nRequestOTP")]
@@ -111,7 +114,7 @@ namespace Med_341A.api.Controllers
         }
 
         [HttpPost("SaveNewPassword")]
-        public VMResponse SaveNewPassword(VResetPassword request)
+        public async Task<VMResponse> SaveNewPassword(VResetPassword request)
         {
             MUser data = db.MUsers.Where(a => a.IsDelete == false && a.Email == request.Email).FirstOrDefault();
             if (data == null)
@@ -130,7 +133,7 @@ namespace Med_341A.api.Controllers
                     return response;
                 }
 
-                if (IsEqual_PrevPass(data.Id, request.Password))
+                if (await resetPasswordService.IsEqual_PrevPass(data.Id, request.Password))
                 {
                     response.Success = false;
                     response.Message = "Password tidak boleh sama dengan yang sebelumnya1";
@@ -173,22 +176,7 @@ namespace Med_341A.api.Controllers
             }
 
         }
-        public bool IsEqual_PrevPass(long idUser, string password)
-        {
-            List<TResetPassword> datas = db.TResetPasswords.Where(a => a.CreatedBy == idUser)
-                                                            .OrderByDescending(t => t.CreatedOn)
-                                                            .Take(3)
-                                                            .ToList();
-
-            foreach (TResetPassword data in datas)
-            {
-                if (authService.VerifyPassword(data.OldPassword, password))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        
 
     }
 }
