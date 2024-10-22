@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Med_341A.datamodels;
 using Med_341A.Services;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Hosting;
@@ -100,7 +101,10 @@ namespace Med_341A.Controllers
         public async Task<JsonResult> UbahPribadi(VMUser dataParam)
         {
             VMResponse respon = await userProfileService.UbahPribadi(dataParam);
-
+            if (respon.Success)
+            {
+                HttpContext.Session.SetString("NameUser", dataParam.Fullname);
+            }
             return Json(new { dataRespon = respon });
         }
         public async Task<IActionResult> UbahPassword(int id)

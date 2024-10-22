@@ -45,6 +45,7 @@
 </div>
 
 <script>
+
     // Fungsi untuk mendapatkan tanggal hari ini dalam format YYYY-MM-DD
     function getTodayDate() {
         var today = new Date()
@@ -64,13 +65,18 @@
 
     var todayDate = getTodayDate()
 
+    jQuery.validator.addMethod("notOnlySpaces", function (value, element) {
+        return value.trim().length > 0;
+    }, "Nama lengkap tidak boleh hanya berisi spasi");
+
     // Validasi form menggunakan jQuery Validate
     $("#form_input").validate({
         errorClass: "is-invalid text-danger",
         rules: {
             Fullname: {
                 required: true,
-                minlength: 2
+                minlength: 2,
+                notOnlySpaces: true
             },
             Dob: {
                 required: true,
@@ -87,7 +93,8 @@
         messages: {
             Fullname: {
                 required: "Nama lengkap tidak boleh kosong",
-                minlength: "Panjang minimal 2 karakter"
+                minlength: "Panjang minimal 2 karakter",
+                notOnlySpaces: "Nama lengkap tidak boleh hanya berisi spasi"
             },
             Dob: {
                 required: "Tanggal lahir tidak boleh kosong",

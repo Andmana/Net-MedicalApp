@@ -30,7 +30,7 @@
     </div>
 </div>
 <script>
-    startCountdown(180);
+    startCountdown(45);
     function startCountdown(duration) {
         var timer = duration, minutes, seconds;
         var interval = setInterval(function () {
@@ -62,7 +62,7 @@
 
     $("#btn_sendOTP").click(function () {
         $("#btn_sendOTP").prop('disabled', true)
-        startCountdown(180);
+        startCountdown(45);
 
         $.ajax({
             url: "/UserProfil/UlangRequestOTP",
