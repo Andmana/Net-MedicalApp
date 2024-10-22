@@ -188,8 +188,20 @@ namespace Med_341A.api.Controllers
         [HttpPost("RequestOTPEmailBaru")]
         public VMResponse RequestOTPEmailBaru(OTPValidationRequestBody request)
         {
+            var token = db.TTokens.Where(t => t.Email == request.Email && t.IsExpired == false && t.UsedFor == request.usedFor)
+                                  .OrderByDescending(t => t.CreatedOn)
+                                  .FirstOrDefault();
+            if(token != null)
+            {
+                token.IsExpired = true;
+                token.ModifiedOn = DateTime.Now;
+                token.ModifiedBy = request.UserId;
+                db.Update(token);
+                db.SaveChanges();
+            }
+
             var otp = emailService.GenerateOtp();
-            var token = new TToken
+            token = new TToken
             {
                 Email = request.Email,
                 UserId = request.UserId,

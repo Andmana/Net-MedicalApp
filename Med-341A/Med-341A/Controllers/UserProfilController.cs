@@ -26,6 +26,10 @@ namespace Med_341A.Controllers
             if (idUser != 0)
             {
                 VMUser data = await userProfileService.GetDataUser(idUser);
+                string imagePath = HttpContext.Session.GetString("ImagePath") ?? "default-profile.png";
+
+                // Mengisi ViewBag dengan nilai imagePath
+                ViewBag.ImagePath = imagePath;
                 return View(data);
             }
             else
