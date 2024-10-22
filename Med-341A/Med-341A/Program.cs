@@ -1,5 +1,5 @@
+using Med_341A.Middlewares;
 using Med_341A.Services;
-using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +44,9 @@ app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
+
+// add middleware session
+app.UseMiddleware<SessionMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

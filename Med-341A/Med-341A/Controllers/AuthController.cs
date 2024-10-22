@@ -55,7 +55,7 @@ namespace Med_341A.Controllers
                 HttpContext.Session.SetString("Email", user.Email ?? "");
                 HttpContext.Session.SetString("NameRole", user.NameRole ?? "");
                 HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));
-                HttpContext.Session.SetString("ImagePath", user.ImagePath ?? "");
+                HttpContext.Session.SetString("ImagePath", user.ImagePath ?? "default-profile.png");
             }
             else
             {

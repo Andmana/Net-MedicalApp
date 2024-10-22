@@ -149,6 +149,8 @@ namespace Med_341A.api.Controllers
                 response.Success = false;
                 response.Message = "OTP expired.";
                 token.IsExpired = true;
+                
+                db.Update(token);
                 db.SaveChanges();
                 return response;
             }
@@ -162,6 +164,8 @@ namespace Med_341A.api.Controllers
 
             // OTP is valid, mark as expired
             token.IsExpired = true;
+
+            db.Update(token);
             db.SaveChanges();
 
             response.Success = true;
