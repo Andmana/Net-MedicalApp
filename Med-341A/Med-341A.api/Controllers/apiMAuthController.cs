@@ -108,8 +108,21 @@ namespace Med_341A.api.Controllers
         [HttpPost("RequestOTP")]
         public VMResponse RequestOTP(OTPValidationRequestBody request)
         {
+            var token = db.TTokens.Where(t => t.Email == request.Email && t.IsExpired == false && t.UsedFor == request.usedFor)
+                      .OrderByDescending(t => t.CreatedOn)
+                      .FirstOrDefault();
+
+            if (token != null)
+            {
+                token.IsExpired = true;
+                token.ModifiedOn = DateTime.Now;
+                db.Update(token);
+                db.SaveChanges();
+            }
+
             var otp = emailService.GenerateOtp();
-            var token = new TToken
+
+            token = new TToken
             {
                 Email = request.Email,
                 Token = otp,
@@ -118,6 +131,7 @@ namespace Med_341A.api.Controllers
                 CreatedOn = DateTime.Now,
                 UsedFor = request.usedFor
             };
+
             db.TTokens.Add(token);
             db.SaveChanges();
 
@@ -149,7 +163,7 @@ namespace Med_341A.api.Controllers
                 response.Success = false;
                 response.Message = "OTP expired.";
                 token.IsExpired = true;
-                
+
                 db.Update(token);
                 db.SaveChanges();
                 return response;
