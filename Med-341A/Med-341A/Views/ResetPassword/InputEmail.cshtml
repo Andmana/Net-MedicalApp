@@ -31,6 +31,16 @@
 </div>
 
 <script>
+    function buttonOnLoading(idButton, text) {
+        $(idButton).html(
+            `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                     <span role="status"> ${text} </span>`
+        ).prop('disabled', true);
+    }
+
+    function buttonOnFinish(idButton, text) {
+        $(idButton).html(text).prop('disabled', false);
+    }
 
     $("#form_emailVerification").validate({
         errorClass: "is-invalid text-danger position-relative",
@@ -49,7 +59,7 @@
         submitHandler: function () {
             var email = $("#Email").val()
 
-            $("#btn_submit").prop("disable", true);
+            buttonOnLoading("#btn_submit", "Verifikasi email...");
 
             $.ajax({
                 url: '/ResetPassword/CheckAccountEmail',
@@ -64,9 +74,11 @@
                         $("#my_modal").modal("show")
                     }else {
                         $("#validate_email").text(`Email belum terdaftar`)
-                        $("#btn_submit").prop("disable", false);
+                    
+                        buttonOnFinish("#btn_submit", "Kirim OTP")
                         return true
                     }
+
                 },
                 error: function (res) {
                     console.log(res)
@@ -74,5 +86,7 @@
             })
         }
     })
+
+    
 
 </script>

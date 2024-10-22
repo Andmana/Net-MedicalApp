@@ -36,7 +36,19 @@
 </div>
 
 <script>
-    startCountdown(90);
+    startCountdown(20);
+
+
+    function buttonOnLoading(idButton, text) {
+        $(idButton).html(
+            `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                     <span role="status"> ${text} </span>`
+        ).prop('disabled', true);
+    }
+
+    function buttonOnFinish(idButton, text) {
+        $(idButton).html(text).prop('disabled', false);
+    }
 
     function startCountdown(duration) {
         var timer = duration, minutes, seconds;
@@ -62,12 +74,12 @@
     // Rerequest OTP
     $("#btn_reqOTP").click(function () {
         $("#btn_reqOTP").prop('disabled', true)
-        startCountdown(180);
+        startCountdown(20);
 
         $.ajax({
-            url: "/ResetPassword/RequestOTP",
+            url: "/ResetPassword/ReRequestOTP",
             type: "Post",
-            data: { email: "@ViewBag.Email" },
+            data: { },
             dataType: "json",
             success: function (response) {
                 var data = response.dataResponse
@@ -93,6 +105,8 @@
             }
         },
         submitHandler: function (form) {
+            buttonOnLoading("#btn_submit", "Verifikasi kode OTP...");
+
             var dataForm = $(form).serialize()
             $.ajax({
                 url: '/ResetPassword/VerifyOTP',
@@ -109,13 +123,19 @@
                     }
                     else {
                         $("#otp_validatation").text(data.message)
+
+                        buttonOnFinish("#btn_submit", "Korfimasi OTP")
                         return true
                     }
+
                 },
                 error: function (response) {
                     console.log(response)
                 }
             })
+
+
+
         }
     })
 

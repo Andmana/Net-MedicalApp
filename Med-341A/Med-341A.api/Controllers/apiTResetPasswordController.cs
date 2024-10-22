@@ -26,9 +26,19 @@ namespace Med_341A.api.Controllers
             this.authService = _authService;
         }
 
-        [HttpPost("RequestOTP")]
-        public VMResponse RequestOTP(VResetPassword request)
+        [HttpPost("VerifyEmail_nRequestOTP")]
+        public VMResponse VerifyEmail_nRequestOTP(VResetPassword request)
         {
+            MUser data = db.MUsers.Where(a => a.IsDelete == false 
+                                           && a.Email == request.Email).FirstOrDefault()!;
+            if (data == null)
+            {
+                response.Success = false;
+                response.Message = "Email tidak terdaftar";
+
+                return response;
+            }
+
             request.OTP = emailService.GenerateOtp();
             try
             {
@@ -43,21 +53,22 @@ namespace Med_341A.api.Controllers
                 };
                 db.TTokens.Add(token);
                 db.SaveChanges();
-                
+
                 emailService.SendOtpEmail(request.Email, request.OTP);
 
 
                 response.Entity = request;
                 response.Success = true;
-                response.Message = "OTP sent to email. Please verify your email.";
+                response.Message = "OTP berhasil dikirim ke Email";
             }
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = "Failed to generate OTP " + ex.Message;
+                response.Message = "Gagal mengirim OTP " + ex.Message;
             }
             return response;
         }
+
 
         [HttpPost("VerifyOTP")]
         public VMResponse VerifyOTP(VResetPassword request)

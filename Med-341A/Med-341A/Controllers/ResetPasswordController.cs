@@ -8,7 +8,6 @@ namespace Med_341A.Controllers
 {
     public class ResetPasswordController : Controller
     {
-        public readonly AuthService authService;
         public readonly ResetPasswordService resetPWService;
         public VMResponse response = new();
 
@@ -17,9 +16,8 @@ namespace Med_341A.Controllers
         private static VResetPassword resetPWData = new();
 
 
-        public ResetPasswordController(AuthService _authService, ResetPasswordService resetPWService)
+        public ResetPasswordController( ResetPasswordService resetPWService)
         {
-            authService = _authService;
             this.resetPWService = resetPWService;
         }
 
@@ -32,18 +30,13 @@ namespace Med_341A.Controllers
         [HttpPost]
         public async Task<JsonResult> CheckAccountEmail(string email)
         {
-            var data = await authService.CheckEmailIsRegistered(email);
-            if (!data)
-            {
-                response.Success = false;
-                response.Message = "Email tidak terdaftar";
-            }
-            else
-            {
-                resetPWData.Email = email;
-                resetPWData.usedFor = "RESET_PW";
-                response = await resetPWService.RequestOTP(resetPWData);
-            }
+            resetPWData.Email = email;
+            resetPWData.usedFor = "RESET_PW";
+
+            //Return Email
+            ViewBag.email = email;
+
+            response = await resetPWService.VerifyEmailnReqOTP(resetPWData);
             return Json(new { dataResponse = response });
         }
 
@@ -54,6 +47,15 @@ namespace Med_341A.Controllers
             return PartialView();
         }
 
+        // Request OTP Again
+        [HttpPost]
+        public async Task<JsonResult> ReRequestOTP()
+        {
+            response = await resetPWService.VerifyEmailnReqOTP(resetPWData);
+            return Json(new { dataResponse = response });
+        }
+
+        // Veerify OTP
         [HttpPost]
         public async Task<JsonResult> VerifyOTP(VResetPassword dataForm)
         {
@@ -63,11 +65,13 @@ namespace Med_341A.Controllers
             return Json(new { dataResponse = response });
         }
 
+        // Form Password
         public IActionResult InputPassword()
         {
             return PartialView();
         }
 
+        // Save new Password
         [HttpPost]
         public async Task<JsonResult> SavePassword(VResetPassword dataForm)
         {
@@ -78,7 +82,6 @@ namespace Med_341A.Controllers
 
             
             return Json(new { dataResponse = response });
-
         }
 
         

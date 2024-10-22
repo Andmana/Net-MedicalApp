@@ -16,12 +16,13 @@ namespace Med_341A.Services
             this.RouteAPI = configuration["RouteApi"];
 
         }
-        public async Task<VMResponse> RequestOTP(VResetPassword userRequest)
+        
+        public async Task<VMResponse> VerifyEmailnReqOTP(VResetPassword userRequest)
         {
             var json = JsonConvert.SerializeObject(userRequest);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var request = await client.PostAsync($"{RouteAPI}apiTResetPassword/RequestOTP", content);
+            var request = await client.PostAsync($"{RouteAPI}apiTResetPassword/VerifyEmail_nRequestOTP", content);
 
             var apiResponse = await request.Content.ReadAsStringAsync();
 
