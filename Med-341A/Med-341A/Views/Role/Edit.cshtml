@@ -13,12 +13,14 @@
 
             <div class="form-group form-group-default">
                 <label>Nama Role</label>
-                <input id="name" name="name" type="text" value="@Model.Name" class="form-control bg-secondary border-bottom-1 " placeholder="Isi nama role">
+                <input id="name" name="name" type="text" value="@Model.Name" class="form-control bg-secondary border-bottom-1 " placeholder="Isi nama role" onfocus="resetSpan(this)" >
+                <span id="validate_name" class="text-danger mt-1"></span>
             </div>
 
             <div class="form-group form-group-default">
                 <label>Kode Role</label>
-                <input id="code" name="code" type="text" value="@Model.Code" class="form-control bg-secondary border-bottom-1" placeholder="Isi kode">
+                <input id="code" name="code" type="text" value="@Model.Code" class="form-control bg-secondary border-bottom-1" placeholder="Isi kode" onfocus="resetSpan(this)" >
+                <span id="validate_code" class="text-danger mt-1"></span>
             </div>
         </div>
         <div class="card-action d-flex justify-content-end gap-2    ">
@@ -29,59 +31,106 @@
 </form>
 
 <script>
+    
+    $.validator.addMethod("notOnlySpaces", function(value, element) {
+        return $.trim(value).length > 0; // Returns true if the trimmed value is not empty
+        }, 
+        "Tidak boleh Kosong");
+
     $("#form-edit").validate({
         errorClass: "is-invalid text-danger",
         rules: {
             name: {
                 required: true,
+                notOnlySpaces: true
             },
-            code: "required",
+            code: {
+                required: true,
+                notOnlySpaces: true
+            },
         },
         messages: {
             name: {
-                required: "Masukkan nama role",
+                required: "Masukkan nama kode role",
             },
-            code: "Masukkan kode role"
+            code: {
+                required: "Masukkan kode role",
+            },
         },
         submitHandler: function (form) {
             var dataForm = $(form).serialize()
+            var id = $('#id').val()
+            var name = $('#name').val()
+            var code = $('#code').val()
 
             $.ajax({
-                url: '/Role/Edit',
-                type: 'post',
-                data: dataForm,
-                datatype: 'json',
+                url: "/Role/IsRoleExists",
+                type: "get",
+                data: {
+                    id: id,
+                    name: name,
+                    code: code,
+                },
+                dataType: "json",
                 success: function (response) {
                     var data = response.dataResponse
-                    if (data.success) {
-                        $("#my_modal").modal("hide")
-                        swal({
-                            title: "Success!",
-                            text : data.message,
-                            buttons: {
-                                confirm: {
-                                    className: "btn btn-black",
-                                },
-                            },
-                        }).then((value) => {
-                            // This callback runs when the user clicks the confirm button
-                            window.location.reload();
-                        });
-
+                    if (!data.success) {
+                        if (data.isNameExists) {
+                            $("#validate_name").text("Nama role sudah digunakan");
+                        }
+                        if (data.isCodeExists) {
+                            $("#validate_code").text("Code role sudah digunakan");
+                        }
                     } else {
-                        swal({
-                            icon: "error",
-                            title: 'Warning!',
-                            text: data.message
-                        })
+                        submitEdit(dataForm)
                     }
 
-                }, error: function (response) {
-                    console.log(response)
                 }
-
             })
 
         }
     })
+
+    function submitEdit(form) {
+        $.ajax({
+            url: '/Role/Edit',
+            type: 'post',
+            data: form,
+            datatype: 'json',
+            success: function (response) {
+                var data = response.dataResponse
+                if (data.success) {
+                    $("#my_modal").modal("hide")
+                    swal({
+                        title: "Success!",
+                        text: data.message,
+                        buttons: {
+                            confirm: {
+                                className: "btn btn-black",
+                            },
+                        },
+                    }).then((value) => {
+                        // This callback runs when the user clicks the confirm button
+                        window.location.reload();
+                    });
+
+                } else {
+                    swal({
+                        icon: "error",
+                        title: 'Warning!',
+                        text: data.message
+                    })
+                    return true
+                }
+
+            }, error: function (response) {
+                console.log(response)
+            }
+
+        })
+    }
+
+    function resetSpan(element) {
+        $(element).next('span').text(''); // Clear the text in the span
+    }
 </script>

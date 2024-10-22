@@ -53,6 +53,13 @@ namespace Med_341A.Services
             return response;
         }
 
+        public async Task<VFlagExists> IsRoleExists(int id, string name, string code)
+        {
+            string apiResponse = await client.GetStringAsync(RouteAPI + $"apiMRole/IsRoleExists/{id}/{name}/{code}");
+            VFlagExists data = JsonConvert.DeserializeObject<VFlagExists>(apiResponse);
+            return data;
+        }
+
         public async Task<MRole> GetById(int id)
         {
 

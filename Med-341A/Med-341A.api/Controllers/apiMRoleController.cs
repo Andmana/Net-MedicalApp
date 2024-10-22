@@ -3,6 +3,7 @@ using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using System.Data;
 
 namespace Med_341A.api.Controllers
 {
@@ -36,6 +37,42 @@ namespace Med_341A.api.Controllers
                                ).ToList();
             return data;
         }
+
+        [HttpGet("IsRoleExists/{id}/{name}/{code}")]
+        public async Task<VFlagExists> IsRoleExists(int id, string name, string code)
+        {
+            VFlagExists result = new VFlagExists();
+
+
+            MRole roleName = new MRole();
+            if (id == 0)
+                roleName = db.MRoles.Where(a => a.Name.ToLower() == name.ToLower() && a.IsDelete == false).FirstOrDefault()!;
+            else
+                roleName = db.MRoles.Where(a => a.Name.ToLower() == name.ToLower() && a.IsDelete == false && a.Id != id)
+                                      .FirstOrDefault()!;
+            if (roleName != null)
+            {
+                result.isNameExists = true;
+                result.Success = false;
+            }
+
+
+
+            MRole roleCode = new MRole();
+            if (id == 0)
+                roleCode = db.MRoles.Where(a => a.Code.ToLower() == code.ToLower() && a.IsDelete == false)
+                                      .FirstOrDefault()!;
+            else
+                roleCode = db.MRoles.Where(a => a.Code.ToLower() == code.ToLower() && a.IsDelete == false && a.Id != id)
+                                      .FirstOrDefault()!;
+            if(roleCode != null) { 
+                result.isCodeExists = true;
+                result.Success = false;
+            }
+
+            return result;
+        }
+
 
         [HttpGet("GetById/{id}")]
         public MRole GetById(int id)

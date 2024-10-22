@@ -1,4 +1,5 @@
-﻿using Med_341A.datamodels;
+﻿using Azure;
+using Med_341A.datamodels;
 using Med_341A.Services;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
@@ -68,7 +69,13 @@ namespace Med_341A.Controllers
             return View(VPaginatedList<VRole>.CreateAsync(data, page.pageNumber ?? 1, page.showData ?? 5));
         }
 
-        public async Task<IActionResult> Add()
+        public async Task<JsonResult> IsRoleExists(int id, string name, string code)
+        {
+            VFlagExists response = await roleService.IsRoleExists(id, name, code);
+            return Json(new { dataResponse = response });
+        }
+
+        public IActionResult Add()
         {
             MRole data = new MRole();
             return PartialView(data);
