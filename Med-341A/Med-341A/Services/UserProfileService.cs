@@ -115,7 +115,42 @@ namespace Med_341A.Services
             VMResponse data = JsonConvert.DeserializeObject<VMResponse>(apiResponse)!;
 
             return data;
+        }
+        public async Task<bool> CheckEmail(string email)
+        {
+            string apiResponse = await client.GetStringAsync(RouteAPI + $"apiUserProfile/CheckEmailIsExist/{email}");
+            bool data = JsonConvert.DeserializeObject<bool>(apiResponse);
+            return data;
+        }
+        public async Task<VMResponse> RequestOTPEmailBaru(string email, int id)
+        {
+            var userRequest = new { Email = email, usedFor = "Update_Email", UserId = id};
 
+            var json = JsonConvert.SerializeObject(userRequest);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var request = await client.PostAsync(RouteAPI + "apiUserProfile/RequestOTPEmailBaru", content);
+
+            var apiResponse = await request.Content.ReadAsStringAsync();
+
+            VMResponse data = JsonConvert.DeserializeObject<VMResponse>(apiResponse)!;
+
+            return data;
+        }
+        public async Task<VMResponse> VerifikasiOTP(string email, string otp, int id)
+        {
+            var userRequest = new { Email = email, usedFor = "Update_Email", UserId = id, OTP = otp };
+            var json = JsonConvert.SerializeObject(userRequest);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var request = await client.PostAsync(RouteAPI + "apiUserProfile/VerifikasiOTP", content);
+
+            var apiResponse = await request.Content.ReadAsStringAsync();
+
+            VMResponse data = JsonConvert.DeserializeObject<VMResponse>(apiResponse)!;
+
+            return data;
         }
     }
 }

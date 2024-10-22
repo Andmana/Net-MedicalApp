@@ -1,7 +1,9 @@
-﻿using Med_341A.Services;
+﻿using Azure;
+using Med_341A.Services;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow;
 using NuGet.Protocol;
 using System.Drawing.Text;
 using System.Net;
@@ -115,11 +117,51 @@ namespace Med_341A.Controllers
             return PartialView(data);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdatePassword(VMUser data)
+        public async Task<JsonResult> UpdatePassword(VMUser data)
         {
             VMResponse respon = await userProfileService.UpdatePassword(data);
-            HttpContext.Session.Clear();
+            if (respon.Success)
+            {
+                HttpContext.Session.Clear();
+            }
             return Json(new { dataRespon = respon });
+        }
+        public async Task<IActionResult> UbahEmail(int id)
+        {
+            VMUser data = await userProfileService.GetDataUser(id);
+            return PartialView(data);
+        }
+ 
+        public async Task<JsonResult> CheckEmailIsExist(string email)
+        {
+            bool isExist = await userProfileService.CheckEmail(email);
+            return Json(isExist);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ValidasiOTP(string email, int id)
+        {
+            VMResponse respon = await userProfileService.RequestOTPEmailBaru(email, id);
+            ViewBag.Email = email;
+            ViewBag.Id = id;
+            return PartialView(respon);
+        }
+        [HttpPost]
+        public async Task<JsonResult> UlangRequestOTP(string email, int id)
+        {
+            VMResponse respon = await userProfileService.RequestOTPEmailBaru(email, id);
+            return Json(new { dataResponse = respon });
+        }
+        [HttpPost]
+        public async Task<JsonResult> VerifikasiOTP (string email, string otp, int id)
+        {
+            VMResponse respon = await userProfileService.VerifikasiOTP(email, otp, id);
+
+            if (respon.Success)
+            {
+                HttpContext.Session.Clear();
+            }
+
+            return Json(new { dataResponse = respon });
         }
     }
 }

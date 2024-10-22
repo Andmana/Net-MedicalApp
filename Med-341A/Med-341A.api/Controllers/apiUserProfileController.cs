@@ -1,4 +1,5 @@
-﻿using Med_341A.api.Services;
+﻿using Azure;
+using Med_341A.api.Services;
 using Med_341A.datamodels;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Http;
@@ -15,10 +16,12 @@ namespace Med_341A.api.Controllers
         private readonly Med341aContext db;
         private VMResponse respon = new VMResponse();
         private readonly AuthService authService;
-        public apiUserProfileController(Med341aContext db, AuthService authService)
+        private readonly EmailService emailService;
+        public apiUserProfileController(Med341aContext db, AuthService authService, EmailService emailService)
         {
             this.db = db;
             this.authService = authService;
+            this.emailService = emailService;
         }
 
         //Mendapatkan semua data akun dan biodata user berdasarkan id user
@@ -173,6 +176,83 @@ namespace Med_341A.api.Controllers
                 respon.Success = false;
                 respon.Message = "Data Tidak Ditemukan";
             }
+            return respon;
+        }
+        [HttpGet("CheckEmailIsExist/{email}")]
+        public bool CheckEmailIsExist(string email)
+        {
+            var data = db.MUsers.Where(a => a.IsDelete == false && a.Email == email).FirstOrDefault()!;
+            return data != null;
+        }
+
+        [HttpPost("RequestOTPEmailBaru")]
+        public VMResponse RequestOTPEmailBaru(OTPValidationRequestBody request)
+        {
+            var otp = emailService.GenerateOtp();
+            var token = new TToken
+            {
+                Email = request.Email,
+                UserId = request.UserId,
+                Token = otp,
+                ExpiredOn = DateTime.Now.AddMinutes(10),
+                IsExpired = false,
+                CreatedOn = DateTime.Now,
+                UsedFor = request.usedFor
+            };
+            db.TTokens.Add(token);
+            db.SaveChanges();
+
+            // Kirim OTP ke email pengguna
+            emailService.SendOtpEmail(request.Email, otp);
+
+            respon.Success = true;
+            respon.Message = "OTP sudah dikirim ke email, silahkan buka dan masukkan kedalam kolom OTP";
+            return respon;
+        }
+
+        [HttpPost("VerifikasiOTP")]
+        public VMResponse VerifikasiOTP(OTPValidationRequestBody request)
+        {
+            var token = db.TTokens.Where(t => t.Email == request.Email && t.IsExpired == false && t.UsedFor == request.usedFor)
+                                  .OrderByDescending(t => t.CreatedOn)
+                                  .FirstOrDefault();
+            MUser user = db.MUsers.Where(a => a.Id == request.UserId).FirstOrDefault()!;
+
+            if (token == null)
+            {
+                respon.Success = false;
+                respon.Message = "OTP tidak ditemukan atau kadaluarsa.";
+                return respon;
+            }
+
+            if (token.ExpiredOn < DateTime.Now)
+            {
+                respon.Success = false;
+                respon.Message = "OTP kadaluarsa.";
+                token.IsExpired = true;
+                db.Update(token);
+                db.SaveChanges();
+                return respon;
+            }
+
+            if (token.Token != request.Otp)
+            {
+                respon.Success = false;
+                respon.Message = "OTP Salah.";
+                return respon;
+            }
+
+            // OTP is valid, mark as expired
+            token.IsExpired = true;
+            user.Email = request.Email;
+            user.ModifiedBy = request.UserId;
+            user.ModifiedOn = DateTime.Now;
+            db.Update(token);
+            db.Update(user);
+            db.SaveChanges();
+
+            respon.Success = true;
+            respon.Message = "Verifikasi OTP berhasil, silahkan login ulang menggunakan email baru";
             return respon;
         }
     }
