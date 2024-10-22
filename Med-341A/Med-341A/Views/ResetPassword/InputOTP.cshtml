@@ -15,7 +15,7 @@
             </div>
 
             <div class="form-group d-flex justify-content-center text-center">
-                <button type="button" id="btn_reqOTP" class="btn btn-sm btn-info border-0" disabled>
+                <button type="button" id="btn_reqOTP" class="btn btn-sm btn-secondary" disabled>
                     Kirim ulang kode OTP
                     <div id="countdown" class="d-inline" style="display: none;"></div>
                 </button>
@@ -36,7 +36,7 @@
 </div>
 
 <script>
-    startCountdown(20);
+    startCountdown(90);
 
 
     function buttonOnLoading(idButton, text) {
@@ -74,7 +74,7 @@
     // Rerequest OTP
     $("#btn_reqOTP").click(function () {
         $("#btn_reqOTP").prop('disabled', true)
-        startCountdown(20);
+        startCountdown(90);
 
         $.ajax({
             url: "/ResetPassword/ReRequestOTP",
