@@ -182,7 +182,7 @@ namespace Med_341A.api.Controllers
 
             foreach (TResetPassword data in datas)
             {
-                if (authService.VerifyPassword(data.NewPassword, password))
+                if (authService.VerifyPassword(data.OldPassword, password))
                 {
                     return true;
                 }
