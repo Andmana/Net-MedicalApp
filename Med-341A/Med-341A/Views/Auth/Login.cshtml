@@ -23,8 +23,10 @@
                                 <span class="text-danger" id="validate_password"></span>
                             </div>
                         </div>
-                        <div class="col-lg-12 text-center">
-                            <button type="submit" class="btn btn-block btn-dark">Sign In</button>
+                        <div class="col-lg-12 text-center mt-5">
+                            <button type="submit" class="btn btn-block btn-dark" id="btn_submit">
+                                Sign In
+                            </button>
                             <a class="btn btn-light border-0 btn_reset" onclick="openResetPassword()">
                                 Lupa Password
                             </a>
@@ -59,6 +61,8 @@
             Password: "Please fill password"
         },
         submitHandler: function (form) {
+            buttonOnLoading("#btn_submit", "Login...");
+
             $("#validate_password").text(``);
 
             var email = $("#Email").val()
@@ -76,6 +80,7 @@
                     if (!response) {
                         $("#validate_email").text('Email tidak terdaftar');
                         isEmailValid = false;
+                        buttonOnFinish("#btn_submit", "Sign In")
                     } else {
                         $("#validate_email").text("");
                         isEmailValid = true;
@@ -109,6 +114,9 @@
                 } else {
                     $("#validate_password").text(`Password salah`);
                 }
+            },
+            complete: function () {
+                buttonOnFinish("#btn_submit", "Sign In")
             }
         })
     }

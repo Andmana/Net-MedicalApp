@@ -119,17 +119,17 @@
                                         else if (namaRole.ToLower() == "dokter")
                                         {
                                             <a asp-controller="DokterProfil" asp-action="Index"
-                                            class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                         }
                                         else if (namaRole.ToLower() == "admin")
                                         {
                                             <a asp-controller="AdminProfil" asp-action="Index"
-                                            class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                         }
                                         else
                                         {
                                             <a asp-controller="Home" asp-action="Index"
-                                            class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                         }
                                     </div>
                                 </div>
@@ -176,4 +176,16 @@
         $("#modal_body").load("/ResetPassword/InputEmail")
         $("#my_modal").modal("show");
     }
+
+    function buttonOnLoading(idButton, text) {
+        $(idButton).html(
+            `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+             <span role="status"> ${text} </span>`
+        ).prop('disabled', true);
+    }
+
+    function buttonOnFinish(idButton, text) {
+        $(idButton).html(text).prop('disabled', false);
+    }
+
 </script>
