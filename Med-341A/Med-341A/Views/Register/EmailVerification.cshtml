@@ -24,7 +24,6 @@
                 </div>
             </div>
         </form>
-
     </div>
 </div>
 
@@ -44,9 +43,9 @@
             },
         },
         submitHandler: function () {
-            var email = $("#Email").val()
+            buttonOnLoading("#btn_submit", "Sending OTP...")
 
-            $("#btn_submit").prop("disable", true);
+            var email = $("#Email").val()
 
             $.ajax({
                 url: '/Auth/CheckEmailIsRegistered',
@@ -59,7 +58,7 @@
                         $("#my_modal").modal("show")
                     } else {
                         $("#validate_email").text(`Email sudah terdaftar`)
-                        $("#btn_submit").prop("disable", false);
+                        buttonOnFinish("#btn_submit", "Kirim OTP")
                         return true
                     }
                 },

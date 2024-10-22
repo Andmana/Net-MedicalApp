@@ -21,41 +21,6 @@ namespace Med_341A.api.Controllers
             this.authService = _authService;
         }
 
-        [Obsolete("This API is deprecated. Please use the new CheckLoginV2 API.")]
-        [HttpGet("CheckLogin/{email}/{password}")]
-        public VMUser CheckLogin(string email, string password)
-        {
-            VMUser data = (from user in db.MUsers
-                           join bio in db.MBiodata
-                           on user.BiodataId equals bio.Id
-                           into biouser
-                           from bio in biouser.DefaultIfEmpty()
-                           join role in db.MRoles
-                           on user.RoleId equals role.Id
-                           where user.IsDelete == false && user.Email == email &&
-                           (user.IsLocked == false || user.IsLocked == null)
-                           select new VMUser
-                           {
-                               Id = user.Id,
-                               RoleId = user.RoleId,
-                               Fullname = bio.Fullname,
-                               Email = user.Email,
-                               NameRole = role.Name
-
-                           }).FirstOrDefault()!;
-
-            return data;
-        }
-
-        [Obsolete("This API is deprecated. Please use the new CheckPasswordIsValidV2 API.")]
-        [HttpGet("CheckPasswordIsValid/{email}/{password}")]
-        public bool CheckPasswordIsValidV2(string email, string password)
-        {
-            var data = db.MUsers.Where(a => a.IsDelete == false && a.Email == email && a.Password == password).FirstOrDefault()!;
-
-            return data != null;
-        }
-
         [HttpPost("CheckLoginV2")]
         public VMUser? CheckLoginV2(AuthLoginRequestBody loginRequest)
         {
@@ -102,7 +67,8 @@ namespace Med_341A.api.Controllers
                             RoleId = user.RoleId,
                             Fullname = bio.Fullname,
                             Email = user.Email,
-                            NameRole = role.Name
+                            NameRole = role.Name,
+                            ImagePath = bio.ImagePath
                         }).FirstOrDefault()!;
 
                 checkUser.LoginAttempt = 0;
@@ -245,7 +211,7 @@ namespace Med_341A.api.Controllers
                     // update user createdBy and biodata createdby
                     user.CreatedBy = user.Id;
                     biodata.CreatedBy = user.Id;
-                    
+
                     // update createdBy user
                     db.Update(user);
                     db.SaveChanges();
@@ -309,6 +275,42 @@ namespace Med_341A.api.Controllers
             }
 
             return response;
+        }
+
+        [Obsolete("This API is deprecated. Please use the new CheckLoginV2 API.")]
+        [HttpGet("CheckLogin/{email}/{password}")]
+        public VMUser CheckLogin(string email, string password)
+        {
+            VMUser data = (from user in db.MUsers
+                           join bio in db.MBiodata
+                           on user.BiodataId equals bio.Id
+                           into biouser
+                           from bio in biouser.DefaultIfEmpty()
+                           join role in db.MRoles
+                           on user.RoleId equals role.Id
+                           where user.IsDelete == false && user.Email == email &&
+                           (user.IsLocked == false || user.IsLocked == null)
+                           select new VMUser
+                           {
+                               Id = user.Id,
+                               RoleId = user.RoleId,
+                               Fullname = bio.Fullname,
+                               Email = user.Email,
+                               NameRole = role.Name,
+                               ImagePath = bio.ImagePath
+
+                           }).FirstOrDefault()!;
+
+            return data;
+        }
+
+        [Obsolete("This API is deprecated. Please use the new CheckPasswordIsValidV2 API.")]
+        [HttpGet("CheckPasswordIsValid/{email}/{password}")]
+        public bool CheckPasswordIsValidV2(string email, string password)
+        {
+            var data = db.MUsers.Where(a => a.IsDelete == false && a.Email == email && a.Password == password).FirstOrDefault()!;
+
+            return data != null;
         }
     }
 

@@ -8,13 +8,13 @@ public class RegisterService
 {
     private readonly HttpClient client = new HttpClient();
     private readonly IConfiguration configuration;
-    private readonly string RouteAPI = "";
+    private readonly string routeApi;
 
 
     public RegisterService(IConfiguration _configuration)
     {
         this.configuration = _configuration;
-        this.RouteAPI = configuration["RouteApi"]!;
+        this.routeApi = configuration["RouteApi"] ?? throw new ArgumentNullException(nameof(routeApi), "RouteApi is missing in configuration");
     }
 
     public async Task<VMResponse> RequestOTP(string email)
@@ -25,7 +25,7 @@ public class RegisterService
 
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var request = await client.PostAsync($"{RouteAPI}apiMAuth/RequestOTP", content);
+        var request = await client.PostAsync($"{routeApi}apiMAuth/RequestOTP", content);
 
         var apiResponse = await request.Content.ReadAsStringAsync();
 
@@ -40,7 +40,7 @@ public class RegisterService
         var json = JsonConvert.SerializeObject(userRequest);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var request = await client.PostAsync($"{RouteAPI}apiMAuth/VerifyOTP", content);
+        var request = await client.PostAsync($"{routeApi}apiMAuth/VerifyOTP", content);
 
         var apiResponse = await request.Content.ReadAsStringAsync();
 
@@ -54,7 +54,7 @@ public class RegisterService
         var json = JsonConvert.SerializeObject(userData);
         StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var request = await client.PostAsync($"{RouteAPI}apiMAuth/RegisterNewUser", content);
+        var request = await client.PostAsync($"{routeApi}apiMAuth/RegisterNewUser", content);
 
         var apiResponse = await request.Content.ReadAsStringAsync();
 

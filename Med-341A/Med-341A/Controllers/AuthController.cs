@@ -8,12 +8,10 @@ namespace Med_341A.Controllers
     {
         private readonly AuthService authService;
         private VMResponse response = new();
-        private UserProfileService userProfilService;
 
-        public AuthController(AuthService _authService, UserProfileService _userProfileService)
+        public AuthController(AuthService _authService)
         {
             this.authService = _authService;
-            this.userProfilService = _userProfileService;
         }
 
         public IActionResult Login()
@@ -34,6 +32,7 @@ namespace Med_341A.Controllers
                 HttpContext.Session.SetString("Email", user.Email ?? "");
                 HttpContext.Session.SetString("NameRole", user.NameRole ?? "");
                 HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));
+                HttpContext.Session.SetString("ImagePath", user.ImagePath ?? "");
             }
             else
             {
@@ -52,17 +51,16 @@ namespace Med_341A.Controllers
             {
                 response.Message = $"Hello, {user.Fullname} Welcome to Med 341";
                 HttpContext.Session.SetInt32("IdUser", (Int32)user.Id);
-                VMUser imagePath = await userProfilService.GetDataUser((Int32)user.Id);
                 HttpContext.Session.SetString("NameUser", user.Fullname ?? "");
                 HttpContext.Session.SetString("Email", user.Email ?? "");
                 HttpContext.Session.SetString("NameRole", user.NameRole ?? "");
                 HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));
-                HttpContext.Session.SetString("ImagePath", imagePath.ImagePath ?? "");
+                HttpContext.Session.SetString("ImagePath", user.ImagePath ?? "");
             }
             else
             {
                 response.Success = false;
-                response.Message = $"Oops, {email} not found or password is wrong, please check it";
+                response.Message = $"Oops, password is wrong, please enter valid password";
             }
 
             return Json(new { dataResponse = response });

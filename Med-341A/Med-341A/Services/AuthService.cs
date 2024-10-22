@@ -1,7 +1,5 @@
 ﻿using System.Text;
 using Med_341A.viewmodels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
 
 namespace Med_341A.Services
@@ -15,7 +13,7 @@ namespace Med_341A.Services
         public AuthService(IConfiguration _configuration)
         {
             configuration = _configuration;
-            routeApi = configuration["RouteAPI"];
+            routeApi = configuration["RouteApi"] ?? throw new ArgumentNullException(nameof(routeApi), "RouteApi is missing in configuration");
         }
 
         public async Task<VMUser> CheckLogin(string email, string password)
