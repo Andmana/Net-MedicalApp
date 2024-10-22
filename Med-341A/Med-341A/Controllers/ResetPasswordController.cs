@@ -11,8 +11,6 @@ namespace Med_341A.Controllers
         public readonly ResetPasswordService resetPWService;
         public VMResponse response = new();
 
-        private static string _otp;
-        private static string _email;
         private static VResetPassword resetPWData = new();
 
 
