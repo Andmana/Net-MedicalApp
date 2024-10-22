@@ -203,6 +203,7 @@ namespace Med_341A.api.Controllers
                     user.RoleId = dataUserProfile.RoleId;
                     user.CreatedOn = DateTime.Now;
                     user.IsDelete = false;
+                    user.IsLocked = false;
 
                     // add to db
                     db.Add(user);
