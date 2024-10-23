@@ -1,6 +1,7 @@
 ﻿using Med_341A.Services;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Med_341A.Controllers
 {
@@ -34,11 +35,6 @@ namespace Med_341A.Controllers
                 HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));
                 HttpContext.Session.SetString("ImagePath", user.ImagePath ?? "");
             }
-            else
-            {
-                response.Success = false;
-                response.Message = $"Oops, password is wrong, please enter valid password";
-            }
 
             return Json(new { dataResponse = response });
         }
@@ -46,21 +42,24 @@ namespace Med_341A.Controllers
         [HttpPost]
         public async Task<JsonResult> LoginSubmitV2(string email, string password)
         {
-            VMUser user = await authService.CheckLoginV2(email, password);
-            if (user != null)
+            response = await authService.CheckLoginV2(email, password);
+
+            if (response.Entity != null)
             {
-                response.Message = $"Hello, {user.Fullname} Welcome to Med 341";
-                HttpContext.Session.SetInt32("IdUser", (Int32)user.Id);
-                HttpContext.Session.SetString("NameUser", user.Fullname ?? "");
-                HttpContext.Session.SetString("Email", user.Email ?? "");
-                HttpContext.Session.SetString("NameRole", user.NameRole ?? "");
-                HttpContext.Session.SetInt32("IdRole", (Int32)(user.RoleId ?? 0));
-                HttpContext.Session.SetString("ImagePath", user.ImagePath ?? "default-profile.png");
-            }
-            else
-            {
-                response.Success = false;
-                response.Message = $"Oops, password is wrong, please enter valid password";
+                VMUser? user = JsonConvert.DeserializeObject<VMUser>(response.Entity.ToString() ?? string.Empty);
+
+                if (user != null)
+                {
+                    response.Message = $"Hello, {user.Fullname} Welcome to Med 341";
+
+                    // Store user information in session
+                    HttpContext.Session.SetInt32("IdUser", (int)user.Id);
+                    HttpContext.Session.SetString("NameUser", user.Fullname ?? "");
+                    HttpContext.Session.SetString("Email", user.Email ?? "");
+                    HttpContext.Session.SetString("NameRole", user.NameRole ?? "");
+                    HttpContext.Session.SetInt32("IdRole", (int)(user.RoleId ?? 0));
+                    HttpContext.Session.SetString("ImagePath", user.ImagePath ?? "default-profile.png");
+                }
             }
 
             return Json(new { dataResponse = response });

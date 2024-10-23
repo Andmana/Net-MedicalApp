@@ -2,6 +2,7 @@
 using Med_341A.datamodels;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Common;
 
 namespace Med_341A.api.Controllers
 {
@@ -22,19 +23,32 @@ namespace Med_341A.api.Controllers
         }
 
         [HttpPost("CheckLoginV2")]
-        public VMUser? CheckLoginV2(AuthLoginRequestBody loginRequest)
+        public VMResponse CheckLoginV2(AuthLoginRequestBody loginRequest)
         {
             MUser checkUser = db.MUsers.Where(a => a.IsDelete == false && a.Email == loginRequest.Email).FirstOrDefault()!;
 
+
+            if (checkUser == null)
+            {
+                response.Success = false;
+                response.Message = "Oops, Email atau Password yang anda masukan salah";
+                return response;
+            }
+
             var isPasswordValid = authService.VerifyPassword(checkUser.Password ?? "", loginRequest.Password);
 
-            VMUser? data = new();
+            if (checkUser.IsLocked != null && checkUser.IsLocked == true)
+            {
+                response.Success = false;
+                response.Message = "Akun Anda telah terkunci silahkan kontak Customer Service kami";
+                return response;
+            }
 
             if (!isPasswordValid)
             {
                 if (checkUser.LoginAttempt != null)
                 {
-                    if (checkUser.LoginAttempt > 5)
+                    if (checkUser.LoginAttempt >= 4)
                     {
                         checkUser.IsLocked = true;
                     }
@@ -48,37 +62,37 @@ namespace Med_341A.api.Controllers
                 db.Update(checkUser);
                 db.SaveChanges();
 
-                data = null;
+                response.Success = false;
+                response.Message = "Oops, Email atau Password yang anda masukan salah";
             }
             else
             {
-                data = (from user in db.MUsers
-                        join bio in db.MBiodata
-                        on user.BiodataId equals bio.Id
-                        into biouser
-                        from bio in biouser.DefaultIfEmpty()
-                        join role in db.MRoles
-                        on user.RoleId equals role.Id
-                        where user.IsDelete == false && user.Email == loginRequest.Email &&
-                        (user.IsLocked == false || user.IsLocked == null)
-                        select new VMUser
-                        {
-                            Id = user.Id,
-                            RoleId = user.RoleId,
-                            Fullname = bio.Fullname,
-                            Email = user.Email,
-                            NameRole = role.Name,
-                            ImagePath = bio.ImagePath
-                        }).FirstOrDefault()!;
+                VMUser data = (from user in db.MUsers
+                               join bio in db.MBiodata
+                               on user.BiodataId equals bio.Id
+                               where user.IsDelete == false && user.Email == loginRequest.Email &&
+                               (user.IsLocked == false || user.IsLocked == null)
+                               select new VMUser
+                               {
+                                   Id = user.Id,
+                                   RoleId = user.RoleId,
+                                   Fullname = bio.Fullname,
+                                   Email = user.Email,
+                                   ImagePath = bio.ImagePath
+                               }).FirstOrDefault()!;
 
                 checkUser.LoginAttempt = 0;
                 checkUser.LastLogin = DateTime.Now;
+                checkUser.ModifiedBy = checkUser.Id;
 
                 db.Update(checkUser);
                 db.SaveChanges();
+
+                response.Message = "Authentication is valid";
+                response.Entity = data;
             }
 
-            return data;
+            return response;
         }
 
         [HttpPost("CheckPasswordIsValidV2")]
@@ -122,57 +136,62 @@ namespace Med_341A.api.Controllers
 
             var otp = emailService.GenerateOtp();
 
-            token = new TToken
-            {
-                Email = request.Email,
-                Token = otp,
-                ExpiredOn = DateTime.Now.AddMinutes(10),
-                IsExpired = false,
-                CreatedOn = DateTime.Now,
-                UsedFor = request.usedFor
-            };
-
-            db.TTokens.Add(token);
-            db.SaveChanges();
-
             // Kirim OTP ke email pengguna
-            emailService.SendOtpEmail(request.Email, otp);
+            var isSent = emailService.SendOtpEmailV2(request.Email, otp);
 
-            response.Success = true;
-            response.Message = "OTP sent to email. Please verify your email.";
-            return response;
+            if (isSent)
+            {
+                token = new TToken
+                {
+                    Email = request.Email,
+                    Token = otp,
+                    ExpiredOn = DateTime.Now.AddMinutes(10),
+                    IsExpired = false,
+                    CreatedOn = DateTime.Now,
+                    UsedFor = request.usedFor
+                };
+
+                db.TTokens.Add(token);
+                db.SaveChanges();
+
+                // return response
+                response.Success = true;
+                response.Message = "Kode OTP telah dikirim ke email, silahkan check email Anda";
+                return response;
+            }
+            else
+            {
+                response.Success = false;
+                response.Message = "Gagal mengirimkan OTP: tunggu beberapa saat dan minta ulang";
+                return response;
+            }
         }
 
         // Verify OTP
         [HttpPost("VerifyOTP")]
         public VMResponse VerifyOTP(OTPValidationRequestBody request)
         {
-            var token = db.TTokens.Where(t => t.Email == request.Email && t.IsExpired == false && t.UsedFor == request.usedFor)
+            var token = db.TTokens.Where(t => t.Email == request.Email && t.Token == request.Otp && t.UsedFor == request.usedFor)
                                   .OrderByDescending(t => t.CreatedOn)
                                   .FirstOrDefault();
 
             if (token == null)
             {
                 response.Success = false;
-                response.Message = "OTP not found or expired.";
+                response.Message = "Incorect OTP";
                 return response;
             }
 
-            if (token.ExpiredOn < DateTime.Now)
+            if ((token.ExpiredOn < DateTime.Now && token.IsExpired == false) || token.IsExpired == true)
             {
                 response.Success = false;
                 response.Message = "OTP expired.";
+
                 token.IsExpired = true;
+                token.ModifiedOn = DateTime.Now;
 
                 db.Update(token);
                 db.SaveChanges();
-                return response;
-            }
-
-            if (token.Token != request.Otp)
-            {
-                response.Success = false;
-                response.Message = "Incorrect OTP.";
                 return response;
             }
 
@@ -222,6 +241,7 @@ namespace Med_341A.api.Controllers
                     user.CreatedOn = DateTime.Now;
                     user.IsDelete = false;
                     user.IsLocked = false;
+                    user.LoginAttempt = 0;
 
                     // add to db
                     db.Add(user);
@@ -239,43 +259,41 @@ namespace Med_341A.api.Controllers
                     db.Update(biodata);
                     db.SaveChanges();
 
-                    switch (dataUserProfile.RoleId)
+                    if (dataUserProfile.RoleId == 1)
                     {
-                        case 1:
-                            MCustomer customer = new();
+                        MCustomer customer = new();
 
-                            customer.BiodataId = biodata.Id;
-                            customer.CreatedBy = user.Id;
-                            customer.CreatedOn = DateTime.Now;
-                            customer.IsDelete = false;
+                        customer.BiodataId = biodata.Id;
+                        customer.CreatedBy = user.Id;
+                        customer.CreatedOn = DateTime.Now;
+                        customer.IsDelete = false;
 
-                            db.Add(customer);
-                            db.SaveChanges();
+                        db.Add(customer);
+                        db.SaveChanges();
+                    }
+                    else if (dataUserProfile.RoleId == 2)
+                    {
+                        MDoctor doctor = new();
 
-                            break;
-                        case 2:
-                            MDoctor doctor = new();
+                        doctor.BiodataId = biodata.Id;
+                        doctor.CreatedBy = user.Id;
+                        doctor.CreatedOn = DateTime.Now;
+                        doctor.IsDelete = false;
 
-                            doctor.BiodataId = biodata.Id;
-                            doctor.CreatedBy = user.Id;
-                            doctor.CreatedOn = DateTime.Now;
-                            doctor.IsDelete = false;
+                        db.Add(doctor);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        MAdmin admin = new();
 
-                            db.Add(doctor);
-                            db.SaveChanges();
+                        admin.BiodataId = biodata.Id;
+                        admin.CreatedBy = user.Id;
+                        admin.CreatedOn = DateTime.Now;
+                        admin.IsDelete = false;
 
-                            break;
-                        default:
-                            MAdmin admin = new();
-
-                            admin.BiodataId = biodata.Id;
-                            admin.CreatedBy = user.Id;
-                            admin.CreatedOn = DateTime.Now;
-                            admin.IsDelete = false;
-
-                            db.Add(admin);
-                            db.SaveChanges();
-                            break;
+                        db.Add(admin);
+                        db.SaveChanges();
                     }
 
                     response.Message = "Berhasil Register";

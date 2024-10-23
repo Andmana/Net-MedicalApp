@@ -59,6 +59,43 @@ namespace Med_341A.api.Services
             }
         }
 
+        public bool SendOtpEmailV2(string email, string otp)
+        {
+            try
+            {
+                // Mengambil konfigurasi SMTP dari appsettings.json
+                SmtpClient smtpClient = new SmtpClient(smtpHost)
+                {
+                    Port = smtpPort,
+                    Credentials = new NetworkCredential(senderEmail, emailAppPassword),
+                    EnableSsl = enableSSl
+                };
+
+                // Membuat isi email
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(senderEmail),
+                    Subject = "Your OTP Code",
+                    Body = $"Your OTP code is: {otp}\nIt will expire in 10 minutes.",
+                    IsBodyHtml = false,
+                };
+
+                // Menambahkan email tujuan
+                mailMessage.To.Add(email);
+
+                // Mengirimkan email
+                smtpClient.Send(mailMessage);
+                Console.WriteLine($"OTP has been sent to your emai {email}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending email: {ex.Message}");
+                return false;
+
+            }
+        }
+
         // Generate 6-digit OTP
         public string GenerateOtp()
         {

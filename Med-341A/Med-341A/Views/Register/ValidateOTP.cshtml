@@ -10,15 +10,14 @@
         <form id="form_validateOTP">
             <div class="form-group">
                 <input type="number" class="form-control" id="OTP" name="OTP" placeholder="input your OTP">
-                <span id="OTPValidation_info" class="text-success mt-1">
-                    @Model.Message
-                </span>
+                <label id="OTP-error" class="@(Model.Success ? "text-success":"text-danger")"
+                    for="OTP">@Model.Message</label>
             </div>
 
-            <div class="form-group d-flex align-content-center text-center">
+            <div class="form-group col-lg-12 d-flex align-content-center text-center">
                 <button type="button" id="btn_sendOTP" class="btn btn-info border-0" disabled>
                     Kirim ulang kode OTP
-                    <div id="countdown" class="d-inline" style="display: none;"></div>
+                    <div id="countdown" class="d-inline"></div>
                 </button>
             </div>
 
@@ -34,22 +33,27 @@
 </div>
 
 <script>
-    startCountdown(180);
+    var countdownInterval;
+    startCountdown(30);
+
+    $("#OTP-error").on('focus', function () {
+        $("#OTP-error").text("").removeClass();
+    })
 
     function startCountdown(duration) {
         var timer = duration, minutes, seconds;
-        var interval = setInterval(function () {
+        countdownInterval = setInterval(function () {
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
 
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
 
-            $('#countdown').text(` (${minutes}:${seconds})`);
+            $('#countdown').text(`(${minutes}:${seconds})`);
 
             timer--
             if (timer < 0) {
-                clearInterval(interval);
+                clearInterval(countdownInterval);
 
                 $('#countdown').text("");
                 $("#btn_sendOTP").prop('disabled', false);
@@ -57,9 +61,12 @@
         }, 1000);
     }
 
+
     $("#btn_sendOTP").click(function () {
+        $("#OTP-error").text("").removeClass();
+        buttonOnLoading("#btn_sendOTP", "Resend OTP...");
         $("#btn_sendOTP").prop('disabled', true)
-        startCountdown(180);
+        $("#btn_confirm").prop('disabled', true)
 
         $.ajax({
             url: "/Register/RetryRequestOTP",
@@ -67,18 +74,43 @@
             data: { email: "@ViewBag.Email" },
             dataType: "json",
             success: function (response) {
+                debugger
                 var data = response.dataResponse
-                $("#OTPValidation_info").text(data.message);
+
+                if (data.success) {
+                    $("#OTP-error").text(data.message)
+                        .removeClass().addClass('text-success')
+                } else {
+                    $("#OTP-error").text(data.message)
+                        .removeClass().addClass('is-invalid text-danger')
+                }
+
+                $("#btn_confirm").prop('disabled', false)
+            },
+            beforeSend: function () {
+                $("#OTP-error").text("");
+                $("#btn_sendOTP").prop('disabled', true)
+                $("#btn_confirm").prop('disabled', true)
+
+            },
+            complete: function () {
+                $("#btn_sendOTP").html('Kirim ulang kode OTP <div id="countdown" class="d-inline"></div>');
+                $("#btn_sendOTP").prop('disabled', true);
+                startCountdown(30); // Start the countdown again after OTP is resent
             }
         })
     })
 
-    $("#btn_cancel").click(function() {
-        $("#my_modal").modal("hide");
-    })
 
     $("#form_validateOTP").validate({
-        errorClass: "is-invalid text-danger",
+        errorPlacement: function (error, element) {
+            // Append all errors to the same #OTP-error span
+            $("#OTP-error").text(error.text()).addClass('text-danger');
+        },
+        success: function (label, element) {
+            // Clear the error message if the input becomes valid
+            $("#OTP-error").text("").removeClass('text-danger')
+        },
         rules: {
             OTP: {
                 required: true,
@@ -90,10 +122,12 @@
             OTP: {
                 required: "Masukan kode OTP yang telah dikirim",
                 minlength: "Minimal 6 Digit",
-                maxlength: "Maximal 6 Digit",
+                maxlength: "Maksimal 6 Digit",
             }
         },
         submitHandler: function () {
+            buttonOnLoading("#btn_confirm", "Confirm OTP...");
+
             var otp = $("#OTP").val()
 
             $.ajax({
@@ -102,23 +136,38 @@
                 data: { email: "@ViewBag.Email", otp },
                 datatype: 'json',
                 success: function (response) {
-                    console.log(response)
-
                     var data = response.dataResponse
 
                     if (data.success) {
-
                         $("#modal_body").empty()
                         $("#modal_body").load("/Register/SetPassword")
                         $("#my_modal").modal("show")
                     } else {
-                        $("#OTPValidation_info").text(data.message)
+                        $("#OTP-error").show();
+                        $("#OTP-error").text(data.message)
+                            .removeClass().addClass('is-invalid text-danger')
                     }
+
+                    buttonOnFinish("#btn_confirm", "Konfirmasi OTP")
+                    $("#btn_sendOTP").prop('disabled', false)
+                    $("#btn_confirm").prop('disabled', false)
                 },
-                error: function (response) {
-                    console.log(response)
+                beforeSend: function () {
+                    $("#btn_sendOTP").prop('disabled', true)
+                    $("#btn_confirm").prop('disabled', true)
                 }
             })
         }
+    })
+
+
+    $('#my_modal').on('hidden.bs.modal', function () {
+        // Clear the countdown interval when the modal is closed
+        clearInterval(countdownInterval);
+    });
+
+
+    $("#btn_cancel").click(function () {
+        $("#my_modal").modal("hide");
     })
 </script>
