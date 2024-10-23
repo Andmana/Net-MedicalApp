@@ -1,0 +1,248 @@
+﻿@using Med_341A.viewmodels
+
+@model VRole
+
+@{
+    ViewData["Title"] = "Atur Menu Akses";
+    var role_menu = ViewBag.role_menu;
+}
+@* 
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Hak Akses</h4>
+	</div>
+
+    <div class="card-body">
+        <form asp-action="Edit_MenuAccess" method="post" id="form_input">
+            
+            <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+            <div class="form-group">
+                <label for="RoleName" class="">Nama Role</label>
+                <input type="text" class="form-control bg-secondary border-bottom-1 " id="Name" name="Name" value="@Model.Name" readonly />
+            </div>
+            <div class="form-group d-flex justify-content-start align-content-center gap-5">
+                <label for="role_menu_form" class="form-check-label">Menu Akses : </label>
+                <div class="form-check form-check-inline p-0">
+                    <input class="form-check-input" type="checkbox" id="cbx_selectall" />
+                    <label class="form-check-label label-menus" for="cbx_selectall">Select All</label>
+                </div>
+            </div>
+            <div class="form-group pt-0">
+                <div id="role_menu_form">
+                    <div class="checkbox-list mt-0 ms-3">
+                        @foreach (VMenuRole item in role_menu)
+                        {
+                            <div class="form-check form-check-inline p-0">
+                                <input type="checkbox" class="filled-in form-check-inpu checkbox-menus parentt" id="@item.IdMenu" name="@item.IdMenu" value="@item.IdMenu" @(item.is_selected ? "checked" : "") />
+                                <label class="form-check-label label-menus" for="@item.IdMenu">@item.MenuName</label>
+                            </div>
+                            <div>
+
+                                @foreach (VMenuRole child in item.List_Child)
+                                {
+                                    <div class="selectgroup selectgroup-pills">
+                                        <label class="selectgroup-item" for="@child.IdMenu">
+                                          <input type="checkbox" class="selectgroup-input checkbox-menus @item.IdMenu" id="@child.IdMenu" name="@child.IdMenu" value="@child.IdMenu" @(child.is_selected ? "checked" : "") >
+                                          <span class="selectgroup-button" for="@child.IdMenu"> @child.MenuName </span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                </div>
+                <span id="validate_menuaccess" class="text-danger"></span>
+            </div>
+
+
+            <div class="mb-4 row">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary rounded-pill">Submit</button>
+                    <a class="btn btn-light rounded-pill" asp-controller="Role" asp-action="Index_MenuAccess">Back to List</a>
+                </div>
+            </div>
+
+        </form>
+
+
+    </div>
+</div>
+
+<script>
+
+    var form_value = {}
+
+    $(function () {
+        generate_checkbox_role_menu()
+        validasi_list_selected()
+    })
+
+    function generate_checkbox_role_menu() {
+        form_value.role_menu = [];
+        $.each($('#role_menu_form').find('.checkbox-menus'), function (i, item) {
+            var id = $(this).attr('id');
+            $(this).attr('id', 'role_menu__' + i + '_is_selected');
+            $(this).attr('name', 'role_menu[' + i + '].is_selected');
+            $(this).attr('data-index', i);
+            $('label[for=' + id + ']').attr('for', 'role_menu__' + i + '_is_selected');
+            var is_selected = $(this).prop('checked');
+            form_value.role_menu.push({
+                is_selected: is_selected,
+                IdMenu: id
+            });
+        });
+
+        $('.checkbox-menus').click(function () {
+            var class_child = $(this).val();
+            var _this = this;
+            var index = -1;
+            index = $(this).attr('data-index');
+            if ($(this).prop('checked')) {
+                form_value.role_menu[index].is_selected = true;
+                $('#role_menu_form .' + class_child).prop('checked', true);
+                $.each($('.' + class_child), function () {
+                    index = $(this).attr('data-index');
+                    form_value.role_menu[index].is_selected = true;
+                });
+            }
+            else {
+                form_value.role_menu[index].is_selected = false;
+                $('#role_menu_form .' + class_child).prop('checked', false);
+                $.each($('.' + class_child), function () {
+                    index = $(this).attr('data-index');
+                    form_value.role_menu[index].is_selected = false;
+                });
+            }
+            var classList = $.trim($(this).attr('class').replace('filled-in checkbox-menus', ''));
+            if (classList.length > 0) {
+                classList = classList.split(' ');
+                $.each(classList, function (i, item) {
+                    if ($(_this).prop('checked')) {
+                        $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', true);
+                        //index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
+                        //form_value.role_menu[index].is_selected = true;
+                    }
+                    else {
+                        if ($('input[type=checkbox].checkbox-menus.' + item + ':checked').length == 0) {
+                            $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', false);
+                            //index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
+                            //form_value.role_menu[index].is_selected = false;
+                        }
+                    }
+                });
+            }
+
+            //Validasi Menu Access Checkbox
+            validasi_list_selected()
+        });
+
+        $('#cbx_selectall').click(function () {
+            if ($(this).prop('checked')) {
+                $('.checkbox-menus').prop('checked', true);
+                $.each($('.checkbox-menus'), function () {
+                    index = $(this).attr('data-index');
+                    form_value.role_menu[index].is_selected = true;
+                });
+            }
+            else {
+                $('.checkbox-menus').prop('checked', false);
+                $.each($('.checkbox-menus'), function () {
+                    index = $(this).attr('data-index');
+                    form_value.role_menu[index].is_selected = false;
+                });
+            }
+            console.log(form_value)
+            //Validasi Menu Access Checkbox
+            validasi_list_selected()
+        });
+
+        $('.parentt').click(function () {
+            var id = $(this).attr('id');
+            //debugger
+            if ($('#' + id).prop('checked')) {
+                $('.' + id).prop('checked', true);
+            }
+            else {
+                $('.' + id).prop('checked', false);
+            }
+
+            //Validasi Menu Access Checkbox
+            validasi_list_selected()
+        });
+
+    }
+
+    function validasi_list_selected() {
+        var list_selected = $(form_value.role_menu).filter(function (i, n) {
+            return n.is_selected == true;
+        })
+        if (list_selected.length > 0) {
+            if (list_selected.length == form_value.role_menu.length) {
+                $('#cbx_selectall').prop('checked', true)
+            }
+            $("#validate_menuaccess").text("")
+            return true
+        }
+        else {
+            $('#cbx_selectall').prop('checked', false)
+            $("#validate_menuaccess").text("menu akses harus dipilih minimal 1 menu")
+            return false
+        }
+    }
+
+    $('#form_input').validate({
+        errorClass: 'text-danger',
+        rules: {
+            RoleName: {
+                required: true,
+                minlength: 3,
+            },
+        },
+        messages: {
+            RoleName: {
+                required: "Please fill role Name",
+                minlength: 'The name must consist of at least 2 characters'
+            }
+        },
+        submitHandler: function (form) {
+            //Validasi Menu Access CheckBox saat submit
+            if (validasi_list_selected()) {
+
+                // var dataForm = $(form).serialize()
+                form_value.Id = $('#Id').val()
+                form_value.Name = $('#Name').val()
+
+                $.ajax({
+                    url: "/MenuRole/Edit_MenuAccess",
+                    data: form_value,
+                    type: "post",
+                    dataType: "json",
+                    success: function (response) {
+                        var data = response.dataResponse
+                        if (data.success) {
+                            $('.modal').modal('hide')
+
+                            swal(
+                                'information',
+                                data.message,
+                                'success'
+                            ).then(function () {
+                                window.location.reload()
+                            })
+                        }
+                        else {
+                            swal({
+                                icon: 'error',
+                                title: 'warning',
+                                text: data.message
+                            })
+                        }
+                    }
+                })
+            }
+        }
+    })
+
+</script>
+ *@

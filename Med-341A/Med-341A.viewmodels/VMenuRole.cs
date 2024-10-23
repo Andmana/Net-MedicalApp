@@ -17,11 +17,11 @@ namespace Med_341A.viewmodels
         public string? MenuAction { get; set; }
         public string? MenuIconSmall { get; set; }
         public string? MenuIconBig { get; set; }
-        public int? MenuSorting { get; set; }
+        public long? MenuSorting { get; set; }
         public bool? IsParent { get; set; }
 
         public long? MenuParent { get; set; }
-        public int? IdRole { get; set; }
+        public long? IdRole { get; set; }
         public string? NameRole { get; set; }
         public long? IdMenu { get; set; }
         public bool is_selected { get; set; }

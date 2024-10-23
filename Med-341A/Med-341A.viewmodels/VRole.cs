@@ -30,7 +30,7 @@ namespace Med_341A.viewmodels
 
         public bool IsDelete { get; set; }
 
-        public List<VMenuRole>? role_menu { get; set; }
+        public List<VMenuRole> role_menu { get; set; }
 
     }
 }
