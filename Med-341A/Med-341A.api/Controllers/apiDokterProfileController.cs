@@ -15,16 +15,28 @@ namespace Med_341A.api.Controllers
         {
             this.db = db;
         }
-        [HttpGet("GetDataUser/{id}")]
+        [HttpGet("GetDataDokter/{id}")]
         public VMDoctor GetDataDokter(int id)
         {
-            VMDoctor data = db.MDoctors.Where(a => a.Id == id)
-                .Select(a => new VMDoctor
-                {
-                    Id = a.Id,
-                    BiodataId = a.BiodataId,
-                    Str = a.Str
-                }).FirstOrDefault()!;
+            VMDoctor data = (from u in db.MUsers
+                             join b in db.MBiodata
+                             on u.BiodataId equals b.Id
+                             join d in db.MDoctors
+                             on b.Id equals d.BiodataId
+                             where u.Id == id && u.IsDelete == false
+                             select new VMDoctor
+                             {
+                                 IdUser = u.Id,
+                                 BiodataId = u.BiodataId,
+                                 CreatedBy = u.CreatedBy,
+                                 CreatedOn = u.CreatedOn,
+
+                                 Fullname = b.Fullname,
+                                 ImagePath = b.ImagePath,
+
+                                 Id = d.Id,
+                                 Str = d.Str,
+                             }).FirstOrDefault()!;
             return data;
         }
     }

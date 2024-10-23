@@ -49,7 +49,6 @@ namespace Med_341A.viewmodels
         public DateTime? DeletedOn { get; set; }
 
         public bool? IsDelete { get; set; }
-        //Untuk Upload Gambar
         
     }
 }

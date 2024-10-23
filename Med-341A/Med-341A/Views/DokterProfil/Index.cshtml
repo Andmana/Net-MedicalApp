@@ -1,28 +1,48 @@
 ﻿@using Med_341A.viewmodels
 @model VMDoctor
 
+@{
+    ViewData["Title"] = "Profil Dokter";
+}
+
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3 bg-light p-3">
-            <!-- Sidebar Profile -->
+        <!-- Sidebar -->
+        <div class="col-lg-3 bg-light p-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <img src="~/images/@ViewBag.ImagePath" class="rounded-circle img-fluid" alt="Profile Image" style="width: 150px;" />
-                    <h4 class="mt-2">dr. Tatjana Saphira, Sp.A</h4>
-                    <p>Spesialis Anak</p>
-                    <button class="btn btn-primary">Janji</button>
+                    <!-- Profile Image -->
+                    <div class="position-relative text-center mb-3">
+                        <img src="~/images/@ViewBag.ImagePath" class="rounded-circle img-fluid mb-3" alt="Profile Image" style="width: 150px;" />
+                        <a class="btn_ubah_gambar position-absolute" dataid="@Model.Id" style="top: 0; right: 0; cursor: pointer;">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                    </div>
+                    <h4 class="card-title">dr. Tatjana Saphira, Sp.A</h4>
+                    <p class="card-subtitle">Spesialis Anak</p>
+                    <div class="position-relative">
+                        <i class="fas fa-star" style="color: gold; font-size: 24px;"></i>
+                        <i class="fas fa-star" style="color: gold; font-size: 24px;"></i>
+                        <i class="fas fa-star" style="color: gold; font-size: 24px;"></i>
+                        <i class="fas fa-star" style="color: gold; font-size: 24px;"></i>
+                        <i class="fas fa-star" style="color: gold; font-size: 24px;"></i>
+                    </div>
                     <hr />
-                    <div>
-                        <h5>Obrolan / Konsultasi</h5>
-                        <p>Tersedia</p>
+                    <!-- Obrolan/Konsultasi -->
+                    <div class="text-start">
+                        <div><a href="#" class="fs-5">Janji</a></div>
+                        <div><a href="#" class="fs-5">Obrolan / Konsultasi</a></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Info Dokter -->
+            <!-- Card Tentang Saya dengan Background Abu-Abu -->
             <div class="card mt-3">
+                <div class="card-header text-black text-center" style="background-color: #c2c2a3;">
+                    <h4 class="mb-0">Tentang Saya</h4>
+                </div>
                 <div class="card-body">
-                    <h5>Tindakan Medis</h5>
+                    <h5 class="fw-bold">Tindakan Medis</h5>
                     <ul class="list-unstyled">
                         <li>- Fisioterapi anak</li>
                         <li>- Konsultasi kesehatan anak</li>
@@ -32,13 +52,13 @@
                         <li>- Konsultasi psikologi anak</li>
                         <li>- Tes pendengaran OAE</li>
                     </ul>
-                    <h5>Riwayat Praktek</h5>
+                    <h5 class="fw-bold">Riwayat Praktek</h5>
                     <ul class="list-unstyled">
                         <li>RS Mitra, Depok (2019 - sekarang)</li>
                         <li>PSIA Bunda, Jakarta Pusat (2018 - sekarang)</li>
                         <li>RSUP Hasan Sadikin, Bandung (2016 - 2018)</li>
                     </ul>
-                    <h5>Pendidikan</h5>
+                    <h5 class="fw-bold">Pendidikan</h5>
                     <ul class="list-unstyled">
                         <li>Universitas Padjadjaran, Spesialis Anak (2016)</li>
                         <li>Universitas Padjadjaran, Kedokteran Umum (2011)</li>
@@ -47,41 +67,64 @@
             </div>
         </div>
 
-        <div class="col-md-9 p-4">
-            <!-- Tabs Area -->
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Tindakan</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Aktifitas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Konsultasi</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pengaturan</a>
-                </li>
-            </ul>
+        <!-- Main Content -->
+        <div class="col-lg-9 p-4">
+            <!-- Tabs for Actions, Activity, etc. -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="tindakan-tab" data-bs-toggle="tab" href="#tindakan" role="tab" aria-controls="tindakan" aria-selected="true">Tindakan</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="aktifitas-tab" data-bs-toggle="tab" href="#aktifitas" role="tab" aria-controls="aktifitas" aria-selected="false">Aktifitas</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="konsultasi-tab" data-bs-toggle="tab" href="#konsultasi" role="tab" aria-controls="konsultasi" aria-selected="false">Konsultasi</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="pengaturan-tab" data-bs-toggle="tab" href="#pengaturan" role="tab" aria-controls="pengaturan" aria-selected="false">Pengaturan</a>
+                        </li>
+                    </ul>
+                    <!-- Tab Contents -->
+                    <div class="tab-content mt-4" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tindakan" role="tabpanel" aria-labelledby="tindakan-tab">
+                            <div class="mb-3">
+                                <h4>Daftar Tindakan</h4>
+                                <p>Tidak ada tindakan tersedia saat ini.</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="aktifitas" role="tabpanel" aria-labelledby="aktifitas-tab">
+                            <div class="mb-3">
+                                <h4>Riwayat Aktivitas</h4>
+                                <p>Tidak ada aktivitas.</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="konsultasi" role="tabpanel" aria-labelledby="konsultasi-tab">
+                            <div class="mb-3">
+                                <h4>Jadwal Konsultasi</h4>
+                                <p>Tidak ada konsultasi tersedia.</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="pengaturan" role="tabpanel" aria-labelledby="pengaturan-tab">
+                            <div class="mb-3">
+                                <h4>Pengaturan Profil</h4>
+                                <p>Pengaturan dapat diubah di sini.</p>
+                            </div>
+                        </div>
 
-            <div class="tab-content p-3">
-                <div class="tab-pane fade show active" id="tindakan">
-                    <h4>Daftar Tindakan</h4>
-                    <p>Tidak ada tindakan tersedia saat ini.</p>
-                </div>
-                <div class="tab-pane fade" id="aktifitas">
-                    <h4>Riwayat Aktifitas</h4>
-                    <p>Tidak ada aktivitas.</p>
-                </div>
-                <div class="tab-pane fade" id="konsultasi">
-                    <h4>Jadwal Konsultasi</h4>
-                    <p>Tidak ada konsultasi tersedia.</p>
-                </div>
-                <div class="tab-pane fade" id="pengaturan">
-                    <h4>Pengaturan Profil</h4>
-                    <p>Pengaturan dapat diubah di sini.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    <script>
+        $(".btn_ubah_gambar").click(function () {
+            var id = $(this).attr("dataid")
+
+            $("#modal_title").text("Ubah Gambar")
+            $("#modal_body").empty()
+            $("#modal_body").load("/UserProfil/UbahGambar?id=" + id)
+            $("#my_modal").modal("show")
+        })
+    </script>
