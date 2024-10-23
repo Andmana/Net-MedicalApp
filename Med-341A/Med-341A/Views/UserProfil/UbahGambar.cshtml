@@ -41,7 +41,7 @@
         submitHandler: function(form){
             var dataForm = $(form).serializeArray()
             var formData = new FormData();
-            // var file = $("#ImageFile").prop("files")[0];
+            
             $.each(dataForm, function (index, input) {
                 formData.append(input.name, input.value)
             })
@@ -100,7 +100,7 @@
         }
     })
     jQuery.validator.addMethod("typeFile", function (value, element, param) {
-        return value.match(new RegExp("." + param + "$"));
+        return value.toLowerCase().match(new RegExp("." + param + "$"));
     });
 
     jQuery.validator.addMethod("sizeFile", function (val, element) {

@@ -41,6 +41,7 @@
             var email = $("#EmailBaru").val()
             var id = $("#id").val()
             $("#btn_submit").prop("disabled", true);
+            buttonOnLoading("#btn_submit", "Mengirim OTP...")
 
 
             $.ajax({
@@ -56,6 +57,7 @@
                     else {
                         $("#validate_email").text(`Email sudah terdaftar`)
                         $("#btn_submit").prop("disabled", false);
+                        buttonOnFinish("#btn_submit", "Ubah Email")
                         return true
                     }
                 },
@@ -68,4 +70,9 @@
             })
         }
     })
+    $("#EmailBaru").on('input', function () {
+        if ($("#validate_email").text()) {
+            $("#validate_email").text(""); // Clear error message
+        }
+    });
 </script>

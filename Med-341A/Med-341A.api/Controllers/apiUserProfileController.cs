@@ -44,8 +44,8 @@ namespace Med_341A.api.Controllers
                                Dob = c.Dob,
                                Email = u.Email,
                                Password = u.Password,
-                               CreatedOn = b.CreatedOn,
-                               CreatedBy = b.CreatedBy
+                               CreatedOn = c.CreatedOn,
+                               CreatedBy = c.CreatedBy
                            }).FirstOrDefault()!;
             return data;
         }
