@@ -4,7 +4,7 @@
         <div class="col-lg col-md-7 bg-white">
             <div class="p-3">
                 <h2 class="mt-3 text-center">Sign In</h2>
-                <p class="text-center">Enter your email address and password to access admin panel.</p>
+                <p class="text-center">Silakan Masukan Email atau Password Yang telah terdaftar</p>
                 <form class="mt-4" id="form_login">
                     <div class="row">
                         <div class="col-lg-12">
@@ -12,17 +12,21 @@
                                 <label class="text-dark" for="Email">Email</label>
                                 <input class="form-control" id="Email" type="email" placeholder="enter your email"
                                     name="Email">
-                                <span class="text-danger" id="validate_email"></span>
                             </div>
                         </div>
+
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label class="text-dark" for="Password">Password</label>
                                 <input class="form-control" id="Password" type="password"
                                     placeholder="enter your password" name="Password">
-                                <span class="text-danger" id="validate_password"></span>
                             </div>
                         </div>
+
+                        <div class="col-lg-12 text-center mt-2">
+                            <span class="text-danger" id="validate_password"></span>
+                        </div>
+
                         <div class="col-lg-12 text-center mt-5">
                             <button type="submit" class="btn btn-block btn-dark" id="btn_submit">
                                 Sign In
@@ -51,73 +55,46 @@
                 required: true,
                 email: true,
             },
-            Password: "required"
+            Password: {
+                required: true
+            }
         },
         messages: {
             Email: {
-                required: "Please fill email",
-                email: "Please fill a valid email address",
+                required: "Email tidak boleh kosong",
+                email: "Format email tidak sesuai",
             },
-            Password: "Please fill password"
+            Password: "Password tidak boleh kosong"
         },
         submitHandler: function (form) {
             buttonOnLoading("#btn_submit", "Login...");
 
-            $("#validate_password").text(``);
+            $("#validate_password").text("");
 
             var email = $("#Email").val()
             var password = $("#Password").val()
 
-            var isEmailValid = false
-            var isPasswordValid = false
-
-            var emailCheck = $.ajax({
-                url: "/Auth/CheckEmailIsRegistered",
-                type: "GET",
-                data: { email },
-                dataType: "json",
+            $.ajax({
+                url: "/Auth/LoginSubmitV2",
+                type: "POST",
+                data: { email, password },
                 success: function (response) {
-                    if (!response) {
-                        $("#validate_email").text('Email tidak terdaftar');
-                        isEmailValid = false;
-                        buttonOnFinish("#btn_submit", "Sign In")
-                    } else {
-                        $("#validate_email").text("");
-                        isEmailValid = true;
-                    }
-                }
-            });
+                    var data = response.dataResponse;
 
-            // Use $.when to wait for both AJAX calls to complete
-            $.when(emailCheck).done(function () {
-                if (isEmailValid) {
-                    fungsiSubmit(email, password)
-                } else {
-                    return false;
+                    console.log(data.message);
+
+                    if (data.success) {
+                        $("#my_modal").modal("hide")
+                        window.location.reload();
+                    } else {
+                        $("#validate_password").text(data.message);
+                    }
+                },
+                complete: function () {
+                    buttonOnFinish("#btn_submit", "Sign In")
                 }
-            });
+            })
 
         }
     })
-
-    function fungsiSubmit(email, password) {
-        $.ajax({
-            url: "/Auth/LoginSubmitV2",
-            type: "POST",
-            data: { email, password },
-            success: function (response) {
-                var data = response.dataResponse;
-
-                if (data.success) {
-                    $("#my_modal").modal("hide")
-                    window.location.reload();
-                } else {
-                    $("#validate_password").text(`Password salah`);
-                }
-            },
-            complete: function () {
-                buttonOnFinish("#btn_submit", "Sign In")
-            }
-        })
-    }
 </script>

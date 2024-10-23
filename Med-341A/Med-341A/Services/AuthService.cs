@@ -8,6 +8,7 @@ namespace Med_341A.Services
     {
         private static readonly HttpClient client = new HttpClient();
         private IConfiguration configuration;
+        private readonly VMResponse response = new();
         public string routeApi = "";
 
         public AuthService(IConfiguration _configuration)
@@ -42,7 +43,7 @@ namespace Med_341A.Services
             return data;
         }
 
-        public async Task<VMUser> CheckLoginV2(string email, string password)
+        public async Task<VMResponse> CheckLoginV2(string email, string password)
         {
             string json = JsonConvert.SerializeObject(new { Email = email, Password = password });
 
@@ -52,8 +53,8 @@ namespace Med_341A.Services
 
             string apiResponse = await request.Content.ReadAsStringAsync();
 
-            VMUser data = JsonConvert.DeserializeObject<VMUser>(apiResponse)!;
-
+            VMResponse data = JsonConvert.DeserializeObject<VMResponse>(apiResponse)!;
+            
             return data;
         }
 
