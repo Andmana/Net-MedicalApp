@@ -6,7 +6,7 @@
     ViewData["Title"] = "Atur Menu Access";
     var role_menu = ViewBag.role_menu;
 }
-
+@* 
 <div class="card">
     <div class="card-body">
 
@@ -155,180 +155,180 @@
 
     </div>
 </div>
+ *@
+ <script>
 
-<script>
+     // var form_value = {}
 
-    var form_value = {}
+     // $(function () {
+     //     generate_checkbox_role_menu()
+     //     validasi_list_selected()
+     // })
 
-    $(function () {
-        generate_checkbox_role_menu()
-        validasi_list_selected()
-    })
+     // function generate_checkbox_role_menu() {
+     //     form_value.role_menu = [];
+     //     $.each($('#role_menu_form').find('.checkbox-menus'), function (i, item) {
+     //         var id = $(this).attr('id');
+     //         $(this).attr('id', 'role_menu__' + i + '_is_selected');
+     //         $(this).attr('name', 'role_menu[' + i + '].is_selected');
+     //         $(this).attr('data-index', i);
+     //         $('label[for=' + id + ']').attr('for', 'role_menu__' + i + '_is_selected');
+     //         var is_selected = $(this).prop('checked');
+     //         form_value.role_menu.push({
+     //             is_selected: is_selected,
+     //             IdMenu: id
+     //         });
+     //     });
 
-    function generate_checkbox_role_menu() {
-        form_value.role_menu = [];
-        $.each($('#role_menu_form').find('.checkbox-menus'), function (i, item) {
-            var id = $(this).attr('id');
-            $(this).attr('id', 'role_menu__' + i + '_is_selected');
-            $(this).attr('name', 'role_menu[' + i + '].is_selected');
-            $(this).attr('data-index', i);
-            $('label[for=' + id + ']').attr('for', 'role_menu__' + i + '_is_selected');
-            var is_selected = $(this).prop('checked');
-            form_value.role_menu.push({
-                is_selected: is_selected,
-                IdMenu: id
-            });
-        });
+     //     $('.checkbox-menus').click(function () {
+     //         var class_child = $(this).val();
+     //         var _this = this;
+     //         var index = -1;
+     //         index = $(this).attr('data-index');
+     //         if ($(this).prop('checked')) {
+     //             form_value.role_menu[index].is_selected = true;
+     //             $('#role_menu_form .' + class_child).prop('checked', true);
+     //             $.each($('.' + class_child), function () {
+     //                 index = $(this).attr('data-index');
+     //                 form_value.role_menu[index].is_selected = true;
+     //             });
+     //         }
+     //         else {
+     //             form_value.role_menu[index].is_selected = false;
+     //             $('#role_menu_form .' + class_child).prop('checked', false);
+     //             $.each($('.' + class_child), function () {
+     //                 index = $(this).attr('data-index');
+     //                 form_value.role_menu[index].is_selected = false;
+     //             });
+     //         }
+     //         var classList = $.trim($(this).attr('class').replace('filled-in checkbox-menus', ''));
+     //         if (classList.length > 0) {
+     //             classList = classList.split(' ');
+     //             $.each(classList, function (i, item) {
+     //                 if ($(_this).prop('checked')) {
+     //                     $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', true);
+     //                     //index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
+     //                     //form_value.role_menu[index].is_selected = true;
+     //                 }
+     //                 else {
+     //                     if ($('input[type=checkbox].checkbox-menus.' + item + ':checked').length == 0) {
+     //                         $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', false);
+     //                         //index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
+     //                         //form_value.role_menu[index].is_selected = false;
+     //                     }
+     //                 }
+     //             });
+     //         }
 
-        $('.checkbox-menus').click(function () {
-            var class_child = $(this).val();
-            var _this = this;
-            var index = -1;
-            index = $(this).attr('data-index');
-            if ($(this).prop('checked')) {
-                form_value.role_menu[index].is_selected = true;
-                $('#role_menu_form .' + class_child).prop('checked', true);
-                $.each($('.' + class_child), function () {
-                    index = $(this).attr('data-index');
-                    form_value.role_menu[index].is_selected = true;
-                });
-            }
-            else {
-                form_value.role_menu[index].is_selected = false;
-                $('#role_menu_form .' + class_child).prop('checked', false);
-                $.each($('.' + class_child), function () {
-                    index = $(this).attr('data-index');
-                    form_value.role_menu[index].is_selected = false;
-                });
-            }
-            var classList = $.trim($(this).attr('class').replace('filled-in checkbox-menus', ''));
-            if (classList.length > 0) {
-                classList = classList.split(' ');
-                $.each(classList, function (i, item) {
-                    if ($(_this).prop('checked')) {
-                        $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', true);
-                        //index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
-                        //form_value.role_menu[index].is_selected = true;
-                    }
-                    else {
-                        if ($('input[type=checkbox].checkbox-menus.' + item + ':checked').length == 0) {
-                            $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', false);
-                            //index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
-                            //form_value.role_menu[index].is_selected = false;
-                        }
-                    }
-                });
-            }
+     //         //Validasi Menu Access Checkbox
+     //         validasi_list_selected()
+     //     });
 
-            //Validasi Menu Access Checkbox
-            validasi_list_selected()
-        });
+     //     $('#cbx_selectall').click(function () {
+     //         if ($(this).prop('checked')) {
+     //             $('.checkbox-menus').prop('checked', true);
+     //             $.each($('.checkbox-menus'), function () {
+     //                 index = $(this).attr('data-index');
+     //                 form_value.role_menu[index].is_selected = true;
+     //             });
+     //         }
+     //         else {
+     //             $('.checkbox-menus').prop('checked', false);
+     //             $.each($('.checkbox-menus'), function () {
+     //                 index = $(this).attr('data-index');
+     //                 form_value.role_menu[index].is_selected = false;
+     //             });
+     //         }
+     //         console.log(form_value)
+     //         //Validasi Menu Access Checkbox
+     //         validasi_list_selected()
+     //     });
 
-        $('#cbx_selectall').click(function () {
-            if ($(this).prop('checked')) {
-                $('.checkbox-menus').prop('checked', true);
-                $.each($('.checkbox-menus'), function () {
-                    index = $(this).attr('data-index');
-                    form_value.role_menu[index].is_selected = true;
-                });
-            }
-            else {
-                $('.checkbox-menus').prop('checked', false);
-                $.each($('.checkbox-menus'), function () {
-                    index = $(this).attr('data-index');
-                    form_value.role_menu[index].is_selected = false;
-                });
-            }
-            console.log(form_value)
-            //Validasi Menu Access Checkbox
-            validasi_list_selected()
-        });
+     //     $('.parentt').click(function () {
+     //         var id = $(this).attr('id');
+     //         //debugger
+     //         if ($('#' + id).prop('checked')) {
+     //             $('.' + id).prop('checked', true);
+     //         }
+     //         else {
+     //             $('.' + id).prop('checked', false);
+     //         }
 
-        $('.parentt').click(function () {
-            var id = $(this).attr('id');
-            //debugger
-            if ($('#' + id).prop('checked')) {
-                $('.' + id).prop('checked', true);
-            }
-            else {
-                $('.' + id).prop('checked', false);
-            }
+     //         //Validasi Menu Access Checkbox
+     //         validasi_list_selected()
+     //     });
 
-            //Validasi Menu Access Checkbox
-            validasi_list_selected()
-        });
+     // }
 
-    }
+     // function validasi_list_selected() {
+     //     var list_selected = $(form_value.role_menu).filter(function (i, n) {
+     //         return n.is_selected == true;
+     //     })
+     //     if (list_selected.length > 0) {
+     //         if (list_selected.length == form_value.role_menu.length) {
+     //             $('#cbx_selectall').prop('checked', true)
+     //         }
+     //         $("#validate_menuaccess").text("")
+     //         return true
+     //     }
+     //     else {
+     //         $('#cbx_selectall').prop('checked', false)
+     //         $("#validate_menuaccess").text("menu akses harus dipilih minimal 1 menu")
+     //         return false
+     //     }
+     // }
 
-    function validasi_list_selected() {
-        var list_selected = $(form_value.role_menu).filter(function (i, n) {
-            return n.is_selected == true;
-        })
-        if (list_selected.length > 0) {
-            if (list_selected.length == form_value.role_menu.length) {
-                $('#cbx_selectall').prop('checked', true)
-            }
-            $("#validate_menuaccess").text("")
-            return true
-        }
-        else {
-            $('#cbx_selectall').prop('checked', false)
-            $("#validate_menuaccess").text("menu akses harus dipilih minimal 1 menu")
-            return false
-        }
-    }
+     // $('#form_input').validate({
+     //     errorClass: 'text-danger',
+     //     rules: {
+     //         RoleName : {
+     //             required : true,
+     //             minlength : 3,
+     //         },
+     //     },
+     //     messages: {
+     //         RoleName : {
+     //             required : "Please fill role Name",
+     //             minlength : 'The name must consist of at least 2 characters'
+     //         }
+     //     },
+     //     submitHandler : function(form){
+     //         //Validasi Menu Access CheckBox saat submit
+     //         if(validasi_list_selected()){
 
-    $('#form_input').validate({
-        errorClass: 'text-danger',
-        rules: {
-            RoleName : {
-                required : true,
-                minlength : 3,
-            },
-        },
-        messages: {
-            RoleName : {
-                required : "Please fill role Name",
-                minlength : 'The name must consist of at least 2 characters'
-            }
-        },
-        submitHandler : function(form){
-            //Validasi Menu Access CheckBox saat submit
-            if(validasi_list_selected()){
+     //             // var dataForm = $(form).serialize()
+     //             form_value.Id = $('#Id').val()
+     //             form_value.RoleName = $('#RoleName').val()
 
-                // var dataForm = $(form).serialize()
-                form_value.Id = $('#Id').val()
-                form_value.RoleName = $('#RoleName').val()
+     //             $.ajax({
+     //                 url : "/Role/Edit_MenuAccess",
+     //                 data : form_value,
+     //                 type : "post",
+     //                 dataType : "json",
+     //                 success : function (response) {
+     //                     var data = response.dataResponse
+     //                     if(data.success){
+     //                         $('.modal').modal('hide')
 
-                $.ajax({
-                    url : "/Role/Edit_MenuAccess",
-                    data : form_value,
-                    type : "post",
-                    dataType : "json",
-                    success : function (response) {
-                        var data = response.dataResponse
-                        if(data.success){
-                            $('.modal').modal('hide')
+     //                         Swal.fire (
+     //                             'information',
+     //                             data.message,
+     //                             'success'
+     //                         ).then (function (){
+     //                             window.location.reload()
+     //                         })
+     //                     }
+     //                     else {
+     //                         Swa.fire({
+     //                             icon : 'error',
+     //                             title : 'warning',
+     //                             text : data.message
+     //                         })
+     //                     }
+     //                 }
+     //             })
+     //         }
+     //     }
+     // })
 
-                            Swal.fire (
-                                'information',
-                                data.message,
-                                'success'
-                            ).then (function (){
-                                window.location.reload()
-                            })
-                        }
-                        else {
-                            Swa.fire({
-                                icon : 'error',
-                                title : 'warning',
-                                text : data.message
-                            })
-                        }
-                    }
-                })
-            }
-        }
-    })
-
-</script>
+ </script>

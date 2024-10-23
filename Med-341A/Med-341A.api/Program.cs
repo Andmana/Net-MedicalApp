@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 // Register EmailService for dependency injection
 builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<AuthService>();
+builder.Services.AddTransient<MenuRoleService>();
 builder.Services.AddTransient<ResetPasswordService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
