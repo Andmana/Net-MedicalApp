@@ -5,194 +5,200 @@
 @{
     ViewData["Title"] = "Hak Akses";
 }
-<div class="col-md-12">
-    <div class="card">
-        <div class="card-header">
-            <div class="d-flex align-items-center">
-                <h4 class="card-title">Hak Akses</h4>
-                <button id="btn_create" class="btn btn-primary btn-round ms-auto">
-                    <i class="fa fa-plus"></i>
-                    Tambah Data
-                </button>
-            </div>
-        </div>
-        <div class="card-body">
-            
-            <form asp-action="Index" method="get" id="form_search">
-                <div class="table-responsive">
-                    <div id="add-row_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-                        <div class="row">
-                            <div class="col-sm-12 col-md-6">
-                                <div class="dataTables_length" id="add-row_length">
-                                    <label>
-                                        Show 
-                                        <select id="select_show" name="showData" aria-controls="add-row" class="form-control form-control-sm">
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                        </select> 
-                                        entries
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-6">
-                                <div id="add-row_filter" class="dataTables_filter">
-                                    <label>Search:
-                                        <input type="search" id="searchString" name="searchString" class="form-control form-control-sm" placeholder="" aria-controls="add-row">
-                                    </label>
-                                    <div class="btn btn-icon btn-round btn-primary" style="cursor:pointer" id="btn_search">
-                                        <i class="fas fa-search"></i>
-                                    </div>
-                                    <div id="btn_reset" class="btn btn-icon btn-round btn-black">
-                                        <i class=" fas fa-redo"></i>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <table id="add-row" class="display table table-striped table-hover dataTable" role="grid" aria-describedby="add-row_info">
-                                    <thead>
-                                        <tr role="row">
-                                            <th style="width: 2.5px;" class="text-center">
-                                                No.
-                                            </th>
-                                            <th rowspan="1" colspan="1" style="width: 249.613px;">
-                                                <a asp-action="Index"
-                                                    asp-route-sortOrder="@ViewBag.namesort"
-                                                    asp-route-currentFilter="@ViewBag.currentFilter"
-                                                    asp-route-showData="@ViewBag.currentShowData">
-                                                    Nama
-                                                </a>
-                                            </th>
-                                            <th rowspan="1" colspan="1" style="width: 363.612px;">
-                                                <a asp-action="Index"
-                                                    asp-route-sortOrder="@ViewBag.codeSort"
-                                                    asp-route-currentFilter="@ViewBag.currentFilter"
-                                                    asp-route-showData="@ViewBag.currentShowData">
-                                                    Kode
-                                                </a>
-                                            </th>
-                                            <th style="width: 120.7px;" aria-controls="add-row" rowspan="1" colspan="1" >
-                                                #
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th scope="1" class="text-center">
-                                                No.
-                                            </th>
-                                            <th rowspan="1" colspan="1">
-                                                <a asp-action="Index"
-                                                    asp-route-sortOrder="@ViewBag.namesort"
-                                                    asp-route-currentFilter="@ViewBag.currentFilter"
-                                                    asp-route-showData="@ViewBag.currentShowData">
-                                                    Nama
-                                                </a>
-                                            </th>
-                                            <th rowspan="1" colspan="1">
-                                                <a asp-action="Index"
-                                                    asp-route-sortOrder="@ViewBag.codeSort"
-                                                    asp-route-currentFilter="@ViewBag.currentFilter"
-                                                    asp-route-showData="@ViewBag.currentShowData">
-                                                    Kode
-                                                </a>
-                                            </th>
-                                            <th rowspan="1" colspan="1">#</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        @if (Model.Count == 0)
-                                        {
-                                            <tr>
-                                                <td colspan="4" class="text-center"><string>Data Not Found</string> </td>
-                                            </tr>
-                                        }
-                                        @{
-                                            int tblIdx = (Model.PageIndex - 1) * ViewBag.currentShowData + 1;
 
-                                        }
-                                        @foreach (var item in Model)
-                                        {
-                                            <tr role="row" class="@(tblIdx % 2 == 0 ? "even" : "odd" )">
-                                                <td class="text-center">
-                                                    @tblIdx
-                                                </td>
-                                                <td>@item.Name</td>
-                                                <td>@item.Code</td>
-                                                <td class="d-flex justify-content-evenly">
-                                                    <div class="">
-                                                        <a class="btn btn-link btn-primary btn_edit px-0 pe-5" dataId="@item.Id">
-                                                            <i class="fa fa-edit"></i>
-                                                        </a>
-                                                        <a class="btn btn-link btn-danger btn_delete px-0 ps-5" dataId="@item.Id">
-                                                            <i class="fa fa-times"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            tblIdx++;
-                                        }
-                                    
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 col-md-5">
-                                <div class="dataTables_info"
-                                     id="add-row_info"
-                                     role="status"
-                                     aria-live="polite">
-                                    Data ke @((Model.PageIndex - 1) * Model.TotalPages + 1) - @(tblIdx - 1)
-                                    dari @Model.TotalData
+<div class="page-inner">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <h4 class="card-title">Hak Akses</h4>
+                    <button id="btn_create" class="btn btn-primary btn-round ms-auto">
+                        <i class="fa fa-plus"></i>
+                        Tambah Data
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <form asp-action="Index" method="get" id="form_search">
+                    <div class="table-responsive">
+                        <div id="add-row_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="add-row_length">
+                                        <label>
+                                            Show
+                                            <select id="select_show" name="showData" aria-controls="add-row" class="form-control form-control-sm">
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                            </select>
+                                            entries
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div id="add-row_filter" class="dataTables_filter">
+                                        <label>
+                                            Search:
+                                            <input type="search" id="searchString" name="searchString" class="form-control form-control-sm" placeholder="" aria-controls="add-row">
+                                        </label>
+                                        <div class="btn btn-icon btn-round btn-primary" style="cursor:pointer" id="btn_search">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                        <div id="btn_reset" class="btn btn-icon btn-round btn-black">
+                                            <i class=" fas fa-redo"></i>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-7">
-                                @{
-                                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-                                }
-                                <div class="dataTables_paginate paging_simple_numbers"
-                                     id="add-row_paginate">
-                                    <ul class="pagination">
-                                        <li class="paginate_button previous">
-                                            <a asp-action="Index"
-                                               asp-route-sortOrder="@ViewBag.currentSort"
-                                               asp-route-pageNumber="@(Model.PageIndex - 1)"
-                                               asp-route-currentFilter="@ViewBag.currentFilter"
-                                               asp-route-showData="@ViewBag.currentShowData"
-                                               asp-route-searchString="@ViewBag.currentFilter"
-                                               class="page-link text-primary @prevDisabled">
-                                                Previous
-                                            </a>
-                                        </li>
-                                        <li class="page-link rounded-5">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table id="add-row" class="display table table-striped table-hover dataTable" role="grid" aria-describedby="add-row_info">
+                                        <thead>
+                                            <tr role="row">
+                                                <th style="width: 2.5px;" class="text-center">
+                                                    No.
+                                                </th>
+                                                <th rowspan="1" colspan="1" style="width: 249.613px;">
+                                                    <a asp-action="Index"
+                                                       asp-route-sortOrder="@ViewBag.namesort"
+                                                       asp-route-currentFilter="@ViewBag.currentFilter"
+                                                       asp-route-showData="@ViewBag.currentShowData">
+                                                        Nama
+                                                    </a>
+                                                </th>
+                                                <th rowspan="1" colspan="1" style="width: 363.612px;">
+                                                    <a asp-action="Index"
+                                                       asp-route-sortOrder="@ViewBag.codeSort"
+                                                       asp-route-currentFilter="@ViewBag.currentFilter"
+                                                       asp-route-showData="@ViewBag.currentShowData">
+                                                        Kode
+                                                    </a>
+                                                </th>
+                                                <th style="width: 120.7px;" aria-controls="add-row" rowspan="1" colspan="1">
+                                                    #
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th scope="1" class="text-center">
+                                                    No.
+                                                </th>
+                                                <th rowspan="1" colspan="1">
+                                                    <a asp-action="Index"
+                                                       asp-route-sortOrder="@ViewBag.namesort"
+                                                       asp-route-currentFilter="@ViewBag.currentFilter"
+                                                       asp-route-showData="@ViewBag.currentShowData">
+                                                        Nama
+                                                    </a>
+                                                </th>
+                                                <th rowspan="1" colspan="1">
+                                                    <a asp-action="Index"
+                                                       asp-route-sortOrder="@ViewBag.codeSort"
+                                                       asp-route-currentFilter="@ViewBag.currentFilter"
+                                                       asp-route-showData="@ViewBag.currentShowData">
+                                                        Kode
+                                                    </a>
+                                                </th>
+                                                <th rowspan="1" colspan="1">#</th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            @if (Model.Count == 0)
+                                            {
+                                                <tr>
+                                                    <td colspan="4" class="text-center"><string>Data Not Found</string> </td>
+                                                </tr>
+                                            }
+                                            @{
+                                                int tblIdx = (Model.PageIndex - 1) * ViewBag.currentShowData + 1;
+
+                                            }
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr role="row" class="@(tblIdx % 2 == 0 ? "even" : "odd" )">
+                                                    <td class="text-center">
+                                                        @tblIdx
+                                                    </td>
+                                                    <td>@item.Name</td>
+                                                    <td>@item.Code</td>
+                                                    <td class="d-flex justify-content-evenly">
+                                                        <div class="">
+                                                            <a class="btn btn-link btn-primary btn_edit px-0 pe-5" dataId="@item.Id">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>
+                                                            <a class="btn btn-link btn-danger btn_delete px-0 ps-5" dataId="@item.Id">
+                                                                <i class="fa fa-times"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                tblIdx++;
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-5">
+                                    <div class="dataTables_info"
+                                         id="add-row_info"
+                                         role="status"
+                                         aria-live="polite">
+                                        Data ke @((Model.PageIndex - 1) * Model.TotalPages + 1) - @(tblIdx - 1)
+                                        dari @Model.TotalData
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-7">
+                                    @{
+                                        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                                        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                                    }
+                                    <div class="dataTables_paginate paging_simple_numbers"
+                                         id="add-row_paginate">
+                                        <ul class="pagination">
+                                            <li class="paginate_button previous">
+                                                <a asp-action="Index"
+                                                   asp-route-sortOrder="@ViewBag.currentSort"
+                                                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                                                   asp-route-currentFilter="@ViewBag.currentFilter"
+                                                   asp-route-showData="@ViewBag.currentShowData"
+                                                   asp-route-searchString="@ViewBag.currentFilter"
+                                                   class="page-link text-primary @prevDisabled">
+                                                    Previous
+                                                </a>
+                                            </li>
+                                            <li class="page-link rounded-5">
                                                 Halaman ke @Model.PageIndex dari @Model.TotalPages
-                                        </li>
-                                        <li class="paginate_button next">
-                                            <a asp-action="Index"
-                                               asp-route-sortOrder="@ViewBag.currentSort"
-                                               asp-route-pageNumber="@(Model.PageIndex + 1)"
-                                               asp-route-currentFilter="@ViewBag.currentFilter"
-                                               asp-route-showData="@ViewBag.currentShowData"
-                                               asp-route-searchString="@ViewBag.currentFilter"
-                                               class="page-link text-primary @nextDisabled">
-                                                Next
-                                            </a>
-                                        </li>
-                                    </ul>
+                                            </li>
+                                            <li class="paginate_button next">
+                                                <a asp-action="Index"
+                                                   asp-route-sortOrder="@ViewBag.currentSort"
+                                                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                                                   asp-route-currentFilter="@ViewBag.currentFilter"
+                                                   asp-route-showData="@ViewBag.currentShowData"
+                                                   asp-route-searchString="@ViewBag.currentFilter"
+                                                   class="page-link text-primary @nextDisabled">
+                                                    Next
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
+
 </div>
+
 
 <script>
 
