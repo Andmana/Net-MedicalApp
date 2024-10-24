@@ -1,32 +1,69 @@
-﻿@using Med_341A.viewmodels
-@model List<VMedicalItem>
+﻿@using Med_341A.viewmodels;
+@model VPaginatedList<VMedicalItem>;
 @{
-
+    ViewData["Title"] = "Pencarian Obat";
+    var data = ViewBag.dataChart;
+    var hist = ViewBag.Search;
 }
 
-
 <div class="page-inner">
+    @* Order Chart *@
+    <div class="row row-demo-grid">
+        <div class="col-12 col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    @{
+                        int countItem = @data.TotalQty ?? 0;
+                        decimal countAmount = data.Amount ?? 0;
+                    }
+                    <h5>
+                        Produk
+                        <span id="totalproduct"> @countItem</span>
+                        || Estimasi Harga : Rp.
+                        <span id="estimateprice">@countAmount</span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="card">
+                <div class="card-body d-flex justify-content-center align-content-center">
+                    <button class="btn btn-secondary">Keranjang Saya</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Search history  *@
     <div class="card">
         <div class="card-body">
             <div class="row row-demo-grid">
-                <div class="col-12 col-md-8">
+                <div class="col-12 col-md-8 d-flex justify-content-start align-content-center">
                     <code>
-                        col-12 col-md-8
+                        @(string.IsNullOrWhiteSpace(hist.Name) ? "" : $"Kata Kunci : {hist.Name}, ")
+                        @(string.IsNullOrWhiteSpace(ViewBag.CategoryName) ? "" : $"Kategori : {ViewBag.CategoryName}, ")
+                        @(string.IsNullOrWhiteSpace(ViewBag.SegmentationName) ? "" : $"Segmentasi : {ViewBag.SegmentationName}, ")
                     </code>
+                    <br />
+                    <code>
+                        @(ViewBag.Min == null ? "" : $"Harga Minimal : {ViewBag.Min}, ")
+                        @(ViewBag.Max == null ? "" : $"Harga Maksimal : {ViewBag.Max}, ")
+                    </code>
+
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="d-flex justify-content-end align-content-center">
-                        <a class="btn btn-info">Ulangi Pencarian</a>
+                        <button id="btn_search" class="btn btn-info">
+                            <i class="fas fa-search"></i>
+                            Ulangi Pencarian
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
     </div>
-
     <div class="card">
         <div class="card-header">
-
         </div>
         <div class="card-body">
             <div class="row mx-auto" style="width:90%">
@@ -36,18 +73,21 @@
                     <div class="col-md-6">
                         <div class="card card-profile">
                             <div class="card-body py-5 px-4 d-flex justify-content-around gap-3">
-                                <!-- Medical Info-->
                                 <div class="flex-1 d-flex flex-column justify-content-between gap-2">
                                     <div class="timeline-panel">
                                         <div class="timeline-heading">
-                                            <h4 class="timeline-title">@item.Name</h4>
+                                            <h4 class="timeline-title" id="price_@item.Id"> @item.Name</h4>
                                             <p class="ps-2">
                                                 <small class="text-muted">
                                                     Per strip @@ @item.Packaging
                                                 </small>
                                                 <small class="d-block text-muted">
                                                     <i class="fas fa-money-check-alt"></i>
-                                                    Rp. @item.PriceMin - Rp . @item.PriceMax
+                                                    Rp. @item.PriceMin - Rp .
+                                                    <sapn id="price_@item.Id">
+                                                        @item.PriceMax
+                                                        `
+                                                    </sapn>
                                                 </small>
                                             </p>
 
@@ -59,12 +99,25 @@
                                         </div>
 
                                     </div>
-                                    <div class="d-flex justify-content-center">
-                                        <button class="btn btn-sm btn-secondary" style="width: 100%;">Tambah ke keranjang</button>
+                                    <div class="d-flex justify-content-around">
+                                        <button class="btn btn-sm btn-secondary" dataid="@item.Id" style="width: 100%;">Tambah ke keranjang</button>
+
+                                    </div>
+                                    <div class="d-flex justify-content-around align-items-center d-none">
+                                        <div class="">
+                                            <a id="min" dataid="@item.Id" class="btn btn-sm btn-danger btn_min">
+                                                <b>-</b>
+                                            </a>
+                                        </div>
+                                            <span class="text-lg" id="totalitem_@item.Id">0</span>
+                                        <div class="">
+                                            <a id="plus" dataid="@item.Id" class="btn btn-sm btn-success btn_plus">
+                                                <b>+</b>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Medical Image-->
                                 <div class="d-flex flex-column justify-content-between border-2">
                                     <div class="avatar avatar-xxl">
                                         <img src="~/assets/img/jm_denis.jpg" alt="..." class="avatar-img rounded-2">
@@ -79,41 +132,60 @@
             </div>
 
         </div>
-        
+
     </div>
-    
+    @* Pagination *@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-sm-12 col-md-5 d-flex flex-column justify-content-center">
+                <div class="col-sm-12 col-md-5 d-flex justify-content-start align-items-center gap-5">
+                    <div class="input-group w-auto">
+                        <span class="input-group-text" id="basic-addon3">Tampilan Data:</span>
+                        <form asp-action="MedicalItem" id="form_pagesize">
+                            <select name="PageSize" id="PageSize"
+                                    class="form-control">
+                                <option value="3">3</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                            </select>
+                        </form>
+                    </div>
                     <div class="dataTables_info"
                          id="add-row_info"
                          role="status"
                          aria-live="polite">
-                        Data ke 5
-                        dari 500
+                        Data ke 5 dari 500
                     </div>
+
                 </div>
                 <div class="col-sm-12 col-md-7 ">
                     @{
-                        var prevDisabled = "";
-                        var nextDisabled = "";
+                        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
                     }
                     <div class="dataTables_paginate paging_simple_numbers d-flex justify-content-end align-items-center"
                          id="add-row_paginate">
                         <ul class="pagination mb-0">
                             <li class="paginate_button previous">
-                                <a asp-action="Index"
-                                   class="page-link text-primary @prevDisabled">
-                                    Previous
+                                <a id="aPrev" asp-action="Index"
+                                   asp-route-sortOrder="@ViewBag.CurrentSort"
+                                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                                   asp-route-currentFilter="@ViewBag.CurrentFilter"
+                                   asp-route-pageSize="@ViewBag.CurrentPageSize"
+                                   class="btn btn-black float-right @prevDisabled">
+                                    Prev
                                 </a>
                             </li>
                             <li class="page-link rounded-5">
-                                Halaman ke 1 dari 10
+                                @Model.PageIndex dari @Model.TotalPages
                             </li>
                             <li class="paginate_button next">
-                                <a asp-action="Index"
-                                   class="page-link text-primary @nextDisabled">
+                                <a id="aNext" asp-action="Index"
+                                   asp-route-sortOrder="@ViewBag.CurrentSort"
+                                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                                   asp-route-currentFilter="@ViewBag.CurrentFilter"
+                                   asp-route-pageSize="@ViewBag.CurrentPageSize"
+                                   class="btn btn-black float-right @nextDisabled">
                                     Next
                                 </a>
                             </li>
@@ -122,56 +194,18 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
-        
+   
 </div>
 
-@* 
+<script>
+    $("#btn_search").click(function () {
+        $("#modal_body").empty()
+        $("#modal_body").load("/MedicalItem/SearchMenu")
+        $("#my_modal").modal("show")
 
-<div class="col-md-6">
-    <div class="card card-profile">
-        <div class="card-body d-flex justify-content-between gap-3">
-            <!-- Medical Info-->
-            <div class="d-flex flex-column justify-content-between gap-2">
-                <div class="timeline-panel">
-                    <div class="timeline-heading">
-                        <h4 class="timeline-title">Mussum ipsum cacilds</h4>
-                        <p class="ps-2">
-                            <small class="text-muted">
-                                Per strip @@ 10 kaplet
-                            </small>
-                            <small class="d-block text-muted">
-                                <i class="fas fa-money-check-alt"></i>
-                                Rp. 5000 - 50000
-                            </small>
-                        </p>
-
-                    </div>
-                    <div class="timeline-body">
-                        <p>
-                            Far far away, behind the word mountains, far from the
-                            countries Vokalia and Consonantia, there live the
-                            blind texts.
-                        </p>
-                    </div>
-                    <div class="d-flex justify-content-center my-4">
-                        <button class="btn btn-sm btn-secondary mx-auto" style="width: 90%;">Tambah ke keranjang</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Medical Image-->
-            <div class="d-flex flex-column justify-content-between border-2">
-                <div class="avatar avatar-xxl">
-                    <img src="~/assets/img/jm_denis.jpg" alt="..." class="avatar-img rounded-2">
-                </div>
-                <a class="btn btn-black" width="auto">Detail</a>
-            </div>
-        </div>
-
-        <div class="card-footer d-flex justify-content-between">
-        </div>
-    </div>
-</div>
- *@
+        //Cara removeClass
+        $(".modal-dialog").removeClass("modal-lg")
+    })
+</script>

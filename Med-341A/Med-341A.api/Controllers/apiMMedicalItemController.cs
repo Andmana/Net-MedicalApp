@@ -1,6 +1,7 @@
 ﻿using Med_341A.datamodels;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -40,6 +41,33 @@ namespace Med_341A.api.Controllers
             return data;
         }
 
-        
+        [HttpGet("GetCategory")]
+        public List<MMedicalItemCategory> GetCategory()
+        {
+            List<MMedicalItemCategory> data = db.MMedicalItemCategories.Where(a => a.IsDelete == false).ToList();
+            return data;
+        }
+
+        [HttpGet("GetSegmentation")]
+        public List<MMedicalItemSegmentation> GetSegmentation()
+        {
+            List<MMedicalItemSegmentation> data = db.MMedicalItemSegmentations.Where(a => a.IsDelete == false).ToList();
+            return data;
+        }
+
+        [HttpGet("GetCategoryName/{id}")]
+        public string GetCategoryName(long id)
+        {
+            string name = db.MMedicalItemCategories.Where(a => a.Id == id).First().Name;
+            return name;
+        }
+
+        [HttpGet("GetSegmentationName/{id}")]
+        public string GetSegmentationName(long id)
+        {
+            string name = db.MMedicalItemSegmentations.Where(a => a.Id == id).First().Name;
+            return name;
+        }
+
     }
 }

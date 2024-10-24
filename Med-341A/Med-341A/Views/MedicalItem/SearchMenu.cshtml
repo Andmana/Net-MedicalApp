@@ -1,0 +1,120 @@
+﻿@using Med_341A.datamodels
+@model MMedicalItem
+@{
+    ViewData["Title"] = "Cari Obat & Alat Kesehatan";
+}
+<form asp-action="Index" method="get" id="form_search">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">@ViewData["Title"]</h4>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group form-group-default">
+                <label for="CategoryId">Kategori</label>
+                <select class="form-select ps-2 text-muted" id="CategoryId" name="CategoryId">
+                    <option value="">-- Pilih Katergori --</option>
+                    @foreach (var item in ViewBag.DropdownCategory)
+                    {
+                        <option value=" @item.Id"> @item.Name</option>
+                    }
+                </select>
+            </div>
+
+
+            <div class="form-group form-group-default">
+                <label>Kata Kunci</label>
+                <input id="name" name="name" type="text" class="form-control bg-secondary border-bottom-1 " placeholder="Isi nama role" onfocus="resetSpan(this)">
+                <span id="validate_name" class="text-danger mt-1"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="d-flex flex-column">
+                    
+                    @foreach(var item in ViewBag.RadioSegmentation)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="SegmentationId" id="SegmentationId_@item.Id" value="@item.Id" @(item.Name.ToLower() == "obat bebas" ? "checked" : "")>
+                            <label class="form-check-label" for="SegmentationId_@item.Id">
+                                @item.Name
+                            </label>
+                        </div>
+                    }
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="SegmentationId" id="SegmentationId_0" value="" >
+                        <label class="form-check-label" for="SegmentationId_0">
+                            Semua Obat
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="row row-demo-grid">
+                <div class="col">
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Min Rp.</span>
+                            <input type="number" class="form-control" id="MinAmount" name="MinAmount" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Maks Rp.</span>
+                            <input type="number" class="form-control" id="MaxAmount" name="MaxAmount" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-action d-flex justify-content-end gap-2    ">
+            <a class="btn btn-ligth fw-bold" asp-controller="MedicalItem" asp-action="Index"> Reset Pencarian</a>
+            <button type="submit" class="btn btn-info">Cari</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    // var SegmentationName = ""
+
+    // $('#SegmentationId').click(function () {
+    //     $("input[type='radio']:checked").each(function () {
+    //         var SegmentationName = $(this).attr("id");
+    //         alert($("label[for='" + idVal + "']").text());
+    //     });
+    // });
+
+
+    // $("#form_search").validate({
+    //     submitHandler: function (form) {
+
+    //         var CategoryId = $('#CategoryId').val()
+    //         var CategoryName = $("#CategoryId option:selected").text()
+    //         var Name = $("#Name").val()
+    //         var MaxAmount = $("#Name").val()
+    //         var MinAmount = $("#MinAmount").val()
+
+    //         $.ajax({
+    //             url: "/MedicalItem/Index",
+    //             type: "get",
+    //             data: {
+    //                 name: RoleName,
+    //                 id: id,
+    //             },
+    //             dataType: "json",
+    //             success: function (response) {
+    //                 if (response && RoleName.length >= 3) {
+    //                     $("#validate_RoleName").empty().text(`Role name is already exists`)
+    //                     return true
+    //                 }
+    //                 else {
+    //                     fungsiSubmit(form)
+    //                 }
+
+    //             }
+    //         })
+    //     }
+    // })
+</script>
