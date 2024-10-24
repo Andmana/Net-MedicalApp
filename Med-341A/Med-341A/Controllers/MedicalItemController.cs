@@ -63,10 +63,10 @@ namespace Med_341A.Controllers
             ViewBag.dataItem = listItem;
 
             ViewBag.Search = dataSearch;
-            ViewBag.CurrentPageSize = dataSearch.pageSize;
+            ViewBag.CurrentPageSize = dataSearch.pageSize ?? 4;
 
             return View(VPaginatedList<VMedicalItem>.CreateAsync(data, dataSearch.pageNumber ?? 1,
-                        dataSearch.pageSize ?? 3));
+                        dataSearch.pageSize ?? 4));
         }
 
         public async Task<IActionResult> SearchMenu()

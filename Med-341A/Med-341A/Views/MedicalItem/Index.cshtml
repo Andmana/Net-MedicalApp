@@ -37,17 +37,17 @@
     <div class="card">
         <div class="card-body">
             <div class="row row-demo-grid">
-                <div class="col-12 col-md-8 d-flex justify-content-start align-content-center">
-                    <code>
+                <div class="col-12 col-md-8 justify-content-start align-content-center">
+                    <span class="text-muted">
                         @(string.IsNullOrWhiteSpace(hist.Name) ? "" : $"Kata Kunci : {hist.Name}, ")
                         @(string.IsNullOrWhiteSpace(ViewBag.CategoryName) ? "" : $"Kategori : {ViewBag.CategoryName}, ")
-                        @(string.IsNullOrWhiteSpace(ViewBag.SegmentationName) ? "" : $"Segmentasi : {ViewBag.SegmentationName}, ")
-                    </code>
+                        @(string.IsNullOrWhiteSpace(ViewBag.SegmentationName) ? "Segmen : Semua Jenis Obat " : $"Segmentasi : {ViewBag.SegmentationName} ")
+                    </span>
                     <br />
-                    <code>
+                    <span class="d-block text-muted">
                         @(ViewBag.Min == null ? "" : $"Harga Minimal : {ViewBag.Min}, ")
                         @(ViewBag.Max == null ? "" : $"Harga Maksimal : {ViewBag.Max}, ")
-                    </code>
+                    </span>
 
                 </div>
                 <div class="col-6 col-md-4">
@@ -62,6 +62,7 @@
         </div>
 
     </div>
+    @* Produc List*@
     <div class="card">
         <div class="card-header">
         </div>
@@ -84,10 +85,9 @@
                                                 <small class="d-block text-muted">
                                                     <i class="fas fa-money-check-alt"></i>
                                                     Rp. @item.PriceMin - Rp .
-                                                    <sapn id="price_@item.Id">
+                                                    <span id="price_@item.Id">
                                                         @item.PriceMax
-                                                        `
-                                                    </sapn>
+                                                    </span>
                                                 </small>
                                             </p>
 
@@ -141,12 +141,19 @@
                 <div class="col-sm-12 col-md-5 d-flex justify-content-start align-items-center gap-5">
                     <div class="input-group w-auto">
                         <span class="input-group-text" id="basic-addon3">Tampilan Data:</span>
-                        <form asp-action="MedicalItem" id="form_pagesize">
+                        <form asp-action="Index"
+                            asp-route-pageNumber=1
+                            asp-route-Name="@hist.Name"
+                            asp-route-SegmentationId="@hist.SegmentationId"
+                            asp-route-CategoryId="@hist.CategoryId"
+                            asp-route-MinAmount="@ViewBag.Min"
+                            asp-route-MaxAmount="@ViewBag.Max"
+                            id="form_pagesize">
                             <select name="PageSize" id="PageSize"
                                     class="form-control">
-                                <option value="3">3</option>
-                                <option value="5">5</option>
+                                <option value="4">4</option>
                                 <option value="10">10</option>
+                                <option value="20">20</option>
                             </select>
                         </form>
                     </div>
@@ -154,7 +161,7 @@
                          id="add-row_info"
                          role="status"
                          aria-live="polite">
-                        Data ke 5 dari 500
+                        Data ke  dari @Model.TotalData
                     </div>
 
                 </div>
@@ -170,14 +177,19 @@
                                 <a id="aPrev" asp-action="Index"
                                    asp-route-sortOrder="@ViewBag.CurrentSort"
                                    asp-route-pageNumber="@(Model.PageIndex - 1)"
-                                   asp-route-currentFilter="@ViewBag.CurrentFilter"
+                                   asp-route-Name="@ViewBag.CurrentFilter"
                                    asp-route-pageSize="@ViewBag.CurrentPageSize"
+                                   asp-route-Name="@hist.Name"
+                                   asp-route-SegmentationId="@hist.SegmentationId"
+                                   asp-route-CategoryId="@hist.CategoryId"
+                                   asp-route-MinAmount="@ViewBag.Min"
+                                   asp-route-MaxAmount="@ViewBag.Max"
                                    class="btn btn-black float-right @prevDisabled">
                                     Prev
                                 </a>
                             </li>
-                            <li class="page-link rounded-5">
-                                @Model.PageIndex dari @Model.TotalPages
+                            <li class="page-link rounded-5 d-flex align-items-center">
+                                <span class="text-muted text-center align-items-center">@Model.PageIndex dari @Model.TotalPages</span>
                             </li>
                             <li class="paginate_button next">
                                 <a id="aNext" asp-action="Index"
@@ -185,6 +197,11 @@
                                    asp-route-pageNumber="@(Model.PageIndex + 1)"
                                    asp-route-currentFilter="@ViewBag.CurrentFilter"
                                    asp-route-pageSize="@ViewBag.CurrentPageSize"
+                                   asp-route-Name="@hist.Name"
+                                   asp-route-SegmentationId="@hist.SegmentationId"
+                                   asp-route-CategoryId="@hist.CategoryId"
+                                   asp-route-MinAmount="@ViewBag.Min"
+                                   asp-route-MaxAmount="@ViewBag.Max"
                                    class="btn btn-black float-right @nextDisabled">
                                     Next
                                 </a>
@@ -207,5 +224,11 @@
 
         //Cara removeClass
         $(".modal-dialog").removeClass("modal-lg")
+    })
+
+    $("#PageSize").val("@ViewBag.CurrentPageSize")
+
+    $("#PageSize").change(function () {
+        $("#form_pagesize").submit();
     })
 </script>
