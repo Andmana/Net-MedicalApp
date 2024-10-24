@@ -70,12 +70,16 @@ namespace Med_341A.api.Controllers
                 VMUser data = (from user in db.MUsers
                                join bio in db.MBiodata
                                on user.BiodataId equals bio.Id
+                               join role in db.MRoles
+                               on user.RoleId equals role.Id into roleGroup
+                               from role in roleGroup.DefaultIfEmpty()
                                where user.IsDelete == false && user.Email == loginRequest.Email &&
                                (user.IsLocked == false || user.IsLocked == null)
                                select new VMUser
                                {
                                    Id = user.Id,
                                    RoleId = user.RoleId,
+                                   NameRole = role.Name,
                                    Fullname = bio.Fullname,
                                    Email = user.Email,
                                    ImagePath = bio.ImagePath
