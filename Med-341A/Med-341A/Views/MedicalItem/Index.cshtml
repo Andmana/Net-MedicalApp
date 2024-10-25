@@ -1,5 +1,6 @@
 ﻿@using Med_341A.viewmodels;
 @model VPaginatedList<VMedicalItem>;
+
 @{
     ViewData["Title"] = "Pencarian Obat";
     var data = ViewBag.dataHeader;
@@ -26,7 +27,7 @@
                         Jenis Item
                         <span id="itemcount">@itemCount</span>
                         || Estimasi Harga : Rp.
-                        <span id="estimateprice">@countAmount</span>
+                        <span id="estimateprice">@((int)Math.Round(countAmount))</span>
                     </h5>
                 </div>
             </div>
@@ -228,7 +229,6 @@
     var estimateprice = parseInt($("#estimateprice").text())
     var itemcount = parseInt($("#itemcount").text())
     var obj = {}
-
     var ListCart = @Html.Raw(ViewBag.dataDetail)
 
     setTransaction()
@@ -247,6 +247,7 @@
     }
 
     $(".btn_plus").click(function () {
+
         if (ListCart == null || ListCart.length == 0) {
             ListCart = @Html.Raw(ViewBag.dataDetail)
             }
@@ -279,6 +280,7 @@
         addList(id, obj)
         //console.log(ListCart)
 
+        // show jumlah item
         hide_note()
         itemcount = ListCart.length
         $("#itemcount").text(itemcount)

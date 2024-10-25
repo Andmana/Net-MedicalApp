@@ -56,6 +56,12 @@ namespace Med_341A.Controllers
             {
                 dataHeader = new VPurchaseHeader();
                 dataHeader.ListDetails = new List<VPurchaseDetail>();
+            }else
+            {
+                if (dataHeader.ListDetails == null)
+                {
+                    dataHeader.ListDetails = new List<VPurchaseDetail>();
+                }
             }
 
             var ListDetail = JsonConvert.SerializeObject(dataHeader.ListDetails);
