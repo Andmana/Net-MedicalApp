@@ -2,23 +2,29 @@
 @model VPaginatedList<VMedicalItem>;
 @{
     ViewData["Title"] = "Pencarian Obat";
-    var data = ViewBag.dataChart;
+    var data = ViewBag.dataHeader;
     var hist = ViewBag.Search;
 }
 
 <div class="page-inner">
     @* Order Chart *@
-    <div class="row row-demo-grid">
+    @{
+        int totalProduct = @data.TotalQty ?? 0;
+        int itemCount = @data.ItemCount ?? 0;
+        decimal countAmount = data.Amount ?? 0;
+
+        string dnone = @data.ItemCount == 0 ? "d-none" : "";
+    }
+    <div class="row row-demo-grid" id="Purchase_note">
         <div class="col-12 col-md-8">
             <div class="card">
                 <div class="card-body">
-                    @{
-                        int countItem = @data.TotalQty ?? 0;
-                        decimal countAmount = data.Amount ?? 0;
-                    }
+                    
                     <h5>
-                        Produk
-                        <span id="totalproduct"> @countItem</span>
+                        @* Produk
+                        <span id="totalproduct"> @totalProduct</span> *@
+                        Jenis Item
+                        <span id="itemcount">@itemCount</span>
                         || Estimasi Harga : Rp.
                         <span id="estimateprice">@countAmount</span>
                     </h5>
@@ -62,7 +68,7 @@
         </div>
 
     </div>
-    @* Produc List*@
+    @* Product List*@
     <div class="card">
         <div class="card-header">
         </div>
@@ -72,12 +78,12 @@
                 @foreach (VMedicalItem item in Model)
                 {
                     <div class="col-md-6">
-                        <div class="card card-profile">
+                        <div class="card card-profile shadow-lg">
                             <div class="card-body py-5 px-4 d-flex justify-content-around gap-3">
                                 <div class="flex-1 d-flex flex-column justify-content-between gap-2">
                                     <div class="timeline-panel">
                                         <div class="timeline-heading">
-                                            <h4 class="timeline-title" id="price_@item.Id"> @item.Name</h4>
+                                            <h4 class="timeline-title" id="name_@item.Id"> @item.Name</h4>
                                             <p class="ps-2">
                                                 <small class="text-muted">
                                                     Per strip @@ @item.Packaging
@@ -99,11 +105,10 @@
                                         </div>
 
                                     </div>
-                                    <div class="d-flex justify-content-around">
-                                        <button class="btn btn-sm btn-secondary" dataid="@item.Id" style="width: 100%;">Tambah ke keranjang</button>
-
+                                    <div class="d-flex justify-content-around " id="Add_Chart_@item.Id" onclick="hide_show(@item.Id)">
+                                        <button id="plus" dataid="@item.Id" class="btn btn-sm btn-secondary btn_plus" style="width: 100%;" type="button">Tambah ke keranjang</button>
                                     </div>
-                                    <div class="d-flex justify-content-around align-items-center d-none">
+                                    <div class="d-flex justify-content-around align-items-center d-none" id="Plus_Minus_@item.Id">
                                         <div class="">
                                             <a id="min" dataid="@item.Id" class="btn btn-sm btn-danger btn_min">
                                                 <b>-</b>
@@ -217,13 +222,171 @@
 </div>
 
 <script>
+    let data = {}
+
+    var totalproduct = parseInt($("#totalproduct").text())
+    var estimateprice = parseInt($("#estimateprice").text())
+    var itemcount = parseInt($("#itemcount").text())
+    var obj = {}
+
+    var ListCart = @Html.Raw(ViewBag.dataDetail)
+
+    setTransaction()
+
+    //set product choose
+    function setTransaction() {
+        hide_note()
+        if (ListCart != null) {
+            $.each(ListCart, function (index, element) {
+
+                var id = element.MedicalItemId
+                hide_show(id)
+                $("#totalitem_" + id).text(element.Qty)
+            })
+        }
+    }
+
+    $(".btn_plus").click(function () {
+        if (ListCart == null || ListCart.length == 0) {
+            ListCart = @Html.Raw(ViewBag.dataDetail)
+            }
+
+        obj = {}
+
+        var id = parseInt($(this).attr("dataid"))
+        var idprice = "#price_" + id
+        var idtotalitem = "#totalitem_" + id
+        var idname = "#name_" + id
+
+        var totalitem = parseInt($(idtotalitem).text())
+        var price = parseInt($(idprice).text())
+
+
+        totalproduct++
+        totalitem++
+        estimateprice = estimateprice + price
+
+        $("#totalproduct").text(totalproduct)
+        $("#estimateprice").text(estimateprice)
+
+        $(idtotalitem).text(totalitem)
+
+        obj.MedicalItemId = id
+        obj.Qty = totalitem
+        obj.SubTotal = price * totalitem
+        obj.Price = price
+
+        addList(id, obj)
+        //console.log(ListCart)
+
+        hide_note()
+        itemcount = ListCart.length
+        $("#itemcount").text(itemcount)
+
+        setSession()
+    })
+
+
+    $(".btn_min").click(function () {
+        if (ListCart == null || ListCart.length == 0) {
+            ListCart = @Html.Raw(ViewBag.dataDetail)
+            }
+
+        var id = parseInt($(this).attr("dataid"))
+        var idprice = "#price_" + id
+        var idtotalitem = "#totalitem_" + id
+        var idname = "#name_" + id
+
+
+        var totalitem = parseInt($(idtotalitem).text())
+        var price = parseInt($(idprice).text())
+
+
+        if (totalitem > 0) {
+            totalproduct--
+            totalitem--
+            estimateprice = estimateprice - price
+
+        }
+
+        if (totalitem == 0)
+        {
+            show_hide(id)
+        }
+
+        $("#totalproduct").text(totalproduct)
+        $("#estimateprice").text(estimateprice)
+
+        $(idtotalitem).text(totalitem)
+
+        obj.MedicalItemId = id
+        obj.Qty = totalitem
+        obj.SubTotal = price * totalitem
+        obj.Price = price
+
+        spliceList(id, obj)
+
+        hide_note()
+        itemcount = ListCart.length
+        $("#itemcount").text(itemcount)
+        //console.log(ListCart)
+
+        setSession()
+    })
+
+    function addList(id, obj) {
+        const index = ListCart.map(e => e.MedicalItemId).indexOf(id);
+
+        if (index == -1) {
+            ListCart.push(obj)
+        }
+        else {
+            ListCart[index].Qty = obj.Qty
+            ListCart[index].SubTotal = obj.SumPrice
+        }
+    }
+
+    function spliceList(id, obj) {
+        const index = ListCart.map(e => e.MedicalItemId).indexOf(id);
+
+        if (index != -1) {
+            ListCart[index].Qty = obj.Qty
+            ListCart[index].SubTotal = obj.SumPrice
+
+            if (obj.Qty == 0) {
+                ListCart.splice(index, 1)
+            }
+        }
+    }
+
+    function setSession() {
+        var itemCt = ListCart.length
+        data = {
+            TotalQty: totalproduct,
+            Amount: estimateprice,
+            ListDetails: ListCart,
+            ItemCount: itemCt
+        }
+
+        data.namacustomer = ""
+        data.idcustomer = 1
+
+        $.ajax({
+            url: "/MedicalItem/SetSession",
+            data: { dataHeader: data },
+            type: "post",
+            dataType: "json",
+            success: function (respon) {
+                //alert("set session done")
+            }
+        })
+    }
+
     $("#btn_search").click(function () {
         $("#modal_body").empty()
         $("#modal_body").load("/MedicalItem/SearchMenu")
         $("#my_modal").modal("show")
 
-        //Cara removeClass
-        $(".modal-dialog").removeClass("modal-lg")
     })
 
     $("#PageSize").val("@ViewBag.CurrentPageSize")
@@ -231,4 +394,22 @@
     $("#PageSize").change(function () {
         $("#form_pagesize").submit();
     })
+
+    function hide_show(id) {
+        $(`#Add_Chart_${id}`).addClass('d-none');
+        $(`#Plus_Minus_${id}`).removeClass('d-none');
+    }
+
+    function show_hide(id) {
+        $(`#Add_Chart_${id}`).removeClass('d-none');
+        $(`#Plus_Minus_${id}`).addClass('d-none');
+    }
+
+    function hide_note()
+    {
+        if (ListCart.length != 0)
+            $(`#Purchase_note`).removeClass('d-none');
+        else
+            $(`#Purchase_note`).addClass('d-none');
+    }
 </script>

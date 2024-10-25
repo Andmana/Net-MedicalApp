@@ -51,16 +51,16 @@ namespace Med_341A.Controllers
                 data = data.Where(a => a.PriceMax <= dataSearch.MinAmount).ToList();
 
             //Get session in VMOrderHeader first load
-            VChart dataChart = HttpContext.Session.GetComplexData<VChart>("ListCart");
-            if (dataChart == null)
+            VPurchaseHeader dataHeader = HttpContext.Session.GetComplexData<VPurchaseHeader>("ListCart");
+            if (dataHeader == null)
             {
-                dataChart = new VChart();
-                dataChart.listItem = new List<VChartItem>();
+                dataHeader = new VPurchaseHeader();
+                dataHeader.ListDetails = new List<VPurchaseDetail>();
             }
 
-            var listItem = JsonConvert.SerializeObject(dataChart.listItem);
-            ViewBag.dataChart = dataChart;
-            ViewBag.dataItem = listItem;
+            var ListDetail = JsonConvert.SerializeObject(dataHeader.ListDetails);
+            ViewBag.dataHeader = dataHeader;
+            ViewBag.dataDetail = ListDetail;
 
             ViewBag.Search = dataSearch;
             ViewBag.CurrentPageSize = dataSearch.pageSize ?? 4;
@@ -77,7 +77,7 @@ namespace Med_341A.Controllers
         }
 
         [HttpPost]
-        public JsonResult SetSession(VChart dataHeader)
+        public JsonResult SetSession(VPurchaseHeader dataHeader)
         {
             HttpContext.Session.SetComplexData("ListCart", dataHeader);
             return Json("");
