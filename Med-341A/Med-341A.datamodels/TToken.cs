@@ -21,11 +21,6 @@ public partial class TToken
     [Column("user_id")]
     public long? UserId { get; set; }
 
-    [Column("reset_for")]
-    [StringLength(20)]
-    [Unicode(false)]
-    public string? ResetFor { get; set; }
-
     [Column("token")]
     [StringLength(50)]
     [Unicode(false)]

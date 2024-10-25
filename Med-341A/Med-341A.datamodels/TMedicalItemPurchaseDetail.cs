@@ -28,6 +28,9 @@ public partial class TMedicalItemPurchaseDetail
     [Column("courier_id")]
     public long? CourierId { get; set; }
 
+    [Column("sub_total", TypeName = "decimal(18, 0)")]
+    public decimal? SubTotal { get; set; }
+
     [Column("created_by")]
     public long CreatedBy { get; set; }
 

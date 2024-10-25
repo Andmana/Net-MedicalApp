@@ -749,12 +749,12 @@ DROP TABLE IF EXISTS t_medical_item_purchase_detail
 Create table t_medical_item_purchase_detail
 (
     id							bigint primary key identity(1,1) not null,
-    medical_item_purchase_id					bigint null,
-    medical_item_id					bigint null,
-    qty			int null,
-	medical_facility_id bigint null,
-	courier_id bigint null,
-
+    medical_item_purchase_id	bigint null,
+    medical_item_id				bigint null,
+    qty							int null,
+	medical_facility_id			bigint null,
+	courier_id					bigint null,
+	sub_total					decimal null,
     created_by					bigint not null,
     created_on					datetime not null,
     modified_by					bigint null,
@@ -786,7 +786,6 @@ Create table t_token
     id							bigint primary key identity(1,1) not null,
     email					varchar(100) null,
 	user_id					bigint null,
-    reset_for					varchar(20) null,
 	token varchar(50) null,
 	expired_on datetime null,
 	is_expired bit null,
