@@ -1,0 +1,219 @@
+﻿@{
+    var idUser = Context.Session.GetInt32("IdUser") ?? 0;
+}
+
+<div class="container mt-4">
+    <form asp-action="TambahPasien" method="post" id="form_tambah">
+        <input type="hidden" name="IdUser" id="IdUser" value="@idUser" />
+
+        <!-- Nama Lengkap -->
+        <div class="mb-3">
+            <label for="Fullname" class="form-label">Nama Lengkap*</label>
+            <input type="text" class="form-control" id="Fullname" name="Fullname" placeholder="Masukkan nama lengkap...">
+            <span class="text-danger" id="Fullname-error"></span>
+        </div>
+
+        <!-- Tanggal Lahir -->
+        <div class="mb-3">
+            <label for="Dob" class="form-label">Tanggal Lahir*</label>
+            <input type="date" class="form-control" id="Dob" name="Dob" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+            <span class="text-danger" id="Dob-error"></span>
+        </div>
+
+        <!-- Jenis Kelamin -->
+        <div class="mb-3">
+            <label class="form-label">Jenis Kelamin*</label>
+            <div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="Gender" id="genderMale" value="L">
+                    <label class="form-check-label" for="genderMale">Laki - Laki</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="Gender" id="genderFemale" value="P">
+                    <label class="form-check-label" for="genderFemale">Perempuan</label>
+                </div>
+            </div>
+            <span class="text-danger" id="Gender-error"></span>
+        </div>
+
+        <!-- Golongan Darah dan Rhesus -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="BloodGroupId" class="form-label">Golongan Darah</label>
+                <div class="input-group">
+                    @Html.DropDownList("BloodGroupId",
+                             new SelectList(ViewBag.ListGoldar, "Id", "Code"),
+                             "--Pilih Golongan Darah--",
+                             new { @class = "form-control" }
+                             )
+                    <span class="input-group-text"><i class="fas fa-caret-down"></i></span>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="RhesusType" id="rhesusPositive" value="Rh+">
+                    <label class="form-check-label" for="rhesusPositive">Rh +</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="RhesusType" id="rhesusNegative" value="Rh-">
+                    <label class="form-check-label" for="rhesusNegative">Rh -</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tinggi Badan dan Berat Badan -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="Height" class="form-label">Tinggi Badan</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="Height" name="Height" oninput="validateInput(this)" pattern="\d+(\.\d{1,2})?" title="Hanya angka dan maksimal dua digit setelah titik" placeholder="Masukkan tinggi badan">
+                    <span class="input-group-text">cm</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="Weight" class="form-label">Berat Badan</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="Weight" name="Weight" oninput="validateInput(this)" pattern="\d+(\.\d{1,2})?" title="Hanya angka dan maksimal dua digit setelah titik" placeholder="Masukkan berat badan">
+                    <span class="input-group-text">kg</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relasi -->
+        <div class="mb-3">
+            <label for="CustomerRelationID" class="form-label">Relasi*</label>
+            <div class="input-group">
+                @Html.DropDownList("CustomerRelationID",
+                         new SelectList(ViewBag.ListRelasi, "Id", "Name"),
+                         "--Pilih Relasi--",
+                         new { @class = "form-control" }
+                         )
+                <span class="input-group-text"><i class="fas fa-caret-down"></i></span>
+            </div>
+            <span class="text-danger" id="CustomerRelationID-error"></span>
+        </div>
+
+        <!-- Tombol Simpan dan Batal -->
+        <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function getTodayDate() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        return yyyy + '-' + mm + '-' + dd;
+    }
+
+    function validateInput(input) {
+        // Menghapus karakter selain angka dan titik, tetapi izinkan satu titik desimal
+        input.value = input.value.replace(/[^0-9.]/g, ''); // Hanya angka dan titik
+        let parts = input.value.split('.');
+        if (parts.length > 2) {
+            input.value = parts[0] + '.' + parts[1]; // Batasi hanya satu titik desimal
+        }
+    }
+
+    var todayDate = getTodayDate();
+
+    jQuery.validator.addMethod("notOnlySpaces", function (value, element) {
+        return value.trim().length > 0;
+    }, "Nama lengkap tidak boleh hanya berisi spasi");
+
+    $("#form_tambah").validate({
+        errorClass: "is-invalid text-danger",
+        rules: {
+            Fullname: {
+                required: true,
+                minlength: 2,
+                notOnlySpaces: true
+            },
+            Dob: {
+                required: true,
+                date: true,
+                max: todayDate
+            },
+            Gender: {
+                required: true
+            },
+            CustomerRelationID: {
+                required: true
+            },
+        },
+        messages: {
+            Fullname: {
+                required: "Nama lengkap tidak boleh kosong",
+                minlength: "Panjang minimal 2 karakter",
+                notOnlySpaces: "Nama lengkap tidak boleh hanya berisi spasi"
+            },
+            Dob: {
+                required: "Tanggal lahir tidak boleh kosong",
+                max: "Tanggal lahir tidak boleh lebih dari hari ini"
+            },
+            Gender: {
+                required: "Harus pilih salah satu"
+            },
+            CustomerRelationID: {
+                required: "Harus memilih 1 relasi"
+            },
+        },
+        errorPlacement: function (error, element) {
+            var errorSpan = element.closest('.mb-3').find('span.text-danger');
+            error.appendTo(errorSpan);
+        },
+        submitHandler: function (form) {
+            var dataForm = $(form).serialize()
+            
+            $.ajax({
+                url: "/UserProfil/TambahPasien",
+                type: "post",
+                data: dataForm,
+                dataType: "json",
+                success: function (respon) {
+                    var data = respon.dataRespon
+                    if (data.success) {
+                        $("#my_modal").modal("hide")
+                        swal(
+                            "Success",
+                            data.message, {
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-success",
+                                },
+                            },
+                        }
+                        ).then((clickconfirm) => {
+                            if (clickconfirm) {
+                                window.location.reload()
+                            }
+                        })
+                    }
+                    else {
+                        $("#my_modal").modal("hide")
+                        swal(
+                            "Failed",
+                            data.message, {
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-danger",
+                                },
+                            },
+                        }
+                        ).then((clickconfirm) => {
+                            if (clickconfirm) {
+                                $("#my_modal").modal("show")
+                            }
+                        })
+                    }
+                }
+            })
+        }
+    });
+</script>

@@ -26,9 +26,9 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><a href="@Url.Action("LoadEditProfil", "UserProfil")">Edit Profil</a></li>
                     <li class="list-group-item"><a href="@Url.Action("LoadPasien", "UserProfil")">Pasien</a></li>
-                    <li class="list-group-item"><a href="#">Pembelian Obat</a></li>
-                    <li class="list-group-item"><a href="#">Rencana Kedatangan</a></li>
-                    <li class="list-group-item"><a href="#">Riwayat Chat Dokter</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("LoadPembelianObat", "UserProfil")">Pembelian Obat</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("LoadRencana", "UserProfil")">Rencana Kedatangan</a></li>
+                    <li class="list-group-item"><a href="@Url.Action("LoadRiwayatChat", "UserProfil")">Riwayat Chat Dokter</a></li>
                 </ul>
             </div>
         </div>
@@ -39,9 +39,21 @@
             {
                 @await Html.PartialAsync("_Pasien")
             }
-            else
+            else if (ViewBag.Page == "Profil")
             {
                 @await Html.PartialAsync("_EditProfil")
+            }
+            else if (ViewBag.Page == "PembelianObat")
+            {
+                @await Html.PartialAsync("_PembelianObat")
+            }
+            else if (ViewBag.Page == "Rencana")
+            {
+                @await Html.PartialAsync("_Rencana")
+            }
+            else
+            {
+                @await Html.PartialAsync("_RiwayatChat")
             }
         </div>
     </div>
@@ -64,7 +76,10 @@
             e.preventDefault(); // Mencegah tindakan default tautan
             var url = $(this).attr("href");
 
-            // Menggunakan AJAX untuk memuat konten
+            // Menghapus konten lama di dalam .col-lg-9 sebelum memuat yang baru
+            $(".col-lg-9").empty();
+
+            // Menggunakan AJAX untuk memuat konten baru
             $.get(url)
                 .done(function (data) {
                     $(".col-lg-9").html(data);

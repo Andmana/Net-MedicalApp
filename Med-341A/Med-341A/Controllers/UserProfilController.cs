@@ -182,7 +182,6 @@ namespace Med_341A.Controllers
             {
                 List<VMPasien> data = await pasienService.GetAllData(idUser);
                 // Mengisi ViewBag dengan nilai imagePath
-                ViewBag.idUser = idUser;
                 ViewBag.Page = "Pasien";
                 return PartialView("_Pasien", data);
             }
@@ -209,6 +208,63 @@ namespace Med_341A.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+        }
+        public IActionResult LoadPembelianObat()
+        {
+            int idUser = GetUserIdFromSession();
+            if (idUser != 0)
+            {
+
+                // Mengisi ViewBag dengan nilai imagePath
+                ViewBag.Page = "PembelianObat";
+                return PartialView("_PembelianObat");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        public IActionResult LoadRencana()
+        {
+            int idUser = GetUserIdFromSession();
+            if (idUser != 0)
+            {
+                ViewBag.Page = "Rencana";
+                return PartialView("_Rencana");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        public IActionResult LoadRiwayatChat()
+        {
+            int idUser = GetUserIdFromSession();
+            if (idUser != 0)
+            {
+                ViewBag.Page = "RiwayatChat";
+                return PartialView("_RiwayatChat");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        public async Task<IActionResult> TambahPasien()
+        {
+            VMPasien data = new VMPasien();
+            ViewBag.ListRelasi = await pasienService.GetAllRelasi();
+            ViewBag.ListGoldar = await pasienService.GetAllGoldar();
+            return PartialView(data);
+        }
+        [HttpPost]
+        public async Task<IActionResult> TambahPasien(VMPasien dataForm)
+        {
+            VMResponse respon = await pasienService.TambahPasien(dataForm);
+            
+            return Json(new { dataRespon = respon });
         }
     }
 }

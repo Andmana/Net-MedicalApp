@@ -1,5 +1,7 @@
-﻿using Med_341A.viewmodels;
+﻿using Med_341A.datamodels;
+using Med_341A.viewmodels;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Med_341A.Services
 {
@@ -21,6 +23,37 @@ namespace Med_341A.Services
             string apiResponse = await client.GetStringAsync(RouteAPI + $"apiPasien/GetAllData/{id}");
             List<VMPasien> data = JsonConvert.DeserializeObject<List<VMPasien>>(apiResponse);
             return data;
+        }
+
+        public async Task<List<MCustomerRelation>> GetAllRelasi()
+        {
+            string apiResponse = await client.GetStringAsync(RouteAPI + "apiPasien/GetAllRelasi");
+            List<MCustomerRelation> data = JsonConvert.DeserializeObject<List<MCustomerRelation>>(apiResponse);
+            return data;
+        }
+        public async Task<List<MBloodGroup>> GetAllGoldar()
+        {
+            string apiResponse = await client.GetStringAsync(RouteAPI + "apiPasien/GetAllGoldar");
+            List<MBloodGroup> data = JsonConvert.DeserializeObject<List<MBloodGroup>>(apiResponse);
+            return data;
+        }
+        public async Task<VMResponse> TambahPasien(VMPasien dataParam)
+        {
+            string json = JsonConvert.SerializeObject(dataParam);
+            StringContent content = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            var request = await client.PostAsync(RouteAPI + "apiPasien/Simpan", content);
+            if (request.IsSuccessStatusCode)
+            {
+                var apiRespon = await request.Content.ReadAsStringAsync();
+                respon = JsonConvert.DeserializeObject<VMResponse>(apiRespon);
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = $"{request.StatusCode} : {request.ReasonPhrase}";
+            }
+
+            return respon;
         }
     }
 }

@@ -42,6 +42,82 @@ namespace Med_341A.api.Controllers
                                    }).ToList();
             return data;
         }
+        [HttpGet("GetAllRelasi")]
+        public List<MCustomerRelation> GetAllRelasi()
+        {
+            List<MCustomerRelation> data = db.MCustomerRelations.Where(a => a.IsDelete == false).ToList();
+            return data;
+        }
 
+        [HttpGet("GetAllGoldar")]
+        public List<MBloodGroup> GetAllGoldar()
+        {
+            List<MBloodGroup> data = db.MBloodGroups.Where(a => a.IsDelete == false).ToList();
+            return data;
+        }
+
+        [HttpPost("Simpan")]
+        public VMResponse Simpan(VMPasien data)
+        {
+            MUser user = db.MUsers.Where(a => a.Id == data.IdUser).FirstOrDefault();
+            if(user != null)
+            {
+                try
+                {
+                    //Menginputkan data biodata terlebih dahulu
+                    MBiodatum biodata = new();
+                    biodata.Fullname = data.Fullname;
+                    biodata.CreatedBy = user.Id;
+                    biodata.CreatedOn = DateTime.Now;
+                    biodata.IsDelete = false;
+
+                    //Simpan ke db
+                    db.Add(biodata);
+                    db.SaveChanges();
+
+                    //Menginputkan data customer
+                    MCustomer customer = new();
+                    customer.BiodataId = biodata.Id;
+                    customer.Dob = data.Dob;
+                    customer.Gender = data.Gender;
+                    customer.BloodGroupId = data.BloodGroupId;
+                    customer.RhesusType = data.RhesusType;
+                    customer.Height = data.Height;
+                    customer.Weight = data.Weight;
+                    customer.CreatedBy = user.Id;
+                    customer.CreatedOn = DateTime.Now;
+                    customer.IsDelete = false;
+
+                    //simpan ke db
+                    db.Add(customer);
+                    db.SaveChanges();
+
+                    //Menginput data customer relasi
+                    MCustomerMember member = new();
+                    member.ParentBiodataId = user.BiodataId;
+                    member.CustomerId = customer.Id;
+                    member.CustomerRelationId = data.CustomerRelationID;
+                    member.CreatedBy = user.Id;
+                    member.CreatedOn = DateTime.Now;
+                    member.IsDelete = false;
+
+                    db.Add(member);
+                    db.SaveChanges();
+
+                    respon.Message = "Data Sukses Ditambahkan";
+                }
+                catch(Exception ex)
+                {
+                    respon.Success = false;
+                    respon.Message = "Gagal ditambahkan: " + ex.Message;
+                }
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = "Pasien tidak bisa menambahkan data";
+            }
+            return respon;
+        }
     }
 }
