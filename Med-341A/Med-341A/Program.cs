@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<DoctorService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<UserProfileService>();
+builder.Services.AddScoped<PasienService>();
 builder.Services.AddScoped<DokterProfilService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<RegisterService>();

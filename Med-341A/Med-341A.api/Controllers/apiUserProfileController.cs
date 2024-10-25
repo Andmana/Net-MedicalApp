@@ -189,43 +189,55 @@ namespace Med_341A.api.Controllers
         public VMResponse RequestOTPEmailBaru(OTPValidationRequestBody request)
         {
             var token = db.TTokens.Where(t => t.Email == request.Email && t.IsExpired == false && t.UsedFor == request.usedFor)
-                                  .OrderByDescending(t => t.CreatedOn)
-                                  .FirstOrDefault();
-            if(token != null)
+                      .OrderByDescending(t => t.CreatedOn)
+                      .FirstOrDefault();
+
+            if (token != null)
             {
                 token.IsExpired = true;
                 token.ModifiedOn = DateTime.Now;
-                token.ModifiedBy = request.UserId;
                 db.Update(token);
                 db.SaveChanges();
             }
 
             var otp = emailService.GenerateOtp();
-            token = new TToken
-            {
-                Email = request.Email,
-                UserId = request.UserId,
-                Token = otp,
-                ExpiredOn = DateTime.Now.AddMinutes(10),
-                IsExpired = false,
-                CreatedOn = DateTime.Now,
-                UsedFor = request.usedFor
-            };
-            db.TTokens.Add(token);
-            db.SaveChanges();
 
             // Kirim OTP ke email pengguna
-            emailService.SendOtpEmail(request.Email, otp);
+            var isSent = emailService.SendOtpEmailV2(request.Email, otp);
 
-            respon.Success = true;
-            respon.Message = "OTP sudah dikirim ke email, silahkan buka dan masukkan kedalam kolom OTP";
-            return respon;
+            if (isSent)
+            {
+                token = new TToken
+                {
+                    UserId = request.UserId,
+                    Email = request.Email,
+                    Token = otp,
+                    ExpiredOn = DateTime.Now.AddMinutes(10),
+                    IsExpired = false,
+                    CreatedOn = DateTime.Now,
+                    UsedFor = request.usedFor
+                };
+
+                db.TTokens.Add(token);
+                db.SaveChanges();
+
+                // return response
+                respon.Success = true;
+                respon.Message = "Kode OTP telah dikirim ke email, silahkan check email Anda";
+                return respon;
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = "Gagal mengirimkan OTP: tunggu beberapa saat dan minta ulang";
+                return respon;
+            }
         }
 
         [HttpPost("VerifikasiOTP")]
         public VMResponse VerifikasiOTP(OTPValidationRequestBody request)
         {
-            var token = db.TTokens.Where(t => t.Email == request.Email && t.IsExpired == false && t.UsedFor == request.usedFor)
+            var token = db.TTokens.Where(t => t.Email == request.Email && t.Token == request.Otp && t.UsedFor == request.usedFor)
                                   .OrderByDescending(t => t.CreatedOn)
                                   .FirstOrDefault();
             MUser user = db.MUsers.Where(a => a.Id == request.UserId).FirstOrDefault()!;
@@ -233,24 +245,18 @@ namespace Med_341A.api.Controllers
             if (token == null)
             {
                 respon.Success = false;
-                respon.Message = "OTP tidak ditemukan atau kadaluarsa.";
+                respon.Message = "OTP Salah.";
                 return respon;
             }
 
-            if (token.ExpiredOn < DateTime.Now)
+            if ((token.ExpiredOn < DateTime.Now && token.IsExpired == false) || token.IsExpired == true)
             {
                 respon.Success = false;
                 respon.Message = "OTP kadaluarsa.";
                 token.IsExpired = true;
+                token.ModifiedOn = DateTime.Now;
                 db.Update(token);
                 db.SaveChanges();
-                return respon;
-            }
-
-            if (token.Token != request.Otp)
-            {
-                respon.Success = false;
-                respon.Message = "OTP Salah.";
                 return respon;
             }
 

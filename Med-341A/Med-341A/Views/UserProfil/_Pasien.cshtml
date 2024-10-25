@@ -1,0 +1,132 @@
+﻿@using Med_341A.viewmodels
+@model List<VMPasien>
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h4>Daftar Pasien</h4>
+    </div>
+    <div class="card-body">
+        <!-- Search and Sort Section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <!-- Search Input with Icon -->
+            <div style="position: relative; width: 50%;">
+                <input type="text" class="form-control" placeholder="Cari Pasien..." style="width: 100%; padding-right: 35px;" />
+                <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #aaa;">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+
+            <!-- Sort Dropdown with Icon -->
+            <div style="position: relative; display: flex; align-items: center;">
+                <label for="sort" style="margin-right: 10px;">Urutkan:</label>
+                <div style="position: relative;">
+                    <select id="sort" class="form-control" style="padding-right: 30px;">
+                        <option value="nama">Nama</option>
+                        <option value="usia">Usia</option>
+                    </select>
+                    <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #aaa;">
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons (Hapus and Tambah) -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <!-- Hapus Button -->
+            <button class="btn btn-outline-danger" style="display: flex; align-items: center;" id="btn_multiple_delete" disabled>
+                <i class="fas fa-trash" style="margin-right: 5px;"></i> Hapus
+            </button>
+
+            <!-- Tambah -->
+            <a class="text-success btn_tambah_pasien" dataid="@ViewBag.idUser" style="display: flex; align-items: center; text-decoration: none; font-size: 16px; cursor:pointer;">
+                <i class="fas fa-plus" style="margin-right: 5px;"></i> Tambah
+            </a>
+        </div>
+
+        <!-- Patient List -->
+        @foreach (VMPasien item in Model)
+        {
+            var today = DateTime.Now;
+            var birthDate = item.Dob;
+            var age = 0;
+            if (birthDate.HasValue)
+            {
+                age = today.Year - birthDate.Value.Year;
+                if(today.Month < birthDate.Value.Month || (today.Month == birthDate.Value.Month && today.Day < birthDate.Value.Day))
+                {
+                    age -= 1;
+                }
+            }
+
+            <div style="display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 10px 0;">
+                <input type="checkbox" class="mychecked" onchange="selectedItem()" value="@item.CustomerMemberID" style="margin-right: 15px;" />
+                <div style="flex-grow: 1;">
+                    <div style="font-weight: bold; font-size: 16px;">@item.Fullname</div>
+                    <div style="font-size: 14px;">@item.NameRelation, @age tahun</div>
+                    <div style="font-size: 14px;">9 Chat Online, 5 Janji Dokter</div>
+                </div>
+                <div>
+                    <a class="text-primary btn_ubah_pasien" dataid="@item.CustomerMemberID" style="text-decoration: none; margin-right: 15px; cursor:pointer;">
+                        <i class="fas fa-pencil-alt"></i> Ubah
+                    </a>
+                    <a class="text-danger btn_hapus_pasien" dataid="@item.CustomerMemberID" style="text-decoration: none; cursor:pointer;">
+                        <i class="fas fa-trash"></i> Hapus
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    var listId = []
+    function selectedItem() {
+        var mychecked = $(".mychecked")
+        listId = []
+        for (var i = 0; i < mychecked.length; i++) {
+            if (mychecked[i].checked) {
+                listId.push(mychecked[i].value)
+            }
+        }
+
+        if (listId.length > 0) {
+            $("#btn_multiple_delete").attr("disabled", false)
+        }
+        else {
+            $("#btn_multiple_delete").attr("disabled", true)
+        }
+    }
+
+    $("#btn_multiple_delete").click(function () {
+        $("#modal_body").empty()
+
+        $("#modal_title").text("Hapus Daftar Pasien Terpilih")
+        $("#modal_body").load("/UserProfil/MultipleDelete", { listId: listId })
+        $("#my_modal").modal("show")
+    })
+
+    $(".btn_tambah_pasien").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#modal_title").text("Tambah Data Pasien")
+        $("#modal_body").empty()
+        $("#modal_body").load("/UserProfil/TambahPasien?id=" + id)
+        $("#my_modal").modal("show")
+    })
+    $(".btn_ubah_pasien").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#modal_title").text("Edit Data Pasien")
+        $("#modal_body").empty()
+        $("#modal_body").load("/UserProfil/EditPasien?id=" + id)
+        $("#my_modal").modal("show")
+    })
+    $(".btn_hapus_pasien").click(function () {
+        var id = $(this).attr("dataid")
+
+        $("#modal_title").text("Hapus Data Pasien")
+        $("#modal_body").empty()
+        $("#modal_body").load("/UserProfil/HapusPasien?id=" + id)
+        $("#my_modal").modal("show")
+    })
+</script>

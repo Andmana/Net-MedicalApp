@@ -1,12 +1,8 @@
-﻿using Azure;
-using Med_341A.datamodels;
+﻿using Med_341A.datamodels;
 using Med_341A.Services;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow;
-using NuGet.Protocol;
-using System.Drawing.Text;
 using System.Net;
 
 namespace Med_341A.Controllers
@@ -14,22 +10,30 @@ namespace Med_341A.Controllers
     public class UserProfilController : Controller
     {
         private UserProfileService userProfileService;
+        private PasienService pasienService;
         private readonly IWebHostEnvironment webHostEnvironment;
-        public UserProfilController(UserProfileService userProfileService, IWebHostEnvironment webHostEnvironment)
+        public UserProfilController(UserProfileService userProfileService, PasienService pasienService, IWebHostEnvironment webHostEnvironment)
         {
+            this.pasienService = pasienService;
             this.userProfileService = userProfileService;
             this.webHostEnvironment = webHostEnvironment;
         }
 
+        private int GetUserIdFromSession()
+        {
+            return HttpContext.Session.GetInt32("IdUser") ?? 0;
+        }
+
         public async Task<IActionResult> Index()
         {
-            int idUser = HttpContext.Session.GetInt32("IdUser") ?? 0;
+            int idUser = GetUserIdFromSession();
             if (idUser != 0)
             {
                 VMUser data = await userProfileService.GetDataUser(idUser);
                 string imagePath = HttpContext.Session.GetString("ImagePath") ?? "default-profile.png";
 
                 // Mengisi ViewBag dengan nilai imagePath
+                ViewBag.Page = "Profil";
                 ViewBag.ImagePath = imagePath;
                 return View(data);
             }
@@ -170,6 +174,41 @@ namespace Med_341A.Controllers
             }
 
             return Json(new { dataResponse = respon });
+        }
+        public async Task<IActionResult> LoadPasien()
+        {
+            int idUser = GetUserIdFromSession();
+            if (idUser != 0)
+            {
+                List<VMPasien> data = await pasienService.GetAllData(idUser);
+                // Mengisi ViewBag dengan nilai imagePath
+                ViewBag.idUser = idUser;
+                ViewBag.Page = "Pasien";
+                return PartialView("_Pasien", data);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            
+        }
+        public async Task<IActionResult> LoadEditProfil()
+        {
+            int idUser = GetUserIdFromSession();
+            if (idUser != 0)
+            {
+                VMUser data = await userProfileService.GetDataUser(idUser);
+                string imagePath = HttpContext.Session.GetString("ImagePath") ?? "default-profile.png";
+
+                // Mengisi ViewBag dengan nilai imagePath
+                ViewBag.Page = "Profil";
+                ViewBag.ImagePath = imagePath;
+                return PartialView("_EditProfil", data);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

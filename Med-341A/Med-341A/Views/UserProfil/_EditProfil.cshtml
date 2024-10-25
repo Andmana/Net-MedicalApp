@@ -1,0 +1,111 @@
+﻿@using Med_341A.viewmodels
+@model VMUser
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h4>Profil</h4>
+    </div>
+    <div class="card-body">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="profil-tab" data-bs-toggle="tab" href="#profil" role="tab" aria-controls="profil" aria-selected="true">Profil</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="alamat-tab" data-bs-toggle="tab" href="#alamat" role="tab" aria-controls="alamat" aria-selected="false">Alamat</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="pembayaran-tab" data-bs-toggle="tab" href="#pembayaran" role="tab" aria-controls="pembayaran" aria-selected="false">Pembayaran</a>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-4" id="myTabContent">
+            <!-- Profil Tab -->
+            <div class="tab-pane fade show active" id="profil" role="tabpanel" aria-labelledby="profil-tab">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>Data Pribadi</h5>
+                    <a class="btn_ubah_pribadi edit-icon" dataid="@Model.Id"><i class="fas fa-pencil-alt"></i> Ubah</a>
+                </div>
+                <div class="form-group row">
+                    <label for="Fullname" class="col-sm-3 col-form-label">Nama Lengkap</label>
+                    <div class="col-sm-9 position-relative">
+                        <input type="text" class="form-control" id="Fullname" name="Fullname" value="@Model.Fullname" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Dob" class="col-sm-3 col-form-label">Tanggal Lahir</label>
+                    <div class="col-sm-9 position-relative">
+                        <input type="text" class="form-control" id="Dob" name="Dob" value="@Model.Dob?.ToString("dd MMMM yyyy")" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="MobilePhone" class="col-sm-3 col-form-label">Nomor Handphone</label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <span class="input-group-text">+62</span>
+                            <input type="text" class="form-control" id="MobilePhone" name="MobilePhone" value="@Model.MobilePhone" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <h5>Data Akun</h5>
+
+                <div class="form-group row">
+                    <div class="col-sm-3 col-form-label">
+                        <label for="Email">Email</label>
+                    </div>
+                    <div class="col-sm-9 position-relative d-flex justify-content-between align-items-center">
+                        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" readonly>
+                        <a class="edit-icon btn_ubah_email" dataid="@Model.Id" style="margin-left: 20px;"><i class="fas fa-pencil-alt"></i> Ubah</a>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-3 col-form-label">
+                        <label for="Password">Password</label>
+                    </div>
+                    <div class="col-sm-9 position-relative d-flex justify-content-between align-items-center">
+                        <input type="password" class="form-control" value="********" readonly>
+                        <a class="edit-icon btn_ubah_password" dataid="@Model.Id" style="margin-left: 20px;"><i class="fas fa-pencil-alt"></i> Ubah</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alamat Tab -->
+            <div class="tab-pane fade" id="alamat" role="tabpanel" aria-labelledby="alamat-tab">
+                <!-- Konten untuk alamat -->
+            </div>
+
+            <!-- Pembayaran Tab -->
+            <div class="tab-pane fade" id="pembayaran" role="tabpanel" aria-labelledby="pembayaran-tab">
+                <!-- Konten untuk pembayaran -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        $(".btn_ubah_pribadi").click(function () {
+            var id = $(this).attr("dataid")
+
+            $("#modal_title").text("Ubah Data Pribadi")
+            $("#modal_body").empty()
+            $("#modal_body").load("/UserProfil/UbahPribadi?id=" + id)
+            $("#my_modal").modal("show")
+        })
+        $(".btn_ubah_email").click(function () {
+            var id = $(this).attr("dataid")
+
+            $("#modal_title").text("Ubah Email")
+            $("#modal_body").empty()
+            $("#modal_body").load("/UserProfil/UbahEmail?id=" + id)
+            $("#my_modal").modal("show")
+        })
+
+        $(".btn_ubah_password").click(function () {
+            var id = $(this).attr("dataid")
+
+            $("#modal_title").text("Ubah Password")
+            $("#modal_body").empty()
+            $("#modal_body").load("/UserProfil/UbahPassword?id=" + id)
+            $("#my_modal").modal("show")
+        })
+</script>
