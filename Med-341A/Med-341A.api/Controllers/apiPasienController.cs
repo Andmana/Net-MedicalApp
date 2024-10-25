@@ -33,8 +33,8 @@ namespace Med_341A.api.Controllers
                                        IdUser = user.Id,
                                        IdCustomer = c.Id,
                                        BiodataId = b.Id,
-                                       ParentBiodataID = user.BiodataId,
-                                       CustomerRelationID = crelation.Id,
+                                       ParentBiodataID = cmember.ParentBiodataId,
+                                       CustomerRelationID = cmember.CustomerRelationId,
                                        CustomerMemberID = cmember.Id,
                                        Dob = c.Dob,
                                        Fullname = b.Fullname,
@@ -118,6 +118,43 @@ namespace Med_341A.api.Controllers
                 respon.Message = "Pasien tidak bisa menambahkan data";
             }
             return respon;
+        }
+        [HttpGet("GetPasienByIdCustomer/{id}")]
+        public VMPasien GetPasienByIdCustomer(int id)
+        {
+            VMPasien data = (from cmember in db.MCustomerMembers
+                             join crelation in db.MCustomerRelations
+                             on cmember.CustomerRelationId equals crelation.Id
+                             join c in db.MCustomers
+                             on cmember.CustomerId equals c.Id
+                             join b in db.MBiodata
+                             on c.BiodataId equals b.Id
+                             join blood in db.MBloodGroups
+                             on c.BloodGroupId equals blood.Id
+                             into bloodGroupJoin from blood in bloodGroupJoin.DefaultIfEmpty()
+                             where c.Id == id && c.IsDelete == false
+                             select new VMPasien
+                             {
+                                 ParentBiodataID = cmember.ParentBiodataId,
+                                 CustomerMemberID = cmember.Id,
+                                 CustomerRelationID = cmember.CustomerRelationId,
+
+                                 NameRelation = crelation.Name,
+
+                                 CodeBlood = blood != null ? blood.Code : null,
+                                 
+                                 IdCustomer = c.Id,
+                                 BiodataId = c.BiodataId,
+                                 Dob = c.Dob,
+                                 Gender = c.Gender,
+                                 BloodGroupId = c.BloodGroupId,
+                                 RhesusType = c.RhesusType,
+                                 Height = c.Height,
+                                 Weight = c.Weight,
+
+                                 Fullname = b.Fullname
+                             }).FirstOrDefault()!;
+            return data;
         }
     }
 }
