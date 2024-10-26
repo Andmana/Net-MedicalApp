@@ -33,7 +33,7 @@ namespace Med_341A.Controllers
                 string imagePath = HttpContext.Session.GetString("ImagePath") ?? "default-profile.png";
 
                 // Mengisi ViewBag dengan nilai imagePath
-                ViewBag.Page = "Profil";
+                ViewBag.MainContent = "Profil";
                 ViewBag.ImagePath = imagePath;
                 return View(data);
             }
@@ -182,7 +182,7 @@ namespace Med_341A.Controllers
             {
                 List<VMPasien> data = await pasienService.GetAllData(idUser);
                 // Mengisi ViewBag dengan nilai imagePath
-                ViewBag.Page = "Pasien";
+                ViewBag.MainContent = "Pasien";
                 return PartialView("_Pasien", data);
             }
             else
@@ -200,7 +200,7 @@ namespace Med_341A.Controllers
                 string imagePath = HttpContext.Session.GetString("ImagePath") ?? "default-profile.png";
 
                 // Mengisi ViewBag dengan nilai imagePath
-                ViewBag.Page = "Profil";
+                ViewBag.MainContent = "Profil";
                 ViewBag.ImagePath = imagePath;
                 return PartialView("_EditProfil", data);
             }
@@ -216,7 +216,7 @@ namespace Med_341A.Controllers
             {
 
                 // Mengisi ViewBag dengan nilai imagePath
-                ViewBag.Page = "PembelianObat";
+                ViewBag.MainContent = "PembelianObat";
                 return PartialView("_PembelianObat");
             }
             else
@@ -230,7 +230,7 @@ namespace Med_341A.Controllers
             int idUser = GetUserIdFromSession();
             if (idUser != 0)
             {
-                ViewBag.Page = "Rencana";
+                ViewBag.MainContent      = "Rencana";
                 return PartialView("_Rencana");
             }
             else
@@ -244,7 +244,7 @@ namespace Med_341A.Controllers
             int idUser = GetUserIdFromSession();
             if (idUser != 0)
             {
-                ViewBag.Page = "RiwayatChat";
+                ViewBag.MainContent = "RiwayatChat";
                 return PartialView("_RiwayatChat");
             }
             else
@@ -265,6 +265,14 @@ namespace Med_341A.Controllers
             VMResponse respon = await pasienService.TambahPasien(dataForm);
             
             return Json(new { dataRespon = respon });
+        }
+        //Berdasarkan id customer member
+        public async Task<IActionResult> EditPasien(int id)
+        {
+            VMPasien data = await pasienService.GetPasienByIdCustomer(id);
+            ViewBag.ListRelasi = await pasienService.GetAllRelasi();
+            ViewBag.ListGoldar = await pasienService.GetAllGoldar();
+            return PartialView(data);
         }
     }
 }

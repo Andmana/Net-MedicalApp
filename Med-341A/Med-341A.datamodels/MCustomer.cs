@@ -32,10 +32,10 @@ public partial class MCustomer
     [Unicode(false)]
     public string? RhesusType { get; set; }
 
-    [Column("height", TypeName = "decimal(18, 0)")]
+    [Column("height", TypeName = "decimal(18, 2)")]
     public decimal? Height { get; set; }
 
-    [Column("weight", TypeName = "decimal(18, 0)")]
+    [Column("weight", TypeName = "decimal(18, 2)")]
     public decimal? Weight { get; set; }
 
     [Column("created_by")]

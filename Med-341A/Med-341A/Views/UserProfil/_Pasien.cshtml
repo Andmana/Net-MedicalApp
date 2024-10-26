@@ -64,17 +64,17 @@
             }
 
             <div style="display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 10px 0;">
-                <input type="checkbox" class="mychecked" onchange="selectedItem()" value="@item.CustomerMemberID" style="margin-right: 15px;" />
+                <input type="checkbox" class="mychecked" onchange="selectedItem()" value="@item.IdCustomer" style="margin-right: 15px;" />
                 <div style="flex-grow: 1;">
                     <div style="font-weight: bold; font-size: 16px;">@item.Fullname</div>
                     <div style="font-size: 14px;">@item.NameRelation, @age tahun</div>
                     <div style="font-size: 14px;">9 Chat Online, 5 Janji Dokter</div>
                 </div>
                 <div>
-                    <a class="text-primary btn_ubah_pasien" dataid="@item.CustomerMemberID" style="text-decoration: none; margin-right: 15px; cursor:pointer;">
+                    <a class="text-primary btn_ubah_pasien" dataid="@item.IdCustomer" style="text-decoration: none; margin-right: 15px; cursor:pointer;">
                         <i class="fas fa-pencil-alt"></i> Ubah
                     </a>
-                    <a class="text-danger btn_hapus_pasien" dataid="@item.CustomerMemberID" style="text-decoration: none; cursor:pointer;">
+                    <a class="text-danger btn_hapus_pasien" dataid="@item.IdCustomer" style="text-decoration: none; cursor:pointer;">
                         <i class="fas fa-trash"></i> Hapus
                     </a>
                 </div>

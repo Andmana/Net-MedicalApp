@@ -55,5 +55,11 @@ namespace Med_341A.Services
 
             return respon;
         }
+        public async Task<VMPasien> GetPasienByIdCustomer(int id)
+        {
+            string apiResponse = await client.GetStringAsync(RouteAPI + $"apiPasien/GetPasienByIdCustomer/{id}");
+            VMPasien data = JsonConvert.DeserializeObject<VMPasien>(apiResponse);
+            return data;
+        }
     }
 }

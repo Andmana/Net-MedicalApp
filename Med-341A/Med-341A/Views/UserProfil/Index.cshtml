@@ -35,19 +35,19 @@
 
         <!-- Main Content -->
         <div class="col-lg-9">
-            @if (ViewBag.Page == "Pasien")
+            @if (ViewBag.MainContent == "Pasien")
             {
                 @await Html.PartialAsync("_Pasien")
             }
-            else if (ViewBag.Page == "Profil")
+            else if (ViewBag.MainContent == "Profil")
             {
                 @await Html.PartialAsync("_EditProfil")
             }
-            else if (ViewBag.Page == "PembelianObat")
+            else if (ViewBag.MainContent == "PembelianObat")
             {
                 @await Html.PartialAsync("_PembelianObat")
             }
-            else if (ViewBag.Page == "Rencana")
+            else if (ViewBag.MainContent == "Rencana")
             {
                 @await Html.PartialAsync("_Rencana")
             }
@@ -76,10 +76,8 @@
             e.preventDefault(); // Mencegah tindakan default tautan
             var url = $(this).attr("href");
 
-            // Menghapus konten lama di dalam .col-lg-9 sebelum memuat yang baru
+            // Menghapus konten lama sebelum memuat yang baru
             $(".col-lg-9").empty();
-
-            // Menggunakan AJAX untuk memuat konten baru
             $.get(url)
                 .done(function (data) {
                     $(".col-lg-9").html(data);
@@ -88,13 +86,14 @@
                     alert("Failed to load content. Please try again.");
                 });
         });
-        $(".btn_ubah_gambar").click(function () {
-            var id = $(this).attr("dataid")
 
-            $("#modal_title").text("Ubah Gambar")
-            $("#modal_body").empty()
-            $("#modal_body").load("/UserProfil/UbahGambar?id=" + id)
-            $("#my_modal").modal("show")
-        })
+        $(".btn_ubah_gambar").click(function () {
+            var id = $(this).attr("dataid");
+            $("#modal_title").text("Ubah Gambar");
+            $("#modal_body").empty();
+            $("#modal_body").load(`/UserProfil/UbahGambar?id=${id}`);
+            $("#my_modal").modal("show");
+        });
     </script>
 }
+

@@ -10,7 +10,8 @@
             <div class="mb-4 row">
                 <label for="EmailBaru" class="col-sm-4 col-form-label">Email*</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control" id="EmailBaru" name="EmailBaru" placeholder="Masukkan email baru...">
+                    <input type="email" class="form-control" id="EmailBaru" name="EmailBaru" pattern="^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" 
+           title="Masukkan email yang valid dengan format yang benar (contoh: user@example.com)" placeholder="Masukkan email baru...">
                     <div class="text-danger" id="validate_email"></div>
                 </div>
             </div>
@@ -22,18 +23,24 @@
     </div>
 </div>
 <script>
+    $.validator.addMethod("customEmail", function(value, element) {
+    return /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+}, "Masukkan format email yang valid.");
+
     $("#form_email").validate({
         errorClass: "is-invalid text-danger",
         rules: {
             EmailBaru: {
                 required: true,
                 email: true,
+                customEmail: true,
             },
         },
         messages: {
             EmailBaru: {
                 required: "Email harus diisi",
                 email: "Format email tidak sesuai",
+                pattern: "Masukkan email yang valid dengan format yang benar (contoh: user@example.com)"
             },
         },
         submitHandler: function (form) {
