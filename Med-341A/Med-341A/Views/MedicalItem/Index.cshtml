@@ -8,7 +8,6 @@
 }
 
 <div class="page-inner">
-    @* Order Chart *@
     @{
         int totalProduct = @data.TotalQty ?? 0;
         int itemCount = @data.ItemCount ?? 0;
@@ -16,26 +15,80 @@
 
         string dnone = @data.ItemCount == 0 ? "d-none" : "";
     }
-    <div class="row row-demo-grid" id="Purchase_note">
-        <div class="col-12 col-md-8">
-            <div class="card">
+    @* Order Chart *@
+    <div class="row" id="Purchase_note">
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-primary card-round">
                 <div class="card-body">
-                    
-                    <h5>
-                        @* Produk
-                        <span id="totalproduct"> @totalProduct</span> *@
-                        Jenis Item
-                        <span id="itemcount">@itemCount</span>
-                        || Estimasi Harga : Rp.
-                        <span id="estimateprice">@((int)Math.Round(countAmount))</span>
-                    </h5>
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center text-primary">
+                                <i class="icon-layers"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 col-stats">
+                            <div class="numbers">
+                                <p class="card-category">Barang Terpilih</p>
+                                <h4 class="card-title" id="itemcount">@itemCount</h4>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-4">
-            <div class="card">
-                <div class="card-body d-flex justify-content-center align-content-center">
-                    <button class="btn btn-secondary">Keranjang Saya</button>
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-info card-round">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center">
+                                <i class="icon-grid"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 col-stats">
+                            <div class="numbers">
+                                <p class="card-category">Jumlah Barang</p>
+                                <h4 class="card-title" id="totalproduct"> @totalProduct</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-success card-round">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center">
+                                <i class="icon-basket-loaded"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 col-stats">
+                            <div class="numbers">
+                                <p class="card-category">Total harga</p>
+                                <h4 class="card-title" id="estimateprice">@((int)Math.Round(countAmount))</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-secondary card-round">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="icon-big text-center">
+                                <i class="icon-bag text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="col-7 col-stats">
+                            <div class="numbers">
+                                <h4 class="card-title">Keranjang Saya</h4>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,15 +126,20 @@
     <div class="card">
         <div class="card-header">
         </div>
-        <div class="card-body">
+        <div class="card-body mb-10">
             <div class="row mx-auto" style="width:90%">
-
+                @{
+                    int idx = 1;
+                }
                 @foreach (VMedicalItem item in Model)
                 {
                     <div class="col-md-6">
-                        <div class="card card-profile shadow-lg">
-                            <div class="card-body py-5 px-4 d-flex justify-content-around gap-3">
-                                <div class="flex-1 d-flex flex-column justify-content-between gap-2">
+                        <div class="card card-profile  shadow-lg">
+                            <div class="card-body py-5 px-4 d-flex @(idx % 2 == 1? "flex-row-reverse" : "") justify-content-around gap-3">
+
+                                <div class="flex-1 d-flex flex-column  justify-content-between gap-2">
+
+                                    @*Body*@
                                     <div class="timeline-panel">
                                         <div class="timeline-heading">
                                             <h4 class="timeline-title" id="name_@item.Id"> @item.Name</h4>
@@ -106,42 +164,152 @@
                                         </div>
 
                                     </div>
+                                    
                                     <div class="d-flex justify-content-around " id="Add_Chart_@item.Id" onclick="hide_show(@item.Id)">
                                         <button id="plus" dataid="@item.Id" class="btn btn-sm btn-secondary btn_plus" style="width: 100%;" type="button">Tambah ke keranjang</button>
                                     </div>
-                                    <div class="d-flex justify-content-around align-items-center d-none" id="Plus_Minus_@item.Id">
+                                    <div class="d-flex justify-content-center align-items-center gap-5 d-none" id="Plus_Minus_@item.Id">
                                         <div class="">
-                                            <a id="min" dataid="@item.Id" class="btn btn-sm btn-danger btn_min">
+                                            <a id="min" dataid="@item.Id" class="btn btn-sm btn-secondary btn_min">
                                                 <b>-</b>
                                             </a>
                                         </div>
                                             <span class="text-lg" id="totalitem_@item.Id">0</span>
                                         <div class="">
-                                            <a id="plus" dataid="@item.Id" class="btn btn-sm btn-success btn_plus">
+                                            <a id="plus" dataid="@item.Id" class="btn btn-sm btn-primary btn_plus">
                                                 <b>+</b>
                                             </a>
                                         </div>
                                     </div>
                                 </div>
 
+                                @*Image*@
                                 <div class="d-flex flex-column justify-content-between border-2">
                                     <div class="avatar avatar-xxl">
                                         <img src="~/assets/img/jm_denis.jpg" alt="..." class="avatar-img rounded-2">
                                     </div>
-                                    <a class="btn btn-black" width="auto">Detail</a>
+                                    <a class="btn btn-sm btn-black" width="auto">Detail</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    idx++;
                 }
 
             </div>
 
         </div>
+        <div class="card-action">
+            <div class="row">
+                <div class="col-sm-12 col-md-5 d-flex justify-content-start align-items-center gap-5">
+                    <div class="input-group w-auto">
+                        <span class="input-group-text" id="basic-addon3">Tampilan Data:</span>
+                        <form asp-action="Index"
+                              asp-route-pageNumber=1
+                              asp-route-Name="@hist.Name"
+                              asp-route-SegmentationId="@hist.SegmentationId"
+                              asp-route-CategoryId="@hist.CategoryId"
+                              asp-route-MinAmount="@ViewBag.Min"
+                              asp-route-MaxAmount="@ViewBag.Max"
+                              id="form_pagesize">
+                            <select name="PageSize" id="PageSize"
+                                    class="form-control">
+                                <option value="4">4</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="dataTables_info"
+                         id="add-row_info"
+                         role="status"
+                         aria-live="polite">
+                         dari @Model.TotalData data.
+                    </div>
 
+                </div>
+                <div class="col-sm-12 col-md-7 ">
+                    @{
+                        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    }
+                    <div class="dataTables_paginate paging_simple_numbers d-flex justify-content-end align-items-center"
+                         id="add-row_paginate">
+                        <ul class="pagination mb-0">
+                            <li class="paginate_button previous">
+                                <a id="aPrev" asp-action="Index"
+                                   asp-route-sortOrder="@ViewBag.CurrentSort"
+                                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                                   asp-route-Name="@ViewBag.CurrentFilter"
+                                   asp-route-pageSize="@ViewBag.CurrentPageSize"
+                                   asp-route-Name="@hist.Name"
+                                   asp-route-SegmentationId="@hist.SegmentationId"
+                                   asp-route-CategoryId="@hist.CategoryId"
+                                   asp-route-MinAmount="@ViewBag.Min"
+                                   asp-route-MaxAmount="@ViewBag.Max"
+                                   class="btn btn-black float-right @prevDisabled">
+                                    Prev
+                                </a>
+                            </li>
+                            <li class="page-link rounded-5 d-flex align-items-center">
+                                <span class="text-muted text-center align-items-center">@Model.PageIndex dari @Model.TotalPages</span>
+                            </li>
+                            <li class="paginate_button next">
+                                <a id="aNext" asp-action="Index"
+                                   asp-route-sortOrder="@ViewBag.CurrentSort"
+                                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                                   asp-route-currentFilter="@ViewBag.CurrentFilter"
+                                   asp-route-pageSize="@ViewBag.CurrentPageSize"
+                                   asp-route-Name="@hist.Name"
+                                   asp-route-SegmentationId="@hist.SegmentationId"
+                                   asp-route-CategoryId="@hist.CategoryId"
+                                   asp-route-MinAmount="@ViewBag.Min"
+                                   asp-route-MaxAmount="@ViewBag.Max"
+                                   class="btn btn-black float-right @nextDisabled">
+                                    Next
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    @* Pagination *@
-    <div class="card">
+    
+
+
+
+    @* Older Order Chart *@
+    <div>
+    @* <div class="row row-demo-grid position-sticky sticky-bottom" >
+        <div class="col-12 col-md-8">
+            <div class="card">
+                <div class="card-body">
+
+                    <h5>
+                         Produk
+                        <span id="totalproduct"> @totalProduct</span> 
+                        Jenis Item
+                        <span id="itemcount">@itemCount</span>
+                        || Estimasi Harga : Rp.
+                        <span id="estimateprice">@((int)Math.Round(countAmount))</span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="card">
+                <div class="card-body d-flex justify-content-center align-content-center">
+                    <button class="btn btn-secondary">Keranjang Saya</button>
+                </div>
+            </div>
+        </div> *@
+    </div>
+    
+    @* Pagination Separate*@
+    <div>
+
+    @* <div class="card">
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12 col-md-5 d-flex justify-content-start align-items-center gap-5">
@@ -218,8 +386,11 @@
             </div>
         </div>
 
+    </div> *@
     </div>
+
    
+
 </div>
 
 <script>
