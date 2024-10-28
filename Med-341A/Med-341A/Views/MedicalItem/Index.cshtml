@@ -7,7 +7,7 @@
     var hist = ViewBag.Search;
 }
 
-<div class="page-inner">
+<div class="page-inner mb-200">
     @{
         int totalProduct = @data.TotalQty ?? 0;
         int itemCount = @data.ItemCount ?? 0;
@@ -16,83 +16,6 @@
         string dnone = @data.ItemCount == 0 ? "d-none" : "";
     }
     @* Order Chart *@
-    <div class="row" id="Purchase_note">
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-primary card-round">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-5">
-                            <div class="icon-big text-center text-primary">
-                                <i class="icon-layers"></i>
-                            </div>
-                        </div>
-                        <div class="col-7 col-stats">
-                            <div class="numbers">
-                                <p class="card-category">Barang Terpilih</p>
-                                <h4 class="card-title" id="itemcount">@itemCount</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-info card-round">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-5">
-                            <div class="icon-big text-center">
-                                <i class="icon-grid"></i>
-                            </div>
-                        </div>
-                        <div class="col-7 col-stats">
-                            <div class="numbers">
-                                <p class="card-category">Jumlah Barang</p>
-                                <h4 class="card-title" id="totalproduct"> @totalProduct</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-secondary card-round">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-5">
-                            <div class="icon-big text-center">
-                                <i class="icon-wallet"></i>
-                            </div>
-                        </div>
-                        <div class="col-7 col-stats">
-                            <div class="numbers">
-                                <p class="card-category">Total harga</p>
-                                <h4 class="card-title" id="estimateprice">@((int)Math.Round(countAmount))</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-warning card-round">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-5">
-                            <div class="icon-big text-center">
-                                <i class="icon-basket-loaded"></i>
-                            </div>
-                        </div>
-                        <div class="col-7 col-stats">
-                            <div class="numbers">
-                                <h4 class="card-title">Keranjang Saya</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     @* Search history  *@
     <div class="card">
         <div class="card-body">
@@ -123,7 +46,7 @@
 
     </div>
     @* Product List*@
-    <div class="card">
+    <div class="card mb-200">
         <div class="card-header">
         </div>
         <div class="card-body mb-10">
@@ -199,8 +122,8 @@
             </div>
 
         </div>
-        <div class="card-action">
-            <div class="row">
+        <div class="card-action pb-100 mb-200">
+            <div class="row mb-200">
                 <div class="col-sm-12 col-md-5 d-flex justify-content-start align-items-center gap-5">
                     <div class="input-group w-auto">
                         <span class="input-group-text" id="basic-addon3">Tampilan Data:</span>
@@ -275,6 +198,7 @@
             </div>
         </div>
     </div>
+    <div class="card"></div>
     
 
 
@@ -391,6 +315,83 @@
 
    
 
+</div>
+<div class="row main-header bottom-0 px-5 py-1 bg-transparent" id="Purchase_note" style="zoom: 70%;">
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-primary card-round">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-5">
+                        <div class="icon-big text-center text-primary">
+                            <i class="icon-layers"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-stats">
+                        <div class="numbers">
+                            <p class="card-category">Barang Terpilih</p>
+                            <h4 class="card-title" id="itemcount">@itemCount</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-info card-round">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-5">
+                        <div class="icon-big text-center">
+                            <i class="icon-grid"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-stats">
+                        <div class="numbers">
+                            <p class="card-category">Jumlah Barang</p>
+                            <h4 class="card-title" id="totalproduct"> @totalProduct</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-secondary card-round">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-5">
+                        <div class="icon-big text-center">
+                            <i class="icon-wallet"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-stats">
+                        <div class="numbers">
+                            <p class="card-category">Total harga</p>
+                            <h4 class="card-title" id="estimateprice">@((int)Math.Round(countAmount))</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="card card-stats card-warning card-round">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-5">
+                        <div class="icon-big text-center">
+                            <i class="icon-basket-loaded"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-stats">
+                        <div class="numbers">
+                            <h4 class="card-title">Keranjang Saya</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
