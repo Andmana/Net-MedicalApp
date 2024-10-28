@@ -7,7 +7,7 @@
     var hist = ViewBag.Search;
 }
 
-<div class="page-inner mb-200">
+<div class="page-inner" style="margin-bottom: 75px;">
     @{
         int totalProduct = @data.TotalQty ?? 0;
         int itemCount = @data.ItemCount ?? 0;
@@ -46,7 +46,7 @@
 
     </div>
     @* Product List*@
-    <div class="card mb-200">
+    <div class="card">
         <div class="card-header">
         </div>
         <div class="card-body mb-10">
@@ -122,7 +122,7 @@
             </div>
 
         </div>
-        <div class="card-action pb-100 mb-200">
+        <div class="card-action">
             <div class="row mb-200">
                 <div class="col-sm-12 col-md-5 d-flex justify-content-start align-items-center gap-5">
                     <div class="input-group w-auto">
@@ -316,7 +316,7 @@
    
 
 </div>
-<div class="row main-header bottom-0 px-5 py-1 bg-transparent" id="Purchase_note" style="zoom: 70%;">
+<div class="main-header bottom-0 m-0 px-5 py-1 bg-transparent row" id="Purchase_note">
     <div class="col-sm-6 col-md-3">
         <div class="card card-stats card-primary card-round">
             <div class="card-body">
