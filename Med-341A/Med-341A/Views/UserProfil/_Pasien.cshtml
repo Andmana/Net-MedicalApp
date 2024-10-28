@@ -115,7 +115,7 @@
                 @if (Model.TotalData > 0)
                 {
                     var startIndex = (Model.PageIndex - 1) * Model.Count + 1; // Mulai dari 1
-                    var endIndex = startIndex + Model.Count - 1;
+                    var endIndex = Math.Min(startIndex + Model.Count - 1, Model.TotalData); // Menggunakan Math.Min untuk tidak melebihi TotalData
                     <span>Menampilkan data @startIndex - @endIndex dari @Model.TotalData</span>
                 }
                 else

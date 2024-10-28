@@ -12,7 +12,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <div class="position-relative text-center mb-3">
-                        <img src="~/images/@ViewBag.ImagePath" class="rounded-circle" alt="Profile" style="width: 150px;">
+                        <img src="~/images/@ViewBag.ImagePath" class="rounded-circle" alt="Profile" style="width: 200px; height: 200px; object-fit: cover;">
                         <a class="btn_ubah_gambar position-absolute" dataid="@Model.Id" style="top: 0; right: 0; cursor: pointer;">
                             <i class="fas fa-pencil-alt"></i>
                         </a>
@@ -95,6 +95,8 @@
             $("#modal_body").load(`/UserProfil/UbahGambar?id=${id}`);
             $("#my_modal").modal("show");
         });
+
+
 
         function logout() {
             // Hapus activeTabUrl dan activeTabContent dari sessionStorage
