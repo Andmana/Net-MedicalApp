@@ -22,7 +22,10 @@
         public long? DeletedBy { get; set; }
 
         public DateTime? DeletedOn { get; set; }
-
+        public long? IdSpecialisasi { get; set; }
+        public string? SpecializationName {  get; set; }
         public bool IsDelete { get; set; }
+        public List<VMTCustomerChat>? listDokterChat { get; set; }
+        public List<VMTAppointment>? listDokterJanji { get; set; }
     }
 }

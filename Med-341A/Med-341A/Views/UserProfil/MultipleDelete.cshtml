@@ -1,0 +1,82 @@
+﻿
+<div class="container mt-4">
+    <form asp-action="SureMultipleDelete" method="post" id="form_multipleDelete">
+        <input type="hidden" name="IdUser" id="IdUser" value="@ViewBag.IdUser" />
+        <p> Anda Yakin ingin menghapus pasien:</p>
+        @foreach (var item in ViewBag.listName)
+        {
+            <p style="color: blue">@item</p>
+        }
+        <p>Riwayat medis pasien akan tetap tersimpan, namun Anda tidak dapat lagi membuat janji dokter / chat online untuk pasien ini.</p>
+        <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary" id="btn_submit">Hapus</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $("#form_multipleDelete").validate({
+        submitHandler: function (form) {
+            var idUser = $("#IdUser").val()
+
+            $("#btn_submit").prop("disabled", true);
+            buttonOnLoading("#btn_submit", "Menghapus Data...")
+
+            $.ajax({
+                url: "/UserProfil/SureMultipleDelete",
+                type: "post",
+                data: { idUser: idUser, listId: listId },
+                dataType: "json",
+                success: function (respon) {
+                    var data = respon.dataRespon
+
+                    if (data.success) {
+                        $("#my_modal").modal("hide")
+                        swal(
+                            "Success",
+                            data.message, {
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-success",
+                                },
+                            },
+                        }
+                        ).then((clickconfirm) => {
+                            if (clickconfirm) {
+                                window.location.reload()
+                            }
+                        })
+                    }
+                    else {
+                        $("#my_modal").modal("hide")
+                        swal(
+                            "Failed",
+                            data.message, {
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-danger",
+                                },
+                            },
+                        }
+                        ).then((clickconfirm) => {
+                            if (clickconfirm) {
+                                $("#my_modal").modal("show")
+                                $("#btn_submit").prop("disabled", false);
+                                buttonOnFinish("#btn_submit", "Hapus")
+                            }
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Penanganan kesalahan saat request gagal
+                    console.log(`Error: ${status} - ${error}`);
+                    $("#btn_submit").prop("disabled", false);
+                }
+            })
+        }
+    })
+</script>

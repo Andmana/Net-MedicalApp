@@ -32,5 +32,8 @@ namespace Med_341A.viewmodels
         public long? DeletedBy { get; set; }
         public DateTime? DeletedOn { get; set; }
         public bool IsDelete { get; set; }
+
+        public List<VMTCustomerChat>? listCustomerChat { get; set; }
+        public List<VMTAppointment>? listCustomerJanji { get; set; }
     }
 }

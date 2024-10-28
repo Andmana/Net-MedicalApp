@@ -15,7 +15,7 @@
             </div>
             <div class="d-flex justify-content-between mt-4">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary" id="btn_submit">Simpan</button>
             </div>
         </form>
     </div>
@@ -49,6 +49,9 @@
             if (file.length > 0) {
                 formData.append("ImageFile", file[0])
             }
+
+            $("#btn_submit").prop("disabled", true);
+            buttonOnLoading("#btn_submit", "Mengunggah Gambar...")
 
             $.ajax({
                 url: "/DokterProfil/UbahGambar",
@@ -92,9 +95,16 @@
                         ).then((clickconfirm) => {
                             if (clickconfirm) {
                                 $("#my_modal").modal("show")
+                                $("#btn_submit").prop("disabled", false);
+                                buttonOnFinish("#btn_submit", "Simpan")
                             }
                         })
                     }
+                },
+                error: function (xhr, status, error) {
+                    // Penanganan kesalahan saat request gagal
+                    console.log(`Error: ${status} - ${error}`);
+                    $("#btn_submit").prop("disabled", false);
                 }
             })
         }

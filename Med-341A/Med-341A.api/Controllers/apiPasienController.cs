@@ -38,8 +38,25 @@ namespace Med_341A.api.Controllers
                                        CustomerMemberID = cmember.Id,
                                        Dob = c.Dob,
                                        Fullname = b.Fullname,
-                                       NameRelation = crelation.Name
+                                       NameRelation = crelation.Name,
+                                       listCustomerChat = (from chat in db.TCustomerChats
+                                                           where chat.CustomerId == c.Id
+                                                           select new VMTCustomerChat
+                                                           {
+                                                               Id = chat.Id,
+                                                               CustomerId = chat.CustomerId,
+                                                               DoctorId = chat.DoctorId
+                                                           }).ToList(),
+                                       listCustomerJanji = (from janji in db.TAppointments
+                                                            where janji.CustomerId == c.Id
+                                                            select new VMTAppointment
+                                                            {
+                                                                Id = janji.Id,
+                                                                CustomerId = janji.CustomerId,
+                                                                DoctorOfficeId = janji.DoctorOfficeId
+                                                            }).ToList()
                                    }).ToList();
+            
             return data;
         }
         [HttpGet("GetAllRelasi")]
@@ -60,7 +77,7 @@ namespace Med_341A.api.Controllers
         public VMResponse Simpan(VMPasien data)
         {
             MUser user = db.MUsers.Where(a => a.Id == data.IdUser).FirstOrDefault();
-            if(user != null)
+            if (user != null)
             {
                 try
                 {
@@ -106,7 +123,7 @@ namespace Med_341A.api.Controllers
 
                     respon.Message = "Data Sukses Ditambahkan";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     respon.Success = false;
                     respon.Message = "Gagal ditambahkan: " + ex.Message;
@@ -131,7 +148,8 @@ namespace Med_341A.api.Controllers
                              on c.BiodataId equals b.Id
                              join blood in db.MBloodGroups
                              on c.BloodGroupId equals blood.Id
-                             into bloodGroupJoin from blood in bloodGroupJoin.DefaultIfEmpty()
+                             into bloodGroupJoin
+                             from blood in bloodGroupJoin.DefaultIfEmpty()
                              where c.Id == id && c.IsDelete == false
                              select new VMPasien
                              {
@@ -142,7 +160,7 @@ namespace Med_341A.api.Controllers
                                  NameRelation = crelation.Name,
 
                                  CodeBlood = blood != null ? blood.Code : null,
-                                 
+
                                  IdCustomer = c.Id,
                                  BiodataId = c.BiodataId,
                                  Dob = c.Dob,
@@ -155,6 +173,118 @@ namespace Med_341A.api.Controllers
                                  Fullname = b.Fullname
                              }).FirstOrDefault()!;
             return data;
+        }
+        [HttpPut("EditPasien")]
+        public VMResponse EditPasien(VMPasien dataForm)
+        {
+            MCustomer customer = db.MCustomers.Where(a => a.Id == dataForm.IdCustomer).FirstOrDefault();
+            if (customer != null)
+            {
+                if (customer.Dob != dataForm.Dob || customer.Gender != dataForm.Gender || customer.BloodGroupId != dataForm.BloodGroupId ||
+                   customer.RhesusType != dataForm.RhesusType || customer.Height != dataForm.Height || customer.Weight != dataForm.Weight)
+                {
+                    customer.Dob = dataForm.Dob;
+                    customer.Gender = dataForm.Gender;
+                    customer.BloodGroupId = dataForm.BloodGroupId;
+                    customer.RhesusType = dataForm.RhesusType;
+                    customer.Height = dataForm.Height;
+                    customer.Weight = dataForm.Weight;
+                    customer.ModifiedBy = dataForm.IdUser;
+                    customer.ModifiedOn = DateTime.Now;
+                }
+                MBiodatum biodata = db.MBiodata.Where(a => a.Id == customer.BiodataId).FirstOrDefault();
+                if (biodata.Fullname != dataForm.Fullname)
+                {
+                    biodata.Fullname = dataForm.Fullname;
+                    biodata.ModifiedBy = dataForm.IdUser;
+                    biodata.ModifiedOn = DateTime.Now;
+                }
+                MCustomerMember member = db.MCustomerMembers.Where(a => a.Id == dataForm.CustomerMemberID).FirstOrDefault();
+                if (member.CustomerRelationId != dataForm.CustomerRelationID)
+                {
+                    member.CustomerRelationId = dataForm.CustomerRelationID;
+                    member.ModifiedBy = dataForm.IdUser;
+                    member.ModifiedOn = DateTime.Now;
+                }
+                try
+                {
+                    db.Update(customer);
+                    db.Update(biodata);
+                    db.Update(member);
+                    db.SaveChanges();
+                    respon.Message = "Data Sukses di Ubah";
+                }
+                catch (Exception ex)
+                {
+                    respon.Success = false;
+                    respon.Message = "Data Gagal di Ubah: " + ex.Message;
+                }
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = "Data Tidak ditemukan";
+            }
+            return respon;
+        }
+        [HttpDelete("DeletePasien/{idUser}/{idCustomer}")]
+        public VMResponse DeletePasien(int idUser, int idCustomer)
+        {
+            MCustomer customer = db.MCustomers.Where(a => a.Id == idCustomer).FirstOrDefault();
+            if (customer != null)
+            {
+                customer.IsDelete = true;
+                customer.DeletedOn = DateTime.Now;
+                customer.DeletedBy = idUser;
+                try
+                {
+                    db.Update(customer);
+                    db.SaveChanges();
+                    respon.Message = "Data Sukses di Hapus";
+                }
+                catch (Exception ex)
+                {
+                    respon.Success = false;
+                    respon.Message = "Data Gagal di Hapus: " + ex.Message;
+                }
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = "Data Tidak ditemukan";
+            }
+            return respon;
+        }
+        [HttpPut("MultipleDelete")]
+        public VMResponse MultipleDelete(VMMultipleDelete data)
+        {
+            if (data.ListId.Count > 0)
+            {
+                foreach (int item in data.ListId)
+                {
+                    MCustomer customer = db.MCustomers.Where(a => a.Id == item).FirstOrDefault();
+                    customer.IsDelete = true;
+                    customer.DeletedOn = DateTime.Now;
+                    customer.DeletedBy = data.IdUser;
+                    db.Update(customer);
+                }
+                try
+                {
+                    db.SaveChanges();
+                    respon.Message = "Data Sukses di Hapus";
+                }
+                catch (Exception ex)
+                {
+                    respon.Success = false;
+                    respon.Message = "Data Gagal di Hapus: " + ex.Message;
+                }
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = "Data Tidak ditemukan";
+            }
+            return respon;
         }
     }
 }

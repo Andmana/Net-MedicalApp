@@ -1,4 +1,5 @@
-﻿using Med_341A.viewmodels;
+﻿using Med_341A.datamodels;
+using Med_341A.viewmodels;
 using Newtonsoft.Json;
 
 namespace Med_341A.Services

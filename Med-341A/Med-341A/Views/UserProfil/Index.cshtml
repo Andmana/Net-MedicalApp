@@ -35,25 +35,9 @@
 
         <!-- Main Content -->
         <div class="col-lg-9">
-            @if (ViewBag.MainContent == "Pasien")
+            @if (ViewBag.MainContent != null)
             {
-                @await Html.PartialAsync("_Pasien")
-            }
-            else if (ViewBag.MainContent == "Profil")
-            {
-                @await Html.PartialAsync("_EditProfil")
-            }
-            else if (ViewBag.MainContent == "PembelianObat")
-            {
-                @await Html.PartialAsync("_PembelianObat")
-            }
-            else if (ViewBag.MainContent == "Rencana")
-            {
-                @await Html.PartialAsync("_Rencana")
-            }
-            else
-            {
-                @await Html.PartialAsync("_RiwayatChat")
+                @await Html.PartialAsync($"_{ViewBag.MainContent}");
             }
         </div>
     </div>
@@ -72,11 +56,28 @@
 
 @section Scripts {
     <script>
-        $(".list-group-item a").click(function (e) {
-            e.preventDefault(); // Mencegah tindakan default tautan
-            var url = $(this).attr("href");
+        var activeTabUrl = sessionStorage.getItem("activeTabUrl");
+        var activeTabContent = sessionStorage.getItem("activeTabContent");
 
-            // Menghapus konten lama sebelum memuat yang baru
+        if (activeTabUrl) {
+            $(".col-lg-9").empty();
+            $.get(activeTabUrl)
+                .done(function (data) {
+                    $(".col-lg-9").html(data);
+                })
+                .fail(function () {
+                    alert("Failed to load content. Please try again.");
+                });
+        }
+        $(".list-group-item a").click(function (e) {
+            e.preventDefault();
+            var url = $(this).attr("href");
+            var mainContent = $(this).text().trim();
+
+            // Simpan halaman aktif di sessionStorage
+            sessionStorage.setItem("activeTabUrl", url);
+            sessionStorage.setItem("activeTabContent", mainContent);
+
             $(".col-lg-9").empty();
             $.get(url)
                 .done(function (data) {
@@ -94,6 +95,12 @@
             $("#modal_body").load(`/UserProfil/UbahGambar?id=${id}`);
             $("#my_modal").modal("show");
         });
+
+        function logout() {
+            // Hapus activeTabUrl dan activeTabContent dari sessionStorage
+            sessionStorage.removeItem("activeTabUrl");
+            sessionStorage.removeItem("activeTabContent");
+        }
     </script>
 }
 

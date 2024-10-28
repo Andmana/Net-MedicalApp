@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Med_341A.viewmodels
+@model VMPasien
+
+@{
     var idUser = Context.Session.GetInt32("IdUser") ?? 0;
 }
 
@@ -25,11 +28,11 @@
             <label class="form-label">Jenis Kelamin*</label>
             <div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="Gender" id="genderMale" value="L">
+                    @Html.RadioButtonFor(m => m.Gender, "L", new { id = "genderMale", @class = "form-check-input" })
                     <label class="form-check-label" for="genderMale">Laki - Laki</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="Gender" id="genderFemale" value="P">
+                    @Html.RadioButtonFor(m => m.Gender, "P", new { id = "genderFemale", @class = "form-check-input" })
                     <label class="form-check-label" for="genderFemale">Perempuan</label>
                 </div>
             </div>
@@ -39,7 +42,10 @@
         <!-- Golongan Darah dan Rhesus -->
         <div class="row mb-3">
             <div class="col-md-6">
-                <label for="BloodGroupId" class="form-label">Golongan Darah</label>
+                <div class="d-flex justify-content-between">
+                    <label for="BloodGroupId" class="form-label">Golongan Darah</label>
+                    <span id="cancelRhesusText" class="text-danger" style="display: none; cursor: pointer;" onclick="cancelRhesus()">Batal</span>
+                </div>
                 <div class="input-group">
                     @Html.DropDownList("BloodGroupId",
                              new SelectList(ViewBag.ListGoldar, "Id", "Code"),
@@ -51,11 +57,11 @@
             </div>
             <div class="col-md-6 d-flex align-items-end">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="RhesusType" id="rhesusPositive" value="Rh+">
+                    @Html.RadioButtonFor(m => m.RhesusType, "Rh+", new { id = "rhesusPositive", @class = "form-check-input", onchange = "toggleCancelButton()" })
                     <label class="form-check-label" for="rhesusPositive">Rh +</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="RhesusType" id="rhesusNegative" value="Rh-">
+                    @Html.RadioButtonFor(m => m.RhesusType, "Rh-", new { id = "rhesusNegative", @class = "form-check-input", onchange = "toggleCancelButton()" })
                     <label class="form-check-label" for="rhesusNegative">Rh -</label>
                 </div>
             </div>
@@ -109,6 +115,20 @@
         var yyyy = today.getFullYear();
         return yyyy + '-' + mm + '-' + dd;
     }
+
+    $('input[name="RhesusType"]').change(function () {
+        if ($('input[name="RhesusType"]:checked').length) {
+            $('#cancelRhesusText').show(); // Tampilkan teks Batal
+        } else {
+            $('#cancelRhesusText').hide(); // Sembunyikan teks Batal
+        }
+    });
+
+    // Mengatur radio button menjadi tidak terpilih saat teks Batal diklik
+    $('#cancelRhesusText').click(function () {
+        $('input[name="RhesusType"]').prop('checked', false); // Tidak terpilih
+        $(this).hide(); // Sembunyikan teks Batal
+    });
 
     function validateInput(input) {
         // Menghapus karakter selain angka dan titik, tetapi izinkan satu titik desimal

@@ -1,9 +1,31 @@
-﻿@using Med_341A.viewmodels
+﻿@using Med_341A.datamodels
+@using Med_341A.viewmodels
 @model VMDoctor
 
 @{
     ViewData["Title"] = "Profil Dokter";
 }
+
+<style>
+    .Title-Tentang{
+        font-size: 1.2em; /* Ukuran font lebih besar */
+        font-weight: bold; /* Menebalkan font */
+    }
+    .institution-name {
+        font-size: 1em; /* Ukuran font lebih besar */
+        font-weight: bold; /* Menebalkan font */
+    }
+
+    .major-year {
+        display: flex; /* Membuat elemen dalam baris */
+        justify-content: space-between; /* Menjaga jarak antar elemen */
+    }
+
+    .year {
+        margin-left: auto; /* Menempatkan tahun di sisi kanan */
+    }
+
+</style>
 
 <div class="container-fluid">
     <div class="row">
@@ -19,7 +41,7 @@
                         </a>
                     </div>
                     <h4 class="card-title">@Model.Fullname</h4>
-                    <p class="card-subtitle">Spesialis Anak</p>
+                    <p class="card-subtitle">@Model.SpecializationName</p>
                     <div class="position-relative">
                         <i class="fas fa-star" style="color: gold; font-size: 24px;"></i>
                         <i class="fas fa-star" style="color: gold; font-size: 24px;"></i>
@@ -30,8 +52,14 @@
                     <hr />
                     <!-- Obrolan/Konsultasi -->
                     <div class="text-start">
-                        <div><a href="#" class="fs-5">Janji</a></div>
-                        <div><a href="#" class="fs-5">Obrolan / Konsultasi</a></div>
+                        <div class="d-flex justify-content-between">
+                            <a href="#" class="fs-5">Janji</a>
+                            <span class="year">@Model.listDokterJanji?.Count</span> 
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="#" class="fs-5">Obrolan / Konsultasi</a>
+                            <span class="year">@Model.listDokterChat?.Count</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -42,26 +70,56 @@
                     <h4 class="mb-0">Tentang Saya</h4>
                 </div>
                 <div class="card-body">
-                    <h5 class="fw-bold">Tindakan Medis</h5>
+                    <h5 class="Title-Tentang">Tindakan Medis</h5>
                     <ul class="list-unstyled">
-                        <li>- Fisioterapi anak</li>
-                        <li>- Konsultasi kesehatan anak</li>
-                        <li>- Skrining tumbuh kembang anak</li>
-                        <li>- Vaksin anak</li>
-                        <li>- Konsultasi alergi anak</li>
-                        <li>- Konsultasi psikologi anak</li>
-                        <li>- Tes pendengaran OAE</li>
+                        @if (ViewBag.TindakMedis.Count > 0)
+                        {
+                            @foreach (TDoctorTreatment tindak in ViewBag.TindakMedis)
+                            {
+                                <li style="font-size: 1em;">- @tindak.Name</li>
+                            }
+                        }
+                        else
+                        {
+                            <li style="font-size: 1em;">Belum Ada Data Tindakan Medis</li>
+                        }
                     </ul>
-                    <h5 class="fw-bold">Riwayat Praktek</h5>
+                    <h5 class="Title-Tentang">Riwayat Praktek</h5>
                     <ul class="list-unstyled">
-                        <li>RS Mitra, Depok (2019 - sekarang)</li>
-                        <li>PSIA Bunda, Jakarta Pusat (2018 - sekarang)</li>
-                        <li>RSUP Hasan Sadikin, Bandung (2016 - 2018)</li>
+                        @if (ViewBag.RiwayatPraktek.Count > 0)
+                        {
+                            @foreach (VMRiwayatPraktek riwayat in ViewBag.RiwayatPraktek)
+                            {
+                                var endDate = riwayat.EndDate?.ToString("yyyy") == DateTime.Now.ToString("yyyy") ? "Sekarang" : @riwayat.EndDate?.ToString("yyyy");
+                                <li class="institution-name">@riwayat.NameMedicalFacility, @riwayat.FullAddress</li>
+                                <li class="major-year">
+                                    <span>@riwayat.Specialization</span>
+                                    <span class="year">(@riwayat.StartDate?.ToString("yyyy") - @endDate )</span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li style="font-size: 1em;">Belum Ada Data Riwayat Praktek</li>
+                        }
                     </ul>
-                    <h5 class="fw-bold">Pendidikan</h5>
+                    <h5 class="Title-Tentang">Pendidikan</h5>
                     <ul class="list-unstyled">
-                        <li>Universitas Padjadjaran, Spesialis Anak (2016)</li>
-                        <li>Universitas Padjadjaran, Kedokteran Umum (2011)</li>
+                        @if(ViewBag.DokterEducation.Count > 0)
+                        {
+                            @foreach (MDoctorEducation item in ViewBag.DokterEducation)
+                            {
+                                <li class="institution-name">@item.InstitutionName</li>
+                                <li class="major-year">
+                                    <span>@item.Major</span>
+                                    <span class="year">(@item.EndYear)</span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li style="font-size: 1em;">Belum Ada Data Pendidikan</li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -118,13 +176,14 @@
             </div>
         </div>
     </div>
-    <script>
-        $(".btn_ubah_gambar").click(function () {
-            var id = $(this).attr("dataid")
+</div>
+<script>
+    $(".btn_ubah_gambar").click(function () {
+        var id = $(this).attr("dataid")
 
-            $("#modal_title").text("Ubah Gambar")
-            $("#modal_body").empty()
-            $("#modal_body").load("/DokterProfil/UbahGambar?id=" + id)
-            $("#my_modal").modal("show")
-        })
-    </script>
+        $("#modal_title").text("Ubah Gambar")
+        $("#modal_body").empty()
+        $("#modal_body").load("/DokterProfil/UbahGambar?id=" + id)
+        $("#my_modal").modal("show")
+    })
+</script>

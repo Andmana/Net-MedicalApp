@@ -23,6 +23,9 @@ namespace Med_341A.Controllers
 
                 // Mengisi ViewBag dengan nilai imagePath
                 ViewBag.ImagePath = imagePath;
+                ViewBag.DokterEducation = await dokterProfilService.GetDataDokterEducation(idUser);
+                ViewBag.RiwayatPraktek = await dokterProfilService.GetDataRiwayatPraktek(idUser);
+                ViewBag.TindakMedis = await dokterProfilService.GetDataTindakanMedis(idUser);
                 return View(data);
             }
             else

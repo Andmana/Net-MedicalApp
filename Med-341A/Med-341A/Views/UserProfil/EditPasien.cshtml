@@ -1,13 +1,11 @@
-﻿@using Med_341A.viewmodels
+﻿﻿@using Med_341A.viewmodels
 @model VMPasien
-
 
 <div class="container mt-4">
     <form asp-action="EditPasien" method="post" id="form_edit">
-        <input type="hidden" name="ParentBiodataID" id="ParentBiodataID" value="@Model.ParentBiodataID" />
-        <input type="hidden" name="CustomerMemberID" id="CustomerMemberID" value="@Model.CustomerMemberID" />
         <input type="hidden" name="IdCustomer" id="IdCustomer" value="@Model.IdCustomer" />
-        <input type="hidden" name="BiodataId" id="BiodataId" value="@Model.BiodataId" />
+        <input type="hidden" name="IdUser" id="IdUser" value="@ViewBag.IdUser" />
+        <input type="hidden" name="CustomerMemberID" id="CustomerMemberID" value="@Model.CustomerMemberID" />
 
         <!-- Nama Lengkap -->
         <div class="mb-3">

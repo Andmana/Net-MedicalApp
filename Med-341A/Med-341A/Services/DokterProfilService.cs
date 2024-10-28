@@ -1,4 +1,5 @@
-﻿using Med_341A.viewmodels;
+﻿using Med_341A.datamodels;
+using Med_341A.viewmodels;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
@@ -21,6 +22,28 @@ namespace Med_341A.Services
         {
             string apiResponse = await client.GetStringAsync(RouteAPI + $"apiDokterProfile/GetDataDokter/{id}");
             VMDoctor data = JsonConvert.DeserializeObject<VMDoctor>(apiResponse)!;
+            return data;
+        }
+
+        public async Task<List<MDoctorEducation>> GetDataDokterEducation(int id)
+        {
+            string apiResponse = await client.GetStringAsync(RouteAPI + $"apiDokterProfile/GetDataDokterEducation/{id}");
+            List<MDoctorEducation> data = JsonConvert.DeserializeObject<List<MDoctorEducation>>(apiResponse)!;
+
+            return data;
+        }
+        public async Task<List<VMRiwayatPraktek>> GetDataRiwayatPraktek(int id)
+        {
+            string apiResponse = await client.GetStringAsync(RouteAPI + $"apiDokterProfile/GetDataRiwayatPraktek/{id}");
+            List<VMRiwayatPraktek> data = JsonConvert.DeserializeObject<List<VMRiwayatPraktek>>(apiResponse)!;
+
+            return data;
+        }
+        public async Task<List<TDoctorTreatment>> GetDataTindakanMedis(int id)
+        {
+            string apiResponse = await client.GetStringAsync(RouteAPI + $"apiDokterProfile/GetDataTindakanMedis/{id}");
+            List<TDoctorTreatment> data = JsonConvert.DeserializeObject<List<TDoctorTreatment>>(apiResponse)!;
+
             return data;
         }
 

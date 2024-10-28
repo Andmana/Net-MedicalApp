@@ -1,5 +1,6 @@
 ﻿using Med_341A.datamodels;
 using Med_341A.viewmodels;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -60,6 +61,62 @@ namespace Med_341A.Services
             string apiResponse = await client.GetStringAsync(RouteAPI + $"apiPasien/GetPasienByIdCustomer/{id}");
             VMPasien data = JsonConvert.DeserializeObject<VMPasien>(apiResponse);
             return data;
+        }
+
+        public async Task<VMResponse> EditPasien(VMPasien dataForm)
+        {
+            string json = JsonConvert.SerializeObject(dataForm);
+            StringContent content = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            var request = await client.PutAsync(RouteAPI + "apiPasien/EditPasien", content);
+            if (request.IsSuccessStatusCode)
+            {
+                var apiRespon = await request.Content.ReadAsStringAsync();
+                respon = JsonConvert.DeserializeObject<VMResponse>(apiRespon);
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = $"{request.StatusCode} : {request.ReasonPhrase}";
+            }
+
+            return respon;
+        }
+
+        public async Task<VMResponse> DeletePasien(int idUser, int idCustomer)
+        {
+            var request = await client.DeleteAsync(RouteAPI + $"apiPasien/DeletePasien/{idUser}/{idCustomer}");
+            if (request.IsSuccessStatusCode)
+            {
+                var apiRespon = await request.Content.ReadAsStringAsync();
+                respon = JsonConvert.DeserializeObject<VMResponse>(apiRespon);
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = $"{request.StatusCode} : {request.ReasonPhrase}";
+            }
+            return respon;
+        }
+
+        public async Task<VMResponse> MultipleDelete(int idUser, List<int> listId)
+        {
+            string json = JsonConvert.SerializeObject(new { IdUser = idUser, ListId = listId });
+
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var request = await client.PutAsync(RouteAPI + "apiPasien/MultipleDelete", content);
+
+            if (request.IsSuccessStatusCode)
+            {
+                var apiRespon = await request.Content.ReadAsStringAsync();
+                respon = JsonConvert.DeserializeObject<VMResponse>(apiRespon);
+            }
+            else
+            {
+                respon.Success = false;
+                respon.Message = $"{request.StatusCode} : {request.ReasonPhrase}";
+            }
+            return respon;
         }
     }
 }
