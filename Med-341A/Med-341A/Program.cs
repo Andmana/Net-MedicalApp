@@ -18,6 +18,7 @@ builder.Services.AddScoped<RegisterService>();
 builder.Services.AddScoped<ResetPasswordService>();
 builder.Services.AddScoped<MenuRoleService>();
 builder.Services.AddScoped<MedicalItemService>();
+builder.Services.AddScoped<FindDoctorService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -49,7 +50,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 // add middleware session
-app.UseMiddleware<SessionMiddleware>();
+// app.UseMiddleware<SessionMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

@@ -752,24 +752,13 @@
 @section Scripts {
     <script src="assets/landing-assets/js/jquery.nice-select.min.js"></script>
     <script>
-        $("wrapper").addClass("sidebar_minimize")
-
-        var idUser = "@idUser"
-
         $("landing-scoped").ready(function () {
             $('select').niceSelect();
         });
 
-        if (idUser == "") {
-            $(".sidebar").css("display", "none");
-            $(".sidebar").css("width", "0");
-            $(".main-header").attr("style", "width: 100% !important;");
-            $(".main-panel").attr("style", "width: 100% !important;");
-        }
-
         $("#btn_find_doctors").click(function () {
             $("#modal_body").empty()
-            $("#modal_body").load("/FindDoctor/Search")
+            $("#modal_body").load("/FindDoctor/SearchMenu")
             $("#my_modal").modal("show")
         })
 
