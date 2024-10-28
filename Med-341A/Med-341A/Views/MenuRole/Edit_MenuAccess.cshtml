@@ -105,6 +105,7 @@
                     index = $(this).attr('data-index');
                     form_value.role_menu[index].is_selected = true;
                 });
+
             }
             else {
                 form_value.role_menu[index].is_selected = false;
@@ -120,14 +121,14 @@
                 $.each(classList, function (i, item) {
                     if ($(_this).prop('checked')) {
                         $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', true);
-                        //index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
-                        //form_value.role_menu[index].is_selected = true;
+                        index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
+                        form_value.role_menu[index].is_selected = true;
                     }
                     else {
                         if ($('input[type=checkbox].checkbox-menus.' + item + ':checked').length == 0) {
                             $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', false);
-                            //index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
-                            //form_value.role_menu[index].is_selected = false;
+                            index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
+                            form_value.role_menu[index].is_selected = false;
                         }
                     }
                 });
@@ -159,7 +160,6 @@
 
         $('.parentt').click(function () {
             var id = $(this).attr('id');
-            //debugger
             if ($('#' + id).prop('checked')) {
                 $('.' + id).prop('checked', true);
             }
@@ -194,7 +194,7 @@
     $('#form_input').validate({
         errorClass: 'text-danger',
         rules: {
-            RoleName: {
+            Name: {
                 required: true,
                 minlength: 3,
             },
