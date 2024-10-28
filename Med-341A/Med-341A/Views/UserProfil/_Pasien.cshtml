@@ -15,10 +15,17 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <!-- Search Input with Icon -->
                 <div style="position: relative; width: 50%;">
-                    <input type="text" id="searchString" name="searchString" value="@ViewBag.currentFilter" class="form-control" placeholder="Cari Pasien..." style="width: 100%; padding-right: 35px;" />
-                    <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #aaa;">
+                    <input type="text" id="searchString" name="searchString" value="@ViewBag.currentFilter" class="form-control" placeholder="Cari Pasien..." style="width: calc(100% - 100px); padding-right: 35px; display: inline-block;" />
+
+                    <!-- Icon Search -->
+                    <a id="searchButton" style="position: absolute; right: 70px; top: 50%; transform: translateY(-50%); color: grey; cursor: pointer;">
                         <i class="fas fa-search"></i>
-                    </span>
+                    </a>
+
+                    <!-- Reset Button -->
+                    <a id="resetButton" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: grey; cursor: pointer;">
+                        <i class="fas fa-redo"></i>
+                    </a>
                 </div>
 
                 <!-- Sort Dropdown with Icon -->
@@ -93,9 +100,9 @@
         </div>
     </div>
     <div class="card-footer">
-        <!-- Pagination Buttons -->
-        <div class="row">
-            <div class="col-2">
+        <div class="row align-items-center">
+            <!-- Pagination Info -->
+            <div class="col-3">
                 <select name="pageSize" id="pageSize" class="form-control">
                     <option value="3">3</option>
                     <option value="5">5</option>
@@ -103,7 +110,21 @@
                     <option value="25">25</option>
                 </select>
             </div>
-            <div class="col-10 d-flex justify-content-end">
+
+            <div class="col-6 text-center">
+                @if (Model.TotalData > 0)
+                {
+                    var startIndex = (Model.PageIndex - 1) * Model.Count + 1; // Mulai dari 1
+                    var endIndex = startIndex + Model.Count - 1;
+                    <span>Menampilkan data @startIndex - @endIndex dari @Model.TotalData</span>
+                }
+                else
+                {
+                    <span>Tidak ada data untuk ditampilkan.</span>
+                }
+            </div>
+
+            <div class="col-3 d-flex justify-content-end">
                 <button class="btn btn-info me-2" id="prevPage" @(Model.HasPreviousPage ? "" : "disabled")>Previous</button>
                 <button class="btn btn-info" id="nextPage" @(Model.HasNextPage ? "" : "disabled")>Next</button>
             </div>
@@ -112,6 +133,7 @@
 </div>
 <script>
     var listId = []
+
     function selectedItem() {
         var mychecked = $(".mychecked")
         listId = []
@@ -150,9 +172,15 @@
     }
 
     // Search Functionality
-    $('#searchString').on('input', function () {
-        let searchValue = $(this).val();
+    $('#searchButton').click(function () {
+        let searchValue = $('#searchString').val();
         loadPatients(1, $('#sort').val(), searchValue, $('#pageSize').val());
+    });
+
+    // Reset Functionality
+    $('#resetButton').click(function () {
+        $('#searchString').val(''); // Clear the search input
+        loadPatients(1, $('#sort').val(), '', $('#pageSize').val()); // Load patients without filter
     });
 
     // Sort Functionality
