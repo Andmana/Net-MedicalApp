@@ -1,28 +1,365 @@
-﻿<footer class="footer">
-    <div class="container-fluid d-flex justify-content-between">
-        <nav class="pull-left">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="http://www.themekita.com">
-                        ThemeKita
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"> Help </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"> Licenses </a>
-                </li>
-            </ul>
-        </nav>
-        <div class="copyright">
-            2024, made with <i class="fa fa-heart heart text-danger"></i> by
-            <a href="http://www.themekita.com">ThemeKita</a>
-        </div>
-        <div>
-            Distributed by
-            <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
+﻿@* <footer class="footer">
+<div class="container-fluid d-flex justify-content-between">
+<nav class="pull-left">
+<ul class="nav">
+<li class="nav-item">
+<a class="nav-link" href="http://www.themekita.com">
+ThemeKita
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="#"> Help </a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="#"> Licenses </a>
+</li>
+</ul>
+</nav>
+<div class="copyright">
+2024, made with <i class="fa fa-heart heart text-danger"></i> by
+<a href="http://www.themekita.com">ThemeKita</a>
+</div>
+<div>
+Distributed by
+<a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
+</div>
+</div>
+</footer> *@
+
+@* @section styles {
+    <link rel="stylesheet" href="assets/landing-assets/css/landing.css" />
+    <link rel="stylesheet" href="assets/landing-assets/css/flaticon.css">
+    <link rel="stylesheet" href="assets/landing-assets/css/themify-icons.css"> *@
+
+    <style>
+        .footer-padding {
+            padding-top: 150px;
+            padding-bottom: 50px;
+        }
+
+        @@media only screen and (min-width: 992px) and (max-width: 1199px) {
+            .footer-padding {
+                padding-top: 150px;
+                padding-bottom: 50px;
+            }
+        }
+
+        @@media only screen and (min-width: 768px) and (max-width: 991px) {
+            .footer-padding {
+                padding-top: 100px;
+                padding-bottom: 50px;
+            }
+        }
+
+        @@media only screen and (min-width: 576px) and (max-width: 767px) {
+            .footer-padding {
+                padding-top: 80px;
+                padding-bottom: 50px;
+            }
+        }
+
+        @@media (max-width: 575px) {
+            .footer-padding {
+                padding-top: 80px;
+                padding-bottom: 50px;
+            }
+        }
+
+        .footer-area {
+            background: #11141b;
+        }
+
+        .footer-area .footer-top {
+            border-bottom: 1px solid #233148;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-logo {
+            margin-bottom: 30px;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-pera .info1 {
+            line-height: 1.8;
+            margin-bottom: 35px;
+            color: #bdbdbd;
+        }
+
+        @@media only screen and (min-width: 992px) and (max-width: 1199px) {
+            .footer-area .footer-top .single-footer-caption .footer-pera .info1 {
+                font-size: 14px;
+            }
+        }
+
+        @@media (max-width: 575px) {
+            .footer-area .footer-top .single-footer-caption .footer-pera .info1 {
+                font-size: 14px;
+            }
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-number h4 {
+            color: #3957ff;
+            font-size: 30px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-number h4 span {
+            color: #fff;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-number p {
+            color: #bdbdbd;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-tittle h4 {
+            color: #fff;
+            font-family: "Muli", sans-serif;
+            font-size: 18px;
+            margin-bottom: 38px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-tittle ul li {
+            color: #bdbdbd;
+            margin-bottom: 15px;
+            text-transform: capitalize;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-tittle ul li a {
+            color: #bdbdbd;
+            font-weight: 300;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-tittle ul li a:hover {
+            color: #fff;
+            padding-left: 5px;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-form {
+            margin-bottom: 30px;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-form form {
+            position: relative;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-form form input {
+            width: 100%;
+            height: 43px;
+            padding: 10px 20px;
+            border: 0;
+            background: #1c242f;
+            color: #fff;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-form form input::placeholder {
+            color: #9fa6bd;
+            font-weight: 300;
+            font-size: 14px;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-form form .form-icon button {
+            position: absolute;
+            top: 0px;
+            right: 0;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            padding: 15px 22px;
+            background: #0a0f17;
+            line-height: 1;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 300;
+            color: #3957ff;
+        }
+
+        .footer-area .footer-top .single-footer-caption .info.error {
+            color: #ff0000;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-cap {
+            margin-bottom: 30px;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-cap span {
+            color: #0f61ef;
+            font-size: 16px;
+            font-weight: 300;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .footer-area .footer-top .single-footer-caption .footer-cap p {
+            color: #bdbdbd;
+            font-size: 16px;
+        }
+
+        .footer-area .footer-bottom {
+            padding-bottom: 50px;
+            padding-top: 30px;
+        }
+
+        .footer-area .footer-bottom .footer-copy-right p {
+            color: #bdbdbd;
+            font-weight: 300;
+            font-size: 16px;
+            line-height: 2;
+            margin-bottom: 12px;
+        }
+
+        .footer-area .footer-bottom .footer-copy-right p i {
+            color: #3957ff;
+        }
+
+        .footer-area .footer-bottom .footer-copy-right p a {
+            color: #3957ff;
+        }
+
+        .footer-area .footer-social span {
+            color: #fff;
+            position: relative;
+            margin-right: 57px;
+        }
+
+        .footer-area .footer-social span::before {
+            position: absolute;
+            content: "";
+            width: 43px;
+            height: 2px;
+            background: #3b3647;
+            top: 50%;
+            transform: translateY(-50%);
+            right: -56px;
+        }
+
+        @@media only screen and (min-width: 768px) and (max-width: 991px) {
+            .footer-area .footer-social {
+                float: left;
+                padding-top: 10px;
+            }
+        }
+
+        @@media only screen and (min-width: 576px) and (max-width: 767px) {
+            .footer-area .footer-social {
+                float: left;
+                padding-top: 10px;
+            }
+        }
+
+        @@media (max-width: 575px) {
+            .footer-area .footer-social {
+                float: left;
+                padding-top: 10px;
+            }
+        }
+
+        .footer-area .footer-social a {
+            color: #fff;
+            font-size: 14px;
+            padding-left: 25px;
+        }
+
+        .footer-area .footer-social a i {
+            -webkit-transition: 0.4s;
+            -moz-transition: 0.4s;
+            -o-transition: 0.4s;
+            transition: 0.4s;
+            transform: rotateY(0deg);
+        }
+
+        .footer-area .footer-social a:hover {
+            color: #fff;
+        }
+
+        .footer-area .footer-social a:hover i {
+            transform: rotateY(180deg);
+        }
+    </style>
+@* } *@
+
+<footer>
+    <!--? Footer Start-->
+    <div class="footer-area section-bg" data-background="assets/landing-assets/img/gallery/footer_bg.jpg">
+        <div class="container">
+            <div class="footer-top footer-padding">
+                <div class="row d-flex justify-content-between">
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-8">
+                        <div class="single-footer-caption mb-50">
+                            <!-- logo -->
+                            <div class="footer-logo">
+                                <a href="index.html"><img src="assets/landing-assets/img/logo/logo2_footer.png"
+                                        alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-5">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-tittle">
+                                <h4>About Us</h4>
+                                <div class="footer-pera">
+                                    <p class="info1">Lorem igpsum doldfor sit amet, adipiscing elit, sed do eiusmod
+                                        tempor cergelit rgh. </p>
+                                    <p class="info1">Lorem ipsum dolor sit amet, adipiscing elit.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-number mb-50">
+                                <h4><span>+564 </span>7885 3222</h4>
+                                <p>youremail@gmail.com</p>
+                            </div>
+                            <!-- Form -->
+                            <div class="footer-form">
+                                <div id="mc_embed_signup">
+                                    <form target="_blank"
+                                        action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
+                                        method="get" class="subscribe_form relative mail_part" novalidate="true">
+                                        <input type="email" name="EMAIL" id="newsletter-form-email"
+                                            placeholder=" Email Address " class="placeholder hide-on-focus"
+                                            onfocus="this.placeholder = ''"
+                                            onblur="this.placeholder = 'Your email address'">
+                                        <div class="form-icon">
+                                            <button type="submit" name="submit" id="newsletter-submit"
+                                                class="email_icon newsletter-submit button-contactForm">
+                                                Send
+                                            </button>
+                                        </div>
+                                        <div class="mt-10 info"></div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="row d-flex justify-content-between align-items-center">
+                    <div class="col-xl-9 col-lg-8">
+                        <div class="footer-copy-right">
+                            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved |
+                                This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a
+                                    href="https://colorlib.com" target="_blank">Colorlib</a>
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4">
+                        <!-- Footer Social -->
+                        <div class="footer-social f-right">
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="https://www.facebook.com/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fas fa-globe"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    <!-- Footer End-->
 </footer>
-    </div>

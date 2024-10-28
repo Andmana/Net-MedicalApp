@@ -1,3 +1,5 @@
+using System.Globalization;
+using Med_341A.datamodels;
 using Med_341A.Services;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +9,8 @@ namespace Med_341A.Controllers
     public class FindDoctorController : Controller
     {
         private readonly FindDoctorService findDoctorService;
+        private TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+
 
 
         public FindDoctorController(FindDoctorService _findDoctorService)
@@ -17,7 +21,7 @@ namespace Med_341A.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(VMSearchPageDoctor dataSearch)
         {
-            List<VMSearchDoctor> dataDoctor = await findDoctorService.GetAllSearchDoctor();
+            List<VMSearchDoctor> dataDoctor = (await findDoctorService.GetAllSearchDoctor()).OrderBy(a => a.Fullname).ToList();
 
             ViewBag.LocationName = (await findDoctorService.GetAllCity()).Where(a => a.Id == dataSearch.LocationId).Select(loc => loc.Name).FirstOrDefault()!;
             ViewBag.LocationId = dataSearch.LocationId;
@@ -52,8 +56,8 @@ namespace Med_341A.Controllers
                 NameDoctor = nameDoctor
             };
 
-            ViewBag.DropdownLocation = (await findDoctorService.GetAllCity()).OrderBy(a => a.Name);
-            ViewBag.DropdownSpecialization = (await findDoctorService.GetAllSpecialization()).OrderBy(a => a.Name);
+            ViewBag.DropdownLocation = (await findDoctorService.GetAllCity()).OrderBy(a => a.Name).Select(a => new MLocation { Id = a.Id, Name = textInfo.ToTitleCase(a.Name ?? "") });
+            ViewBag.DropdownSpecialization = (await findDoctorService.GetAllSpecialization()).OrderBy(a => a.Name).Select(a => new MSpecialization { Id = a.Id, Name = textInfo.ToTitleCase(a.Name ?? "") });
 
             return PartialView(dataSearch);
         }
