@@ -186,7 +186,7 @@
                                 @*Image*@
                                 <div class="d-flex flex-column justify-content-between border-2">
                                     <div class="avatar avatar-xxl">
-                                        <img src="~/assets/img/med-medicine.webp" alt="..." class="avatar-img rounded-2">
+                                        <img src="@(item.ImagePath ?? "/images/med-medicine.webp")" alt="..." class="avatar-img rounded-2">
                                     </div>
                                     <a class="btn btn-sm btn-black" width="auto">Detail</a>
                                 </div>
