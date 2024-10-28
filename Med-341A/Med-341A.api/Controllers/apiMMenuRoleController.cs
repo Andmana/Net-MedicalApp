@@ -58,9 +58,10 @@ namespace Med_341A.api.Controllers
                     if (roleMenuDB.Count() > 0)
                     {
                         // delete unused data 
-                        List<MMenuRole> roleMenuRemove = roleMenuDB.Where(a =>
-                        !(data.role_menu.Where(b => b.is_selected && b.IdMenu == a.MenuId).Select(b => b.Id)).Any()
-                        ).ToList();
+                        // 
+                        List<MMenuRole> roleMenuRemove = roleMenuDB.Where(a => ! (data.role_menu.Where( b => b.is_selected && b.IdMenu == a.MenuId ).Select(b => b.Id)  )
+                                                                   .Any())
+                                                                   .ToList();
                         foreach (MMenuRole item in roleMenuRemove)
                         {
                             //db.Remove(item);
@@ -125,39 +126,78 @@ namespace Med_341A.api.Controllers
         [HttpGet("MenuAccess/{IdRole}")]
         public List<VMenuRole> MenuAccess(int IdRole)
         {
+            //List<VMenuRole> listMenu = (from parent in db.MMenus
+            //                               join ma in db.MMenuRoles on parent.Id equals ma.MenuId
+            //                               where parent.ParentId == 0 && ma.RoleId == IdRole
+            //                               && parent.IsDelete == false && ma.IsDelete == false
+            //                               select new VMenuRole
+            //                               {
+            //                                   Id = parent.Id,
+            //                                   MenuName = parent.Name,
+            //                                   MenuAction = parent.Url,
+            //                                   MenuController = parent.Name,
+            //                                   MenuIconBig = parent.BigIcon,
+            //                                   MenuIconSmall = parent.SmallIcon,
+            //                                   IdRole = ma.RoleId,
+            //                                   MenuSorting = parent.Id,
+            //                                   List_Child = (from child in db.MMenus
+            //                                                 join ma2 in db.MMenuRoles on child.Id equals ma2.MenuId
+            //                                                 where child.ParentId == parent.Id && child.IsDelete == false
+            //                                                 && ma2.IsDelete == false && ma2.RoleId == IdRole
+            //                                                 select new VMenuRole
+            //                                                 {
+            //                                                     Id = child.Id,
+            //                                                     MenuName = child.Name,
+            //                                                     MenuAction = child.Url,
+            //                                                     MenuController = child.Name,
+            //                                                     MenuIconBig = child.BigIcon,
+            //                                                     MenuIconSmall = child.SmallIcon,
+            //                                                     IdRole = IdRole,
+            //                                                     MenuSorting = child.Id,
+            //                                                     MenuParent = child.ParentId,
+
+            //                                                 }).OrderBy(a => a.MenuSorting).ToList()
+
+            //                               }).OrderBy(a => a.MenuSorting).ToList();
+
+
             List<VMenuRole> listMenu = (from parent in db.MMenus
-                                           join ma in db.MMenuRoles on parent.Id equals ma.MenuId
-                                           where parent.ParentId == 0 && ma.RoleId == IdRole
-                                           && parent.IsDelete == false && ma.IsDelete == false
-                                           select new VMenuRole
-                                           {
-                                               Id = parent.Id,
-                                               MenuName = parent.Name,
-                                               MenuAction = parent.Url,
-                                               MenuController = parent.Name,
-                                               MenuIconBig = parent.BigIcon,
-                                               MenuIconSmall = parent.SmallIcon,
-                                               IdRole = ma.RoleId,
-                                               MenuSorting = parent.Id,
-                                               List_Child = (from child in db.MMenus
-                                                             join ma2 in db.MMenuRoles on child.Id equals ma2.MenuId
-                                                             where child.ParentId == parent.Id && child.IsDelete == false
-                                                             && ma2.IsDelete == false && ma2.RoleId == IdRole
-                                                             select new VMenuRole
-                                                             {
-                                                                 Id = child.Id,
-                                                                 MenuName = child.Name,
-                                                                 MenuAction = child.Url,
-                                                                 MenuController = child.Name,
-                                                                 MenuIconBig = child.BigIcon,
-                                                                 MenuIconSmall = child.SmallIcon,
-                                                                 IdRole = IdRole,
-                                                                 MenuSorting = child.Id,
-                                                                 MenuParent = child.ParentId,
+                                        where parent.ParentId == 0 
+                                        && parent.IsDelete == false 
+                                        select new VMenuRole
+                                        {
+                                            Id = parent.Id,
+                                            MenuName = parent.Name,
+                                            MenuAction = parent.Url,
 
-                                                             }).OrderBy(a => a.MenuSorting).ToList()
+                                            MenuController = parent.Name,
+                                            MenuIconBig = parent.BigIcon,
+                                            MenuIconSmall = parent.SmallIcon,
+                                            IdRole = IdRole,
+                                            MenuSorting = parent.Id,
+                                            List_Child = (from child in db.MMenus 
+                                                          join menuAccess in db.MMenuRoles on child.Id equals menuAccess.MenuId
+                                                          where 
+                                                            child.ParentId == parent.Id
+                                                            && child.IsDelete == false
+                                                            && menuAccess.IsDelete == false
+                                                            && menuAccess.RoleId == IdRole
+                                                          select new VMenuRole
+                                                          {
+                                                              Id = child.Id,
+                                                              MenuName = child.Name,
+                                                              MenuAction = child.Url,
+                                                              MenuController = child.Name,
+                                                              MenuIconBig = child.BigIcon,
+                                                              MenuIconSmall = child.SmallIcon,
+                                                              IdRole = IdRole,
+                                                              MenuSorting = child.Id,
+                                                              MenuParent = child.ParentId,
 
-                                           }).OrderBy(a => a.MenuSorting).ToList();
+                                                          }).OrderBy(a => a.MenuSorting).ToList()
+
+                                        }).Where(menu => menu.List_Child.Any())
+                                          .OrderBy(a => a.MenuSorting).ToList();
 
             return listMenu;
         }

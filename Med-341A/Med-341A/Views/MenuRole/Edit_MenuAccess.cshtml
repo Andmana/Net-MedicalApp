@@ -33,7 +33,7 @@
                         @foreach (VMenuRole item in role_menu)
                         {
                             <div class="form-check form-check-inline p-0">
-                                <input type="checkbox" class="filled-in form-check-inpu checkbox-menus parentt" id="@item.IdMenu" name="@item.IdMenu" value="@item.IdMenu" @(item.is_selected ? "checked" : "") />
+                                <input type="checkbox" class="filled-in form-check-input checkbox-menus parentt" id="@item.IdMenu" name="@item.IdMenu" value="@item.IdMenu" @(item.is_selected ? "checked" : "") />
                                 <label class="form-check-label label-menus" for="@item.IdMenu">@item.MenuName</label>
                             </div>
                             <div>
@@ -114,7 +114,7 @@
                     form_value.role_menu[index].is_selected = false;
                 });
             }
-            var classList = $.trim($(this).attr('class').replace('filled-in checkbox-menus', ''));
+            var classList = $.trim($(this).attr('class').replace('selectgroup-input checkbox-menus', ''));
             if (classList.length > 0) {
                 classList = classList.split(' ');
                 $.each(classList, function (i, item) {
