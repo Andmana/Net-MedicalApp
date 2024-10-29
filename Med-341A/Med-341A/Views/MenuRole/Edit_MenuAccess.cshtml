@@ -12,61 +12,58 @@
         <h4 class="card-title">Hak Akses</h4>
 	</div>
 
-    <div class="card-body">
-        <form asp-action="Edit_MenuAccess" method="post" id="form_input">
+    <form asp-action="Edit_MenuAccess" method="post" id="form_input">
+        <div class="card-body">
             
-            <input type="hidden" id="Id" name="Id" value="@Model.Id" />
-            <div class="form-group">
-                <label for="RoleName" class="">Nama Role</label>
-                <input type="text" class="form-control bg-secondary border-bottom-1 " id="Name" name="Name" value="@Model.Name" readonly />
-            </div>
-            <div class="form-group d-flex justify-content-start align-content-center gap-5">
-                <label for="role_menu_form" class="form-check-label">Menu Akses : </label>
-                <div class="form-check form-check-inline p-0">
-                    <input class="form-check-input" type="checkbox" id="cbx_selectall" />
-                    <label class="form-check-label label-menus" for="cbx_selectall">Select All</label>
+                <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+                <div class="form-group">
+                    <label for="RoleName" class="">Nama Role</label>
+                    <input type="text" class="form-control bg-secondary border-bottom-1 " id="Name" name="Name" value="@Model.Name" readonly />
                 </div>
-            </div>
-            <div class="form-group pt-0">
-                <div id="role_menu_form">
-                    <div class="checkbox-list mt-0 ms-3">
-                        @foreach (VMenuRole item in role_menu)
-                        {
-                            <div class="form-check form-check-inline p-0">
-                                <input type="checkbox" class="filled-in form-check-input checkbox-menus parentt" id="@item.IdMenu" name="@item.IdMenu" value="@item.IdMenu" @(item.is_selected ? "checked" : "") />
-                                <label class="form-check-label label-menus" for="@item.IdMenu">@item.MenuName</label>
-                            </div>
-                            <div>
-
-                                @foreach (VMenuRole child in item.List_Child)
-                                {
-                                    <div class="selectgroup selectgroup-pills">
-                                        <label class="selectgroup-item" for="@child.IdMenu">
-                                          <input type="checkbox" class="selectgroup-input checkbox-menus @item.IdMenu" id="@child.IdMenu" name="@child.IdMenu" value="@child.IdMenu" @(child.is_selected ? "checked" : "") >
-                                          <span class="selectgroup-button" for="@child.IdMenu"> @child.MenuName </span>
-                                        </label>
-                                    </div>
-                                }
-                            </div>
-                        }
+                <div class="form-group d-flex justify-content-start align-content-center gap-5">
+                    <label for="role_menu_form" class="form-check-label">Menu Akses : </label>
+                    <div class="form-check form-check-inline p-0">
+                        <input class="form-check-input" type="checkbox" id="cbx_selectall" />
+                        <label class="form-check-label label-menus" for="cbx_selectall">Select All</label>
                     </div>
-
                 </div>
-                <span id="validate_menuaccess" class="text-danger"></span>
-            </div>
+                <div class="form-group pt-0">
+                    <div id="role_menu_form">
+                        <div class="checkbox-list mt-0 ms-3">
+                            @foreach (VMenuRole item in role_menu)
+                            {
+                                <div class="form-check form-check-inline p-0">
+                                    <input type="checkbox" class="filled-in form-check-input checkbox-menus parentt" id="@item.IdMenu" name="@item.IdMenu" value="@item.IdMenu" @(item.is_selected ? "checked" : "") />
+                                    <label class="form-check-label label-menus" for="@item.IdMenu">@item.MenuName</label>
+                                </div>
+                                <div>
 
+                                    @foreach (VMenuRole child in item.List_Child)
+                                    {
+                                        <div class="selectgroup selectgroup-pills">
+                                            <label class="selectgroup-item" for="@child.IdMenu">
+                                              <input type="checkbox" class="selectgroup-input checkbox-menus @item.IdMenu" id="@child.IdMenu" name="@child.IdMenu" value="@child.IdMenu" @(child.is_selected ? "checked" : "") >
+                                              <span class="selectgroup-button" for="@child.IdMenu"> @child.MenuName </span>
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
 
-            <div class="mb-4 row">
-                <div class="col-sm-10">
-                    <button type="submit" class="btn btn-primary rounded-pill">Submit</button>
-                    <a class="btn btn-light rounded-pill" asp-controller="Role" asp-action="Index_MenuAccess">Back to List</a>
+                    </div>
+                    <span id="validate_menuaccess" class="text-danger"></span>
                 </div>
-            </div>
-
-        </form>
 
 
-    </div>
+            
+
+        </div>
+        <div class="card-action d-flex justify-content-end gap-2">
+            <a class="btn btn-light rounded-pill" asp-controller="MenuRole" asp-action="Index">Back to List</a>
+            <button type="submit" class="btn btn-primary rounded-pill">Submit</button>
+        </div>
+    </form>
 </div>
 
 <script>

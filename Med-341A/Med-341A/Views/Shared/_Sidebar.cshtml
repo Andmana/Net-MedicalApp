@@ -52,27 +52,39 @@
 
                 @foreach (VMenuRole parent in menus)
                 {
-                    // Generate a unique ID for the parent collapse
-                    var parentId = "collapse" + parent.Id; // Assuming `parent.Id` is unique
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#@parentId" aria-expanded="false">
-                            <i class="@parent.MenuIconBig"></i>
-                            <p>@parent.MenuName</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="@parentId">
-                            <ul class="nav nav-collapse">
-                                @foreach (VMenuRole child in parent.List_Child)
-                                {
-                                    <li>
-                                        <a asp-controller="@child.MenuController" asp-action="@child.MenuAction">
-                                            <span class="sub-item">@child.MenuName</span>
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </li>
+                    if (string.IsNullOrWhiteSpace(parent.MenuAction))
+                    {
+                        var parentId = "collapse" + parent.Id; // Assuming `parent.Id` is unique
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#@parentId" aria-expanded="false">
+                                <i class="@parent.MenuIconBig"></i>
+                                <p>@parent.MenuName</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="@parentId">
+                                <ul class="nav nav-collapse">
+                                    @foreach (VMenuRole child in parent.List_Child)
+                                    {
+                                        <li>
+                                            <a asp-controller="@child.MenuController" asp-action="@child.MenuAction">
+                                                <span class="sub-item">@child.MenuName</span>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </li>
+                    } 
+                    else
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="@parent.MenuController" asp-action="@parent.MenuAction">
+                                <i class="@parent.MenuIconBig"></i>
+                                <p>@parent.MenuName/@parent.MenuAction</p>
+                            </a>
+                        </li>
+                    }
+
                 }
 
             </ul>

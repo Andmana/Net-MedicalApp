@@ -15,6 +15,7 @@ namespace Med_341A.api.Services
 
         public async Task<bool> IsEqual_PrevPass(long idUser, string password)
         {
+            // Validate new password with old password
             List<TResetPassword> datas = db.TResetPasswords.Where(a => a.CreatedBy == idUser)
                                                             .OrderByDescending(t => t.CreatedOn)
                                                             .Take(3)

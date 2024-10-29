@@ -28,12 +28,14 @@ namespace Med_341A.Controllers
         [HttpPost]
         public async Task<JsonResult> CheckAccountEmail(string email)
         {
+            // Save email and usedFor as resetPWData Model
             resetPWData.Email = email;
             resetPWData.usedFor = "RESET_PW";
 
             //Return Email
             ViewBag.email = email;
 
+            // Varify Email isRegistered and send OTP if registered
             response = await resetPWService.VerifyEmailnReqOTP(resetPWData);
             return Json(new { dataResponse = response });
         }
@@ -49,6 +51,7 @@ namespace Med_341A.Controllers
         [HttpPost]
         public async Task<JsonResult> ReRequestOTP()
         {
+            // Send OTP again using saved ResetPWModel
             response = await resetPWService.VerifyEmailnReqOTP(resetPWData);
             return Json(new { dataResponse = response });
         }
@@ -57,6 +60,7 @@ namespace Med_341A.Controllers
         [HttpPost]
         public async Task<JsonResult> VerifyOTP(VResetPassword dataForm)
         {
+            // Cerify OTP
             resetPWData.OTP = dataForm.OTP;
             response = await resetPWService.VerifyOTP(resetPWData);
 

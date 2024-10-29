@@ -16,9 +16,13 @@ namespace Med_341A.api.Services
         public async Task<List<VMenuRole>> GetMenuAccessParentChildByRoleId(long idRole, long MenuParent, bool onlySelected = false)
         {
             List<VMenuRole> result = new List<VMenuRole>();
+
+            // Get Parent menu if MenuParent = 0 (parent menu have parentId = 0)
+            // Get Child Menu if MenuParent (id parent) > 0
             List<MMenu> data = db.MMenus.Where(a => a.ParentId == MenuParent && a.IsDelete == false)
                                             .ToList();
 
+            // Get child menu form each menu
             foreach (MMenu item in data)
             {
                 VMenuRole list = new VMenuRole();
@@ -28,6 +32,8 @@ namespace Med_341A.api.Services
                 list.IsParent = item.ParentId == 0;
                 list.MenuParent = item.ParentId;
                 list.is_selected = db.MMenuRoles.Where(a => a.RoleId == idRole && a.MenuId == item.Id && a.IsDelete == false).Any();
+                
+                // 
                 list.List_Child = await GetMenuAccessParentChildByRoleId(idRole, item.Id, onlySelected);
 
                 if (onlySelected)
