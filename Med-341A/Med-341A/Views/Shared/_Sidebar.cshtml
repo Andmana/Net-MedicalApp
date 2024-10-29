@@ -66,7 +66,7 @@
                                     @foreach (VMenuRole child in parent.List_Child)
                                     {
                                         <li>
-                                            <a asp-controller="@child.MenuController" asp-action="@child.MenuAction">
+                                            <a asp-controller="@(child.MenuAction.Split("/")[0])" asp-action="@(child.MenuAction.Split("/")[1])">
                                                 <span class="sub-item">@child.MenuName</span>
                                             </a>
                                         </li>
@@ -78,9 +78,9 @@
                     else
                     {
                         <li class="nav-item">
-                            <a asp-controller="@parent.MenuController" asp-action="@parent.MenuAction">
+                            <a asp-controller="@(parent.MenuAction.Split("/")[0])" asp-action="@(parent.MenuAction.Split("/")[1])">
                                 <i class="@parent.MenuIconBig"></i>
-                                <p>@parent.MenuName/@parent.MenuAction</p>
+                                <p>@parent.MenuName</p>
                             </a>
                         </li>
                     }

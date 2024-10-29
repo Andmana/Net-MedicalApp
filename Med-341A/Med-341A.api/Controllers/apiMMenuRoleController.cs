@@ -135,10 +135,11 @@ namespace Med_341A.api.Controllers
                                             Id = parent.Id,
                                             MenuName = parent.Name,
                                             MenuAction = parent.Url,
-                                            MenuController = parent.Name,
+                                            MenuController = parent.Url,
                                             MenuIconBig = parent.BigIcon,
                                             MenuIconSmall = parent.SmallIcon,
                                             IdRole = ma.RoleId,
+
                                             MenuSorting = parent.Id,
                                             List_Child = (from child in db.MMenus
                                                           join ma2 in db.MMenuRoles on child.Id equals ma2.MenuId
