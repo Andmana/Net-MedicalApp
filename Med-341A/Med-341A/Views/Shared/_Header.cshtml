@@ -115,17 +115,17 @@
                                     </div>
                                     <div class="u-text">
                                         <h4>@namaUser</h4>
-                                        @if (namaRole.ToLower() == "pasien")
+                                        @if (namaRole.ToLower() == "pasien" || idRole == 1)
                                         {
                                             <a asp-controller="UserProfil" asp-action="Index"
                                                 class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                         }
-                                        else if (namaRole.ToLower() == "dokter")
+                                        else if (namaRole.ToLower() == "dokter" || idRole == 2)
                                         {
                                             <a asp-controller="DokterProfil" asp-action="Index"
                                                 class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                         }
-                                        else if (namaRole.ToLower() == "admin")
+                                        else if (namaRole.ToLower() == "admin" || idRole == 3)
                                         {
                                             <a asp-controller="AdminProfil" asp-action="Index"
                                                 class="btn btn-xs btn-secondary btn-sm">View Profile</a>
