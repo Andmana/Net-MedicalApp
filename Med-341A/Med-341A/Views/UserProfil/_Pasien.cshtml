@@ -169,9 +169,6 @@
             success: function (data) {
                 $('#patient-list').empty();
                 $('#patient-list').html(data);
-
-                $('#nextPage').attr('disabled', !Model.HasNextPage);
-                $('#prevPage').attr('disabled', !Model.HasPreviousPage);
             }
         });
     }
