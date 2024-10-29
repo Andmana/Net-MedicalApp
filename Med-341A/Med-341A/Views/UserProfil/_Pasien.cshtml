@@ -33,10 +33,10 @@
                     <label for="sort" style="margin-right: 10px;">Urutkan:</label>
                     <div style="position: relative;">
                         <select id="sort" class="form-control" style="padding-right: 30px;">
-                            <option value="name_desc">Nama (Desc)</option>
                             <option value="">Nama (Asc)</option>
-                            <option value="age_desc">Usia (Desc)</option>
+                            <option value="name_desc">Nama (Desc)</option>
                             <option value="age_asc">Usia (Asc)</option>
+                            <option value="age_desc">Usia (Desc)</option>
                         </select>
                         <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #aaa;">
                             <i class="fas fa-chevron-down"></i>
@@ -95,7 +95,7 @@
             }
             else
             {
-                <h4 class="text-center">Tidak Ada Pasien</h4>
+                <h4 class="text-center">Tidak Ada Data Pasien</h4>
             }
         </div>
     </div>
@@ -114,8 +114,13 @@
             <div class="col-6 text-center">
                 @if (Model.TotalData > 0)
                 {
-                    var startIndex = (Model.PageIndex - 1) * Model.Count + 1; // Mulai dari 1
-                    var endIndex = Math.Min(startIndex + Model.Count - 1, Model.TotalData); // Menggunakan Math.Min untuk tidak melebihi TotalData
+                    // Menentukan indeks data pertama pada halaman saat ini
+                    var startIndex = ((Model.PageIndex - 1) * ViewBag.currentPageSize) + 1;
+
+                    // Menentukan indeks data terakhir pada halaman saat ini
+                    var endIndex = Model.PageIndex == Model.TotalPages
+                    ? Model.TotalData // Jika di halaman terakhir, endIndex adalah total data
+                    : startIndex + ViewBag.currentPageSize - 1;
                     <span>Menampilkan data @startIndex - @endIndex dari @Model.TotalData</span>
                 }
                 else

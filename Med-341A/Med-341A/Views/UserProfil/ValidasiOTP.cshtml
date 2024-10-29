@@ -9,7 +9,7 @@
             <div class="mb-4 row">
                 <label for="OTP" class="col-sm-4 col-form-label">OTP</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="OTP" name="OTP" onkeypress="return isNumber(event)" placeholder="Masukkan kode OTP...">
+                    <input type="text" class="form-control" id="OTP" name="OTP" onkeypress="return isNumber(event)" maxlength="6" placeholder="Masukkan kode OTP...">
                     <label id="OTP-error" class="@(Model.Success ? "text-success":"text-danger")"
                            for="OTP">@Model.Message</label>
                 </div>

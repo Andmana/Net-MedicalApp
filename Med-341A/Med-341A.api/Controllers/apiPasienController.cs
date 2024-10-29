@@ -2,6 +2,8 @@
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
+using System.Runtime.Intrinsics.Arm;
 
 namespace Med_341A.api.Controllers
 {
@@ -230,15 +232,27 @@ namespace Med_341A.api.Controllers
         [HttpDelete("DeletePasien/{idUser}/{idCustomer}")]
         public VMResponse DeletePasien(int idUser, int idCustomer)
         {
-            MCustomer customer = db.MCustomers.Where(a => a.Id == idCustomer).FirstOrDefault();
+            MCustomer customer = db.MCustomers.Where(a => a.Id == idCustomer).FirstOrDefault()!;
             if (customer != null)
             {
                 customer.IsDelete = true;
                 customer.DeletedOn = DateTime.Now;
                 customer.DeletedBy = idUser;
+
+                MBiodatum biodata = db.MBiodata.Where(a => a.Id == customer.BiodataId).FirstOrDefault()!;
+                biodata.IsDelete = true;
+                biodata.DeletedOn = DateTime.Now;
+                biodata.DeletedBy = idUser;
+
+                MCustomerMember member = db.MCustomerMembers.Where(a => a.CustomerId == idCustomer).FirstOrDefault()!;
+                member.IsDelete = true;
+                member.DeletedOn = DateTime.Now;
+                member.DeletedBy = idUser;
                 try
                 {
                     db.Update(customer);
+                    db.Update(biodata);
+                    db.Update(member);
                     db.SaveChanges();
                     respon.Message = "Data Sukses di Hapus";
                 }
@@ -266,7 +280,20 @@ namespace Med_341A.api.Controllers
                     customer.IsDelete = true;
                     customer.DeletedOn = DateTime.Now;
                     customer.DeletedBy = data.IdUser;
+
+                    MBiodatum biodata = db.MBiodata.Where(a => a.Id == customer.BiodataId).FirstOrDefault()!;
+                    biodata.IsDelete = true;
+                    biodata.DeletedOn = DateTime.Now;
+                    biodata.DeletedBy = data.IdUser;
+
+                    MCustomerMember member = db.MCustomerMembers.Where(a => a.CustomerId == item).FirstOrDefault()!;
+                    member.IsDelete = true;
+                    member.DeletedOn = DateTime.Now;
+                    member.DeletedBy = data.IdUser;
+
                     db.Update(customer);
+                    db.Update(biodata);
+                    db.Update(member);
                 }
                 try
                 {

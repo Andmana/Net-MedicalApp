@@ -57,11 +57,7 @@ namespace Med_341A.Controllers
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                // Ambil ekstensi file (misal: .jpg, .png)
-                //var extension = Path.GetExtension(imageFile.FileName);
-
                 // Buat nama file unik menggunakan waktu dan kode mesin
-                //uniqueFileName = $"{DateTime.Now:yyyyMMddHHmmss}_{Environment.MachineName}";
                 uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
 
                 // Gabungkan folder path dan nama file unik
@@ -204,7 +200,8 @@ namespace Med_341A.Controllers
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
-                    data = data.Where(a => a.Fullname.ToLower().Contains(searchString.ToLower()) || a.NameRelation.ToLower().Contains(searchString.ToLower())).ToList();
+                    data = data.Where(a => a.Fullname.ToLower().Contains(searchString.ToLower())).ToList(); 
+                                           //a.NameRelation.ToLower().Contains(searchString.ToLower())).ToList(); //Untuk mencari relasi juga
                 }
 
                 switch (sortOrder)
