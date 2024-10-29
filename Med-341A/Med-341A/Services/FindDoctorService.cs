@@ -74,6 +74,34 @@ public class FindDoctorService
         return data;
     }
 
+    public async Task<List<VMDoctorTreatment>> GetAllDcotorTreatment()
+    {
+        List<VMDoctorTreatment> data = new();
+
+        try
+        {
+            // Making the HTTP GET request
+            string apiResponse = await client.GetStringAsync($"{routeApi}apiFindDoctor/GetAllDoctorTreatment");
+
+            // Deserialize the JSON response
+            data = JsonConvert.DeserializeObject<List<VMDoctorTreatment>>(apiResponse) ?? new List<VMDoctorTreatment>();
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"HTTP Request error: {ex.Message}");
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"JSON Deserialization error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+
+        return data;
+    }
+
     public async Task<List<VMSearchDoctor>> GetAllSearchDoctor()
     {
         List<VMSearchDoctor> data = new();

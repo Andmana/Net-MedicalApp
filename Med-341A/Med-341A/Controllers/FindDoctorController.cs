@@ -27,6 +27,8 @@ namespace Med_341A.Controllers
             ViewBag.LocationId = dataSearch.LocationId;
             ViewBag.SpecializationName = (await findDoctorService.GetAllSpecialization()).Where(a => a.Id == dataSearch.SpecializationId).Select(spec => spec.Name).FirstOrDefault()!;
             ViewBag.SpecializationId = dataSearch.SpecializationId;
+            ViewBag.DoctorTreatmentName = (await findDoctorService.GetAllDcotorTreatment()).Where(a => a.Id == dataSearch.DoctorTreatmentId).Select(treat => treat.Name).FirstOrDefault()!;
+            ViewBag.DoctorTreatmentId = dataSearch.DoctorTreatmentId;
             ViewBag.CurrentNameDoctor = dataSearch.NameDoctor;
 
             if (dataSearch.LocationId != null)
@@ -44,20 +46,29 @@ namespace Med_341A.Controllers
                 dataDoctor = dataDoctor.Where(a => a.Fullname!.ToLower().Contains(dataSearch.NameDoctor.ToLower())).ToList();
             }
 
+            if (dataSearch.DoctorTreatmentId != null)
+            {
+                dataDoctor = dataDoctor.Where(a => a.DoctorTreatment.Any(dt => dt.Name?.ToLower() == ViewBag.DoctorTreatmentName.ToLower())).ToList();
+            }
+
             return View(VPaginatedList<VMSearchDoctor>.CreateAsync(dataDoctor, dataSearch.PageNumber ?? 1, dataSearch.PageSize ?? 10));
         }
 
-        public async Task<IActionResult> SearchMenu(int locationId, int specializationId, string nameDoctor)
+        public async Task<IActionResult> SearchMenu(int locationId, int specializationId, string nameDoctor, int doctorTreatmentId)
         {
             VMSearchPageDoctor dataSearch = new VMSearchPageDoctor
             {
                 LocationId = locationId,
                 SpecializationId = specializationId,
-                NameDoctor = nameDoctor
+                NameDoctor = nameDoctor,
+                DoctorTreatmentId = doctorTreatmentId
             };
 
             ViewBag.DropdownLocation = (await findDoctorService.GetAllCity()).OrderBy(a => a.Name).Select(a => new MLocation { Id = a.Id, Name = textInfo.ToTitleCase(a.Name ?? "") });
             ViewBag.DropdownSpecialization = (await findDoctorService.GetAllSpecialization()).OrderBy(a => a.Name).Select(a => new MSpecialization { Id = a.Id, Name = textInfo.ToTitleCase(a.Name ?? "") });
+            ViewBag.DropdownDoctorTreatment = (await findDoctorService.GetAllDcotorTreatment()).OrderBy(a => a.Name)
+            .Select(a => new MSpecialization { Id = a.Id, Name = textInfo.ToTitleCase(a.Name ?? "") })
+            .GroupBy(a => a.Name).Select(g => g.First());
 
             return PartialView(dataSearch);
         }

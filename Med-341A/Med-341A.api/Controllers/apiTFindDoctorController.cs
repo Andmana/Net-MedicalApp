@@ -71,6 +71,16 @@ namespace Med_341A.api.Controllers
                      }).ToList()
                  }).ToList();
 
+            foreach (var doctor in result)
+            {
+                doctor.DoctorTreatment = db.TDoctorTreatments.Where(a => a.DoctorId == doctor.IdDoctor).Select(a => new VMDoctorTreatment
+                {
+                    Id = (Int32)a.Id,
+                    DoctorId = (Int32)(a.DoctorId ?? 0),
+                    Name = a.Name
+                }).ToList();
+            }
+
             return result;
         }
 
@@ -86,6 +96,20 @@ namespace Med_341A.api.Controllers
         public List<MSpecialization> GetAllSpecialization()
         {
             List<MSpecialization> data = db.MSpecializations.ToList();
+
+            return data;
+        }
+
+        [HttpGet("GetAllDoctorTreatment")]
+        public List<VMDoctorTreatment> GetAllDoctorTreatment()
+        {
+            List<VMDoctorTreatment> data = db.TDoctorTreatments.Select(a => new VMDoctorTreatment
+            {
+                Id = (Int32)a.Id,
+                DoctorId = (Int32)(a.DoctorId ?? 0),
+                Name = a.Name
+            }).ToList();
+
 
             return data;
         }

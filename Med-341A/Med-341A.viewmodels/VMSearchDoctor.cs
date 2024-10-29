@@ -13,10 +13,12 @@ public class VMSearchDoctor
     public string? SpecializationName { get; set; }
 
     public DateOnly? EarliestStartWork { get; set; }
-    
+
     public DateOnly? LatestEndWork { get; set; }
 
     public List<VMMedicalFacility> MedicalFacilities { get; set; } = [];
+
+    public List<VMDoctorTreatment> DoctorTreatment { get; set; } = [];
 
 }
 
@@ -51,9 +53,20 @@ public class VMSearchPageDoctor
 
     public string? SpecializationName { get; set; }
 
+    public int? DoctorTreatmentId { get; set; }
+
+    public string? DoctorTreatmentName { get; set; }
+
     public int? PageNumber { get; set; }
 
     public int? PageSize { get; set; }
 
     public int? CurrentPageSize { get; set; }
+}
+
+public class VMDoctorTreatment
+{
+    public int Id { get; set; }
+    public int? DoctorId { get; set; }
+    public string? Name { get; set; }
 }
