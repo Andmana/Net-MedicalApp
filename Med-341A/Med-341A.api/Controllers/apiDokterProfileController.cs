@@ -110,7 +110,8 @@ namespace Med_341A.api.Controllers
                                                   NameMedicalFacility = medicalFacility.Name,
                                                   FullAddress = medicalFacility.FullAddress
                                               })
-                                              .OrderByDescending(a => a.EndDate)
+                                              .OrderBy(a => a.EndDate == null ? 0 : 1)
+                                              .ThenByDescending(a => a.EndDate)
                                               .ThenByDescending(a => a.NameMedicalFacility)
                                               .ToList();
             return riwayat;

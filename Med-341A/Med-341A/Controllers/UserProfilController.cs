@@ -210,10 +210,10 @@ namespace Med_341A.Controllers
                         data = data.OrderByDescending(a => a.Fullname).ToList();
                         break;
                     case "age_desc":
-                        data = data.OrderByDescending(a => a.Dob).ToList();
+                        data = data.OrderBy(a => a.Dob).ToList();
                         break;
                     case "age_asc":
-                        data = data.OrderBy(a => a.Dob).ToList();
+                        data = data.OrderByDescending(a => a.Dob).ToList();
                         break;
                     default:
                         data = data.OrderBy(a => a.Fullname).ToList();

@@ -118,14 +118,19 @@ namespace Med_341A.api.Controllers
             MCustomer dataCust = db.MCustomers.Where(a => a.BiodataId == dataAwal.BiodataId).FirstOrDefault()!;
             if (dataBio != null && dataCust != null)
             {
-                dataBio.Fullname = dataAwal.Fullname;
-                dataBio.MobilePhone = dataAwal.MobilePhone;
-                dataBio.ModifiedBy = dataAwal.Id;
-                dataBio.ModifiedOn = DateTime.Now;
-
-                dataCust.Dob = dataAwal.Dob;
-                dataCust.ModifiedBy = dataAwal.Id;
-                dataCust.ModifiedOn = DateTime.Now;
+                if (dataBio.Fullname != dataAwal.Fullname || dataBio.MobilePhone != dataAwal.MobilePhone)
+                {
+                    dataBio.Fullname = dataAwal.Fullname;
+                    dataBio.MobilePhone = dataAwal.MobilePhone;
+                    dataBio.ModifiedBy = dataAwal.Id;
+                    dataBio.ModifiedOn = DateTime.Now;
+                }
+                if (dataCust.Dob != dataAwal.Dob)
+                {
+                    dataCust.Dob = dataAwal.Dob;
+                    dataCust.ModifiedBy = dataAwal.Id;
+                    dataCust.ModifiedOn = DateTime.Now;
+                }
                 try
                 {
                     db.Update(dataBio);
@@ -195,6 +200,7 @@ namespace Med_341A.api.Controllers
             if (token != null)
             {
                 token.IsExpired = true;
+                token.ModifiedBy = request.UserId;
                 token.ModifiedOn = DateTime.Now;
                 db.Update(token);
                 db.SaveChanges();
@@ -254,6 +260,7 @@ namespace Med_341A.api.Controllers
                 respon.Success = false;
                 respon.Message = "OTP kadaluarsa.";
                 token.IsExpired = true;
+                token.ModifiedBy = token.UserId;
                 token.ModifiedOn = DateTime.Now;
                 db.Update(token);
                 db.SaveChanges();

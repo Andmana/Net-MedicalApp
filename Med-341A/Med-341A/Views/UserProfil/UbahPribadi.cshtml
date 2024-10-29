@@ -30,7 +30,7 @@
                 <label for="MobilePhone" class="form-label">Nomor Handphone*</label>
                 <div class="input-group">
                     <span class="input-group-text">+62</span>
-                    <input type="text" class="form-control MobilePhone" id="MobilePhone" name="MobilePhone" maxlength="15" value="@Model.MobilePhone" placeholder="8123....">
+                    <input type="text" class="form-control MobilePhone" id="MobilePhone" name="MobilePhone" onkeypress="return isNumber(event)" maxlength="15" value="@Model.MobilePhone" placeholder="8123....">
                 </div>
                 <span class="text-danger" id="Mobilephone-error"></span>
             </div>
@@ -53,6 +53,14 @@
         var mm = String(today.getMonth() + 1).padStart(2, '0') // Januari = 0
         var yyyy = today.getFullYear()
         return yyyy + '-' + mm + '-' + dd
+    }
+    function isNumber(event) {
+        var charCode = event.which ? event.which : event.keyCode;
+        // Hanya mengizinkan angka (0-9)
+        if (charCode < 48 || charCode > 57) {
+            return false;
+        }
+        return true;
     }
     
     $(".MobilePhone").on('input', function(){

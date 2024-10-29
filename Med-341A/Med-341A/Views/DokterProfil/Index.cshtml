@@ -90,7 +90,7 @@
                         {
                             @foreach (VMRiwayatPraktek riwayat in ViewBag.RiwayatPraktek)
                             {
-                                var endDate = riwayat.EndDate?.ToString("yyyy") == DateTime.Now.ToString("yyyy") ? "Sekarang" : @riwayat.EndDate?.ToString("yyyy");
+                                var endDate = riwayat.EndDate?.ToString("yyyy") == null ? "Sekarang" : riwayat.EndDate?.ToString("yyyy");
                                 <li class="institution-name">@riwayat.NameMedicalFacility, @riwayat.FullAddress</li>
                                 <li class="major-year">
                                     <span>@riwayat.Specialization</span>
