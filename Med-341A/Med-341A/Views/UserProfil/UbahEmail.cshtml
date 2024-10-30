@@ -57,9 +57,29 @@
                 data: { email: email },
                 dataType: "json",
                 success: function (respon) {
+                    debugger
                     if (!respon) {
-                        $("#modal_body").load("/UserProfil/ValidasiOTP", { email: email, id: id })
-                        $("#my_modal").modal("show")
+                        // $.ajax({
+                        //     debugger
+                        //     url: "/UserProfil/CheckOTP",
+                        //     type: "post",
+                        //     data: { email: email, id: id },
+                        //     dataType: "json",
+                        //     success: function(respon){
+                        //         if(respon)
+                        //         {
+                                    $("#modal_body").load("/UserProfil/ValidasiOTP", { email: email, id: id })
+                                    $("#my_modal").modal("show")
+                        //         }
+                        //         else
+                        //         {
+                        //             $("#validate_email").text(`OTP Gagal Dikirim, Ulangi kembali`)
+                        //             $("#btn_submit").prop("disabled", false);
+                        //             buttonOnFinish("#btn_submit", "Ubah Email")
+                        //             return true
+                        //         }
+                        //     }
+                        // })
                     }
                     else {
                         $("#validate_email").text(`Email sudah terdaftar`)

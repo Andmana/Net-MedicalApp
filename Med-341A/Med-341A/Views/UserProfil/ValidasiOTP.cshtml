@@ -29,7 +29,7 @@
 </div>
 <script>
     var countdownInterval;
-    startCountdown(45);
+    startCountdown(60);
 
     $("#OTP-error").on('focus', function () {
         $("#OTP-error").text("").removeClass();
@@ -95,7 +95,7 @@
             complete: function () {
                 $("#btn_sendOTP").html('Kirim ulang kode OTP <div id="countdown" class="d-inline"></div>');
                 $("#btn_sendOTP").prop('disabled', true);
-                startCountdown(30); // Start the countdown again after OTP is resent
+                startCountdown(60); // Start the countdown again after OTP is resent
             }
         })
     })

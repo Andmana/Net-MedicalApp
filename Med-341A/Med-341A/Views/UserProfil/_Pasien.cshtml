@@ -78,7 +78,7 @@
                     <div style="display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 10px 0;">
                         <input type="checkbox" class="mychecked" onchange="selectedItem()" value="@item.IdCustomer" style="margin-right: 15px;" />
                         <div style="flex-grow: 1;">
-                            <div style="font-weight: bold; font-size: 16px;">@item.Fullname</div>
+                            <div class="value_@item.IdCustomer" value="@item.Fullname" style="font-weight: bold; font-size: 16px;">@item.Fullname</div>
                             <div style="font-size: 14px;">@item.NameRelation, @age tahun</div>
                             <div style="font-size: 14px;">@item.listCustomerChat?.Count Chat Online, @item.listCustomerJanji?.Count Janji Dokter</div>
                         </div>
@@ -107,7 +107,6 @@
                     <option value="3">3</option>
                     <option value="5">5</option>
                     <option value="10">10</option>
-                    <option value="25">25</option>
                 </select>
             </div>
 
@@ -147,7 +146,6 @@
                 listId.push(mychecked[i].value)
             }
         }
-
         if (listId.length > 0) {
             $("#btn_multiple_delete").attr("disabled", false)
         }

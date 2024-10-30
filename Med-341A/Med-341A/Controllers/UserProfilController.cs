@@ -149,6 +149,7 @@ namespace Med_341A.Controllers
         public async Task<IActionResult> ValidasiOTP(string email, int id)
         {
             VMResponse respon = await userProfileService.RequestOTPEmailBaru(email, id);
+
             ViewBag.Email = email;
             ViewBag.Id = id;
             return PartialView(respon);
@@ -180,7 +181,6 @@ namespace Med_341A.Controllers
             int idUser = GetUserIdFromSession();
             if (idUser != 0)
             {
-                // Mengisi ViewBag dengan nilai imagePath
                 ViewBag.MainContent = "Pasien";
                 ViewBag.currentSort = sortOrder;
                 ViewBag.currentPageSize = pageSize ?? 3;
@@ -200,8 +200,8 @@ namespace Med_341A.Controllers
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
-                    data = data.Where(a => a.Fullname.ToLower().Contains(searchString.ToLower())).ToList(); 
-                                           //a.NameRelation.ToLower().Contains(searchString.ToLower())).ToList(); //Untuk mencari relasi juga
+                    data = data.Where(a => a.Fullname.ToLower().Contains(searchString.ToLower())).ToList();
+                    //a.NameRelation.ToLower().Contains(searchString.ToLower())).ToList(); //Untuk mencari relasi juga
                 }
 
                 switch (sortOrder)
@@ -348,5 +348,11 @@ namespace Med_341A.Controllers
             VMResponse respon = await pasienService.MultipleDelete(idUser, listId);
             return Json(new { dataRespon = respon });
         }
+
+        //public async Task<IActionResult> KonfirmasiUpload(VMUploadGambar formData)
+        //{
+        //    ViewBag.ImagePath = HttpContext.Session.GetString("ImagePath") ?? "default-profile.png";
+        //    return PartialView(formData);
+        //}
     }
 }

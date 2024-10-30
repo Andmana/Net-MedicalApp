@@ -53,6 +53,13 @@
             $("#btn_submit").prop("disabled", true);
             buttonOnLoading("#btn_submit", "Mengunggah Gambar...")
 
+            // $("#btn_submit").click(function () {
+            //     $("#modal_title").text("Konfirmasi upload");
+            //     $("#modal_body").empty();
+            //     $("#modal_body").load(`/UserProfil/KonfirmasiUpload`, {formData : formData});
+            //     $("#my_modal").modal("show");
+            // });
+
             $.ajax({
                 url: "/UserProfil/UbahGambar",
                 type: "post",
@@ -102,7 +109,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    // Penanganan kesalahan saat request gagal
+                    //Penanganan kesalahan saat request gagal
                     console.log(`Error: ${status} - ${error}`);
                     $("#btn_submit").prop("disabled", false);
                 }
