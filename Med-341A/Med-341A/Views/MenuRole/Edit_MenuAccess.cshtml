@@ -68,35 +68,50 @@
 
 <script>
 
-    var form_value = {}
+    var form_value = {} // Empty list Form
 
+    // On Open
     $(function () {
         generate_checkbox_role_menu()
         validasi_list_selected()
     })
+    console.log(form_value)
 
     function generate_checkbox_role_menu() {
+
+        // Create empty list for menu role that store each menu's id  and select flag to form_value.role_menu
         form_value.role_menu = [];
+
+        // search each checkbox/menu in form
         $.each($('#role_menu_form').find('.checkbox-menus'), function (i, item) {
+            // Get menu Id
             var id = $(this).attr('id');
+            // Change CheckBox Input and label
             $(this).attr('id', 'role_menu__' + i + '_is_selected');
             $(this).attr('name', 'role_menu[' + i + '].is_selected');
-            $(this).attr('data-index', i);
+            $(this).attr('data-index', i); // Index based on loop function (i, item)
             $('label[for=' + id + ']').attr('for', 'role_menu__' + i + '_is_selected');
+            // Get select falg val
             var is_selected = $(this).prop('checked');
+            // Add menu item val to list form_value.role_menu
             form_value.role_menu.push({
                 is_selected: is_selected,
                 IdMenu: id
             });
         });
 
+        // Function run when checkbox clicked 
         $('.checkbox-menus').click(function () {
             var class_child = $(this).val();
             var _this = this;
             var index = -1;
             index = $(this).attr('data-index');
             if ($(this).prop('checked')) {
+
+                // Set is_selected is true when checkbox is checked
                 form_value.role_menu[index].is_selected = true;
+
+                // Set child menu value
                 $('#role_menu_form .' + class_child).prop('checked', true);
                 $.each($('.' + class_child), function () {
                     index = $(this).attr('data-index');
@@ -107,21 +122,28 @@
             else {
                 form_value.role_menu[index].is_selected = false;
                 $('#role_menu_form .' + class_child).prop('checked', false);
+                // Set child menu value
                 $.each($('.' + class_child), function () {
                     index = $(this).attr('data-index');
                     form_value.role_menu[index].is_selected = false;
                 });
             }
+
             var classList = $.trim($(this).attr('class').replace('selectgroup-input checkbox-menus', ''));
             if (classList.length > 0) {
                 classList = classList.split(' ');
+
+                // Parent menu checkbox
                 $.each(classList, function (i, item) {
+
+                    // Set Parent menu checkbox true when childmenu is clicked
                     if ($(_this).prop('checked')) {
                         $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', true);
                         index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');
                         form_value.role_menu[index].is_selected = true;
                     }
                     else {
+                        // Set Parent menu checkbox unchecked when childmenu is clicked and other child menu flag is unchecked
                         if ($('input[type=checkbox].checkbox-menus.' + item + ':checked').length == 0) {
                             $('input[type=checkbox][value=' + item + '].checkbox-menus').prop('checked', false);
                             index = $('input[type=checkbox][value=' + item + '].checkbox-menus').attr('data-index');

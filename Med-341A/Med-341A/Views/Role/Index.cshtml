@@ -149,8 +149,8 @@
                                          id="add-row_info"
                                          role="status"
                                          aria-live="polite">
-                                        Data ke @((Model.PageIndex - 1) * Model.TotalPages + 1) - @(tblIdx - 1)
-                                        dari @Model.TotalData
+                                        Data ke @((Model.PageIndex - 1) * @ViewBag.currentShowData + 1) - @(tblIdx - 1)
+                                        dari @Model.TotalData data.
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-7">
