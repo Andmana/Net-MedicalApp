@@ -1,4 +1,5 @@
 namespace Med_341A.viewmodels;
+using System.Globalization;
 
 public class VMSearchDoctor
 {
@@ -16,10 +17,43 @@ public class VMSearchDoctor
 
     public DateOnly? LatestEndWork { get; set; }
 
+    public int? Experience { get; set; }
+
     public List<VMMedicalFacility> MedicalFacilities { get; set; } = [];
 
     public List<VMDoctorTreatment> DoctorTreatment { get; set; } = [];
 
+    // Properti baru untuk status online
+    public bool IsOnline => CheckDoctorAvailability();
+
+    private bool CheckDoctorAvailability()
+    {
+        // Menggunakan zona waktu Indonesia (WIB)
+        TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
+
+        // Mendapatkan hari dan waktu dalam format Indonesia
+        var currentDay = wibNow.ToString("dddd", new CultureInfo("id-ID"));
+        var currentTime = wibNow.TimeOfDay;
+        
+        foreach (var facility in MedicalFacilities)
+        {
+            foreach (var schedule in facility.Schedule)
+            {
+                if (schedule.Day == currentDay) // Membandingkan hari
+                {
+                    var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
+                    var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
+
+                    if (currentTime >= start && currentTime <= end)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
 
 public class VMMedicalFacility
@@ -39,6 +73,21 @@ public class VMMedicalFacility
     public DateOnly? StartWork { get; set; }
 
     public DateOnly? EndWork { get; set; }
+
+    public List<DoctorOfficeSchedule> Schedule { get; set; } = [];
+}
+
+public class DoctorOfficeSchedule
+{
+    public int? DoctorOfficeScheduleId { get; set; }
+
+    public int? MedicalFacilityId { get; set; }
+
+    public string? Day { get; set; }
+
+    public string? TimeScheduleStart { get; set; }
+
+    public string? TimeScheduleEnd { get; set; }
 }
 
 public class VMSearchPageDoctor
