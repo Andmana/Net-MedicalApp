@@ -317,15 +317,15 @@ namespace Med_341A.Controllers
             VMResponse respon = await pasienService.DeletePasien(idUser, idCustomer);
             return Json(new { dataRespon = respon });
         }
-        public async Task<IActionResult> MultipleDelete(List<int> listId)
+        public IActionResult MultipleDelete(List<int> listId, List<string> listNameRelation)
         {
-            List<string> listName = new List<string>();
-            foreach (int item in listId)
-            {
-                VMPasien data = await pasienService.GetPasienByIdCustomer(item);
-                listName.Add(data.Fullname);
-            }
-            ViewBag.listName = listName;
+            //List<string> listName = new List<string>();
+            //foreach (int item in listId)
+            //{
+            //    VMPasien data = await pasienService.GetPasienByIdCustomer(item);
+            //    listName.Add(data.Fullname);
+            //}
+            ViewBag.listName = listNameRelation;
             ViewBag.IdUser = GetUserIdFromSession();
             return PartialView();
         }

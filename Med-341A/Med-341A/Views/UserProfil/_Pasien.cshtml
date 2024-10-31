@@ -78,7 +78,7 @@
                     <div style="display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 10px 0;">
                         <input type="checkbox" class="mychecked" onchange="selectedItem()" value="@item.IdCustomer" style="margin-right: 15px;" />
                         <div style="flex-grow: 1;">
-                            <div class="value_@item.IdCustomer" value="@item.Fullname" style="font-weight: bold; font-size: 16px;">@item.Fullname</div>
+                            <div class="value_@item.IdCustomer" data-fullname="@item.Fullname" style="font-weight: bold; font-size: 16px;">@item.Fullname</div>
                             <div style="font-size: 14px;">@item.NameRelation, @age tahun</div>
                             <div style="font-size: 14px;">@item.listCustomerChat?.Count Chat Online, @item.listCustomerJanji?.Count Janji Dokter</div>
                         </div>
@@ -137,13 +137,18 @@
 </div>
 <script>
     var listId = []
+    var listNameRelation = []
 
     function selectedItem() {
+        debugger
         var mychecked = $(".mychecked")
         listId = []
+        listNameRelation = []
         for (var i = 0; i < mychecked.length; i++) {
             if (mychecked[i].checked) {
                 listId.push(mychecked[i].value)
+                var nameRelation = $(".value_" + mychecked[i].value).data("fullname")
+                listNameRelation.push(nameRelation)
             }
         }
         if (listId.length > 0) {
@@ -208,7 +213,7 @@
         $("#modal_body").empty()
 
         $("#modal_title").text("Hapus Daftar Pasien Terpilih")
-        $("#modal_body").load("/UserProfil/MultipleDelete", { listId: listId })
+        $("#modal_body").load("/UserProfil/MultipleDelete", { listId: listId, listNameRelation: listNameRelation })
         $("#my_modal").modal("show")
     })
 
