@@ -29,10 +29,8 @@ namespace Med_341A.Services
 
         public async Task<VMResponse> Edit_MenuAccess(VRole dataParam)
         {
-            //Proses convert dari objext ke string
             string json = JsonConvert.SerializeObject(dataParam);
 
-            //proses ubah string ke json
             StringContent content = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
 
             var request = await client.PutAsync(RouteAPI + "apiMMenuRole/Edit_MenuAccess", content);

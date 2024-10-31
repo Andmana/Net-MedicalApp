@@ -376,7 +376,7 @@
         </div>
     </div>
     <div class="col-sm-6 col-md-3">
-        <div class="card card-stats card-warning card-round">
+        <button type="button" id="btn_cart" class="card card-stats card-warning card-round">
             <div class="card-body">
                 <div class="row">
                     <div class="col-5">
@@ -391,7 +391,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </button>
     </div>
 </div>
 
@@ -405,8 +405,9 @@
     var ListCart = @Html.Raw(ViewBag.dataDetail)
 
     setTransaction()
-
-    //set product choose
+    
+    // Set session value to product list
+    // set product choose
     function setTransaction() {
         hide_note()
         if (ListCart != null) {
@@ -421,12 +422,13 @@
 
     $(".btn_plus").click(function () {
 
-        if (ListCart == null || ListCart.length == 0) {
-            ListCart = @Html.Raw(ViewBag.dataDetail)
-            }
+        // if (ListCart == null || ListCart.length == 0) {
+        //     ListCart = @Html.Raw(ViewBag.dataDetail)
+        //     }
 
         obj = {}
 
+        // Get html parameter that later updated each click
         var id = parseInt($(this).attr("dataid"))
         var idprice = "#price_" + id
         var idtotalitem = "#totalitem_" + id
@@ -434,7 +436,7 @@
 
         var totalitem = parseInt($(idtotalitem).text())
         var price = parseInt($(idprice).text())
-
+        var name = $(idname).text()
 
         totalproduct++
         totalitem++
@@ -449,6 +451,7 @@
         obj.Qty = totalitem
         obj.SubTotal = price * totalitem
         obj.Price = price
+        obj.name = name
 
         addList(id, obj)
         //console.log(ListCart)
@@ -463,9 +466,9 @@
 
 
     $(".btn_min").click(function () {
-        if (ListCart == null || ListCart.length == 0) {
-            ListCart = @Html.Raw(ViewBag.dataDetail)
-            }
+        // if (ListCart == null || ListCart.length == 0) {
+        //     ListCart = @Html.Raw(ViewBag.dataDetail)
+        //     }
 
         var id = parseInt($(this).attr("dataid"))
         var idprice = "#price_" + id
@@ -475,6 +478,7 @@
 
         var totalitem = parseInt($(idtotalitem).text())
         var price = parseInt($(idprice).text())
+        var name = $(idname).text()
 
 
         if (totalitem > 0) {
@@ -498,6 +502,8 @@
         obj.Qty = totalitem
         obj.SubTotal = price * totalitem
         obj.Price = price
+        obj.name = name
+
 
         spliceList(id, obj)
 
@@ -512,9 +518,11 @@
     function addList(id, obj) {
         const index = ListCart.map(e => e.MedicalItemId).indexOf(id);
 
+        // add new obj list
         if (index == -1) {
             ListCart.push(obj)
         }
+        // replace existing list
         else {
             ListCart[index].Qty = obj.Qty
             ListCart[index].SubTotal = obj.SumPrice
@@ -534,6 +542,7 @@
         }
     }
 
+    // Sent post data that later saved in session
     function setSession() {
         var itemCt = ListCart.length
         data = {
@@ -560,6 +569,13 @@
     $("#btn_search").click(function () {
         $("#modal_body").empty()
         $("#modal_body").load("/MedicalItem/SearchMenu")
+        $("#my_modal").modal("show")
+
+    })
+
+    $("#btn_cart").click(function () {
+        $("#modal_body").empty()
+        $("#modal_body").load("/MedicalItem/CartMenu")
         $("#my_modal").modal("show")
 
     })

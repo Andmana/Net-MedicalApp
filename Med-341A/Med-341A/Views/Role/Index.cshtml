@@ -41,7 +41,7 @@
                                     <div id="add-row_filter" class="dataTables_filter">
                                         <label>
                                             Search:
-                                            <input type="search" id="searchString" name="searchString" class="form-control form-control-sm" placeholder="" aria-controls="add-row">
+                                            <input type="search" id="searchString" name="searchString" class="form-control form-control-sm" placeholder="" aria-controls="add-row" value="@ViewBag.currentFilter">
                                         </label>
                                         <div class="btn btn-icon btn-round btn-primary" style="cursor:pointer" id="btn_search">
                                             <i class="fas fa-search"></i>
@@ -149,8 +149,15 @@
                                          id="add-row_info"
                                          role="status"
                                          aria-live="polite">
-                                        Data ke @((Model.PageIndex - 1) * @ViewBag.currentShowData + 1) - @(tblIdx - 1)
-                                        dari @Model.TotalData data.
+                                         @if (Model.Count != 0)
+                                        {
+                                            <span>
+                                                Data ke @((Model.PageIndex - 1) * @ViewBag.currentShowData + 1) - @(tblIdx - 1)
+                                                dari @Model.TotalData data.
+                                            </span>
+                                        }
+                                        
+                                         
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-7">
@@ -173,7 +180,12 @@
                                                 </a>
                                             </li>
                                             <li class="page-link rounded-5">
-                                                Halaman ke @Model.PageIndex dari @Model.TotalPages
+                                                @if (Model.Count != 0)
+                                                {
+                                                    <span>
+                                                        Halaman ke @Model.PageIndex dari @Model.TotalPages
+                                                    </span>
+                                                }
                                             </li>
                                             <li class="paginate_button next">
                                                 <a asp-action="Index"

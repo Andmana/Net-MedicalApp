@@ -11,6 +11,7 @@ namespace Med_341A.viewmodels
     public class VPurchaseDetail
     {
         public long Id { get; set; }
+        public string? Name { get; set; }
 
         public long? MedicalItemPurchaseId { get; set; }
 

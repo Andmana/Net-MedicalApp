@@ -86,6 +86,8 @@ namespace Med_341A.api.Controllers
         {
             data.CreatedOn = DateTime.Now;
             data.IsDelete = false;
+            data.Name = data.Name.Trim();
+            data.Code= data.Code.Trim();
 
             try
             {

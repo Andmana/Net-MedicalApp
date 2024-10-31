@@ -41,7 +41,7 @@ namespace Med_341A.Controllers
             }
 
             // Segmen filter
-            if (dataSearch.SegmentationId != null)
+            if (dataSearch.SegmentationId > 0)
             {
                 data = data.Where(a => a.MedicalItemSegmentationId == dataSearch.SegmentationId).ToList();
                 ViewBag.SegmentationName = await miService.GetSegmentationName(dataSearch.SegmentationId ?? 0);
@@ -66,6 +66,9 @@ namespace Med_341A.Controllers
                 if (dataHeader.ListDetails == null)
                     dataHeader.ListDetails = new List<VPurchaseDetail>();
             }
+            //dataHeader.TotalQty = dataHeader.ListDetails.Sum(item => item.Qty) ?? 0;
+            //dataHeader.ItemCount = dataHeader.ListDetails.Count;
+            //dataHeader.Amount = dataHeader.ListDetails.Sum(item => item.SubTotal) ?? 0;
 
             // Set ViewBag
             // Used in client side when reopen the site 
@@ -96,6 +99,27 @@ namespace Med_341A.Controllers
             // Set Session -> replace current session with new input
             HttpContext.Session.SetComplexData("ListCart", dataHeader);
             return Json("");
+        }
+
+        public IActionResult CartMenu()
+        {
+            VPurchaseHeader dataHeader = HttpContext.Session.GetComplexData<VPurchaseHeader>("ListCart");
+            if (dataHeader == null)
+            {
+                dataHeader = new VPurchaseHeader();
+                dataHeader.ListDetails = new List<VPurchaseDetail>();
+            }
+            else
+            {
+
+                if (dataHeader.ListDetails == null)
+                    dataHeader.ListDetails = new List<VPurchaseDetail>();
+            }
+
+            var ListDetail = JsonConvert.SerializeObject(dataHeader.ListDetails);
+            ViewBag.dataHeader = dataHeader;
+            ViewBag.dataDetail = dataHeader.ListDetails;
+            return PartialView();
         }
     }
 }

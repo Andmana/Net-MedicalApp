@@ -58,12 +58,18 @@ namespace Med_341A.api.Controllers
                 db.TTokens.Add(token);
                 db.SaveChanges();
 
-                emailService.SendOtpEmail(request.Email, request.OTP);
+                var isSent = emailService.SendOtpEmailV2(request.Email, request.OTP);
+                if (isSent)
+                {
+                    response.Entity = request;
+                    response.Success = true;
+                    response.Message = "OTP berhasil dikirim ke Email";
 
+                    return response;
+                }
 
-                response.Entity = request;
-                response.Success = true;
-                response.Message = "OTP berhasil dikirim ke Email";
+                response.Success = false;
+                response.Message = "OTP Gagal dikirim ke Email, Silakan coba setelah beberapa saat";
             }
             catch (Exception ex)
             {
@@ -129,14 +135,14 @@ namespace Med_341A.api.Controllers
                 if (authService.VerifyPassword(data.Password, request.Password))
                 {
                     response.Success = false;
-                    response.Message = "Password tidak boleh sama dengan yang sebelumnya";
+                    response.Message = "Password tidak boleh sama dengan password saat ini";
                     return response;
                 }
 
                 if (await resetPasswordService.IsEqual_PrevPass(data.Id, request.Password))
                 {
                     response.Success = false;
-                    response.Message = "Password tidak boleh sama dengan yang sebelumnya1";
+                    response.Message = "Password sudah pernah digunakan sebelumnya";
                     return response;
                 }
                 

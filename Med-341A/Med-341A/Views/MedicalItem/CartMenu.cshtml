@@ -1,0 +1,42 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Med_341A.viewmodels
+@{
+    var dataDetail = ViewBag.dataDetail;
+    var dataHeader = ViewBag.dataHeader;
+}
+
+<div class="card">
+    <div class="cart-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Nama Item</th>
+                    <th scope="col">Jumlah</th>
+                    <th scope="col">Harga</th>
+                    <th scope="col">Sub Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in dataDetail)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Qty</td>
+                        <td>@item.Price</td>
+                        <td>@(item.Price * item.Qty)</td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="3">Total Harga</td>
+                    <td colspan="3">@dataHeader.Amount</td>
+                </tr>
+                
+            </tbody>
+        </table>
+
+    </div>
+
+
+</div>

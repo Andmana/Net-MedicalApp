@@ -53,37 +53,45 @@ namespace Med_341A.api.Controllers
                     db.Update(dt);
 
                     //SAVE MenuAccess
+                    // Check existing role's menu that already registered
                     List<MMenuRole> roleMenuDB = db.MMenuRoles.Where(a => a.RoleId == data.Id).ToList();
 
+                    // Update current role's menu if exists
                     if (roleMenuDB.Count() > 0)
                     {
                         // delete unused data 
-                        // 
-                        List<MMenuRole> roleMenuRemove = roleMenuDB.Where(a => ! (data.role_menu.Where( b => b.is_selected && b.IdMenu == a.MenuId ).Select(b => b.Id)  )
-                                                                   .Any())
+                        // find current role menu that is not selected in input role's menu 
+                        List<MMenuRole> roleMenuRemove = roleMenuDB.Where(a => ! (data.role_menu.Where(b => b.is_selected && b.IdMenu == a.MenuId)
+                                                                                                .Select(b => b.Id))
+                                                                                                .Any())
                                                                    .ToList();
                         foreach (MMenuRole item in roleMenuRemove)
                         {
                             //db.Remove(item);
 
                             item.IsDelete = true;
-                            item.ModifiedBy = 1;
-                            item.ModifiedOn = DateTime.Now;
+                            item.DeletedBy = 1;
+                            item.DeletedOn = DateTime.Now;
                             db.Update(item);
                         }
 
                         // update existing data
-                        List<MMenuRole> roleMenuUpdate = roleMenuDB.Where(a =>
-                        (data.role_menu.Where(b => b.is_selected && b.IdMenu == a.MenuId).Select(b => b.Id)).Any()
-                        ).ToList();
+                        // to change
+                        List<MMenuRole> roleMenuUpdate = roleMenuDB.Where(a => (data.role_menu.Where(b => b.is_selected && b.IdMenu == a.MenuId)
+                                                                                              .Select(b => b.Id))
+                                                                                              .Any()
+                                                                  ).ToList();
                         foreach (MMenuRole item in roleMenuUpdate)
                         {
                             if (item.IsDelete == true)
                             {
+                                item.Id = 0;
                                 item.IsDelete = false;
-                                item.ModifiedBy = idUser;
-                                item.ModifiedOn = DateTime.Now;
-                                db.Update(item);
+                                item.CreatedBy = idUser;
+                                item.CreatedOn = DateTime.Now;
+                                item.DeletedBy = null;
+                                item.DeletedOn = null;
+                                db.Add(item);
                             }
                         }
                     }
