@@ -79,19 +79,6 @@ namespace Med_341A.Controllers
             return PartialView(data);
 
         }
-        [HttpPost]
-        public async Task<JsonResult> UbahGambar(VMUploadGambar dataParam)
-        {
-            if (dataParam.ImageFile != null)
-            {
-                dataParam.ImagePath = await Upload(dataParam.ImageFile);
-            }
-
-            VMResponse respon = await userProfileService.UbahGambar(dataParam);
-            HttpContext.Session.SetString("ImagePath", dataParam.ImagePath!);
-            return Json(new { dataRespon = respon });
-
-        }
         public async Task<IActionResult> UbahPribadi(int id)
         {
             VMUser data = await userProfileService.GetDataUser(id);
@@ -349,10 +336,64 @@ namespace Med_341A.Controllers
             return Json(new { dataRespon = respon });
         }
 
-        //public async Task<IActionResult> KonfirmasiUpload(VMUploadGambar formData)
-        //{
-        //    ViewBag.ImagePath = HttpContext.Session.GetString("ImagePath") ?? "default-profile.png";
-        //    return PartialView(formData);
-        //}
+        public async Task<IActionResult> KonfirmasiUpload(VMUploadGambar formData)
+        {
+            if (formData.ImageFile != null)
+            {
+                formData.ImagePath = await Upload(formData.ImageFile);
+            }
+            HttpContext.Session.SetString("NewImage", formData.ImagePath!);
+            ViewBag.ImagePath = HttpContext.Session.GetString("ImagePath") ?? "default-profile.png";
+
+            return PartialView(formData);
+        }
+        [HttpPost]
+        public async Task<JsonResult> UbahGambar(string dataImage, int idBiodata, int idUser)
+        {
+            //if (dataParam.ImageFile != null)
+            //{
+            //    dataParam.ImagePath = await Upload(dataParam.ImageFile);
+            //}
+            var request = new VMUploadGambar { Id = idUser, BiodataId = idBiodata, ImagePath = dataImage };
+            VMResponse respon = await userProfileService.UbahGambar(request);
+            if (respon.Success)
+            {
+                HttpContext.Session.SetString("ImagePath", dataImage);
+                HttpContext.Session.Remove("NewImage");
+            }
+            return Json(new { dataRespon = respon });
+
+        }
+        [HttpPost]
+        public IActionResult CancelUpload(string imagePath)
+        {
+
+            // Menggunakan parameter yang diterima untuk menentukan gambar yang akan dihapus
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                var fullPath = Path.Combine(webHostEnvironment.WebRootPath, "images", imagePath);
+
+                // Memastikan file ada sebelum mencoba menghapusnya
+                if (System.IO.File.Exists(fullPath))
+                {
+                    try
+                    {
+                        System.IO.File.Delete(fullPath);  // Hapus file jika ada
+                        return Json(new { success = true, message = "File berhasil dihapus." });
+                    }
+                    catch (Exception ex)
+                    {
+                        // Jika ada kesalahan saat menghapus file
+                        return Json(new { success = false, message = "Terjadi kesalahan saat menghapus file: " + ex.Message });
+                    }
+                }
+                else
+                {
+                    return Json(new { success = false, message = "File tidak ditemukan." });
+                }
+            }
+
+            return Json(new { success = false, message = "Path gambar tidak valid." });
+        }
     }
 }

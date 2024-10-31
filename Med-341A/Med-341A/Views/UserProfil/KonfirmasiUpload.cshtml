@@ -1,17 +1,107 @@
 ﻿@using Med_341A.viewmodels
 @model VMUploadGambar
 
-
-<div class="text-center">
-    <p>Apakah anda ingin mengupload gambar ini?</p>
-    <div class="d-flex justify-content-between">
-        <div>
-            <img src="~/images/@ViewBag.ImagePath" class="rounded-circle" alt="Profile" style="width: 200px; height: 200px; object-fit: cover;">
-            <span>Gambar Sebelum</span>
+@{
+    string newImage = Context.Session.GetString("NewImage");
+    int biodataId = (int)Model.BiodataId;
+    int idUser = (int)Model.Id;
+}
+<form id="form_ubahfoto">
+    <div class="text-center">
+        <p>Apakah anda ingin mengupload gambar ini?</p>
+        <div class="d-flex justify-content-between">
+            <div>
+                <img src="~/images/@ViewBag.ImagePath" class="rounded-circle" alt="Profile" style="width: 200px; height: 200px; object-fit: cover;">
+                <span>Gambar Sebelum</span>
+            </div>
+            <div>
+                <img src="~/images/@Model.ImagePath" name="ImagePath" id="ImagePath" class="rounded-circle" alt="Profile" style="width: 200px; height: 200px; object-fit: cover;">
+                <span>Gambar Sesudah</span>
+            </div>
         </div>
-        <div>
-            <img src="~/images/@Model.ImageFile" class="rounded-circle" alt="Profile" style="width: 200px; height: 200px; object-fit: cover;">
-            <span>Gambar Sebelum</span>
+        <div class="d-flex justify-content-between mt-4">
+
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal" id="btn_cancel">Batal</button>
+            <button type="submit" class="btn btn-primary" id="btn_submit">Simpan</button>
         </div>
     </div>
-</div>
+</form>
+
+<script>
+    $("#form_ubahfoto").validate({
+        submitHandler: function () {
+            var dataImage = "@newImage";
+            var idBiodata = @biodataId;
+            var idUser = @idUser;
+
+            $.ajax({
+                url: "/UserProfil/UbahGambar",
+                type: "post",
+                data: { dataImage: dataImage, idBiodata: idBiodata, idUser: idUser },
+                dataType: "json",
+                success: function (respon) {
+                    var data = respon.dataRespon
+                    if (data.success) {
+                        $("#my_modal").modal("hide")
+                        swal(
+                            "Success",
+                            data.message, {
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-success",
+                                },
+                            },
+                        }
+                        ).then((clickconfirm) => {
+                            if (clickconfirm) {
+                                window.location.reload()
+                            }
+                        })
+                    }
+                    else {
+                        $("#my_modal").modal("hide")
+                        swal(
+                            "Failed",
+                            data.message, {
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    className: "btn btn-danger",
+                                },
+                            },
+                        }
+                        ).then((clickconfirm) => {
+                            if (clickconfirm) {
+                                $("#my_modal").modal("show")
+                                $("#btn_submit").prop("disabled", false);
+                                buttonOnFinish("#btn_submit", "Simpan")
+                            }
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(`Error: ${status} - ${error}`);
+                    $("#btn_submit").prop("disabled", false);
+                }
+            })
+        }
+    })
+
+    $("#btn_cancel").click(function () {
+        var imagePath = "@newImage";
+        $.ajax({
+            url: "/UserProfil/CancelUpload",
+            type: "post",
+            data: { imagePath: imagePath },
+            success: function (response) {
+                if (response.success) {
+                    $("#my_modal").modal("hide");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log(`Error: ${status} - ${error}`);
+            }
+        });
+    });
+</script>

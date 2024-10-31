@@ -3,7 +3,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form asp-action="UbahGambar" method="post" id="form_input" enctype="multipart/form-data" >
+        <form asp-action="UbahGambar" method="post" id="form_input" enctype="multipart/form-data">
             <input type="hidden" name="BiodataId" id="BiodataId" value="@Model.BiodataId">
             <input type="hidden" name="Id" id="Id" value="@Model.Id">
             <!-- Ubah Gambar -->
@@ -24,8 +24,8 @@
 <script>
     $("#form_input").validate({
         errorClass: "is-invalid text-danger",
-        rules:{
-            ImageFile:{
+        rules: {
+            ImageFile: {
                 required: true,
                 typeFile: "jpeg|jpg|png",
                 sizeFile: true
@@ -38,10 +38,10 @@
                 sizeFile: "Maksimal ukuran gambar sebesar 2MB"
             }
         },
-        submitHandler: function(form){
+        submitHandler: function (form) {
             var dataForm = $(form).serializeArray()
             var formData = new FormData();
-            
+
             $.each(dataForm, function (index, input) {
                 formData.append(input.name, input.value)
             })
@@ -51,69 +51,86 @@
             }
 
             $("#btn_submit").prop("disabled", true);
-            buttonOnLoading("#btn_submit", "Mengunggah Gambar...")
+            buttonOnLoading("#btn_submit", "Loading...")
+
+            $.ajax({
+                url: "/UserProfil/KonfirmasiUpload",
+                type: "post",
+                data: formData,
+                dataType: "html",
+                contentType: false,
+                processData: false,
+                success: function (respon) { 
+                    $("#btn_submit").prop("disabled", false);
+                    buttonOnFinish("#btn_submit", "Simpan")
+                    $("#modal_title").text("Konfirmasi upload");
+                    $("#modal_body").html(respon);
+                    $("#my_modal").modal("show");
+                }
+            })
 
             // $("#btn_submit").click(function () {
             //     $("#modal_title").text("Konfirmasi upload");
             //     $("#modal_body").empty();
-            //     $("#modal_body").load(`/UserProfil/KonfirmasiUpload`, {formData : formData});
+                
+            //     $("#modal_body").load("/UserProfil/KonfirmasiUpload", { formData: formData });
             //     $("#my_modal").modal("show");
             // });
 
-            $.ajax({
-                url: "/UserProfil/UbahGambar",
-                type: "post",
-                data: formData,
-                dataType: "json",
-                contentType: false,
-                processData: false,
-                success: function(respon){
-                    var data = respon.dataRespon
-                    if (data.success) {
-                        $("#my_modal").modal("hide")
-                        swal(
-                            "Success",
-                            data.message, {
-                            icon: "success",
-                            buttons: {
-                                confirm: {
-                                    className: "btn btn-success",
-                                },
-                            },
-                        }
-                        ).then((clickconfirm) => {
-                            if (clickconfirm) {
-                                window.location.reload()
-                            }
-                        })
-                    }
-                    else {
-                        $("#my_modal").modal("hide")
-                        swal(
-                            "Failed",
-                            data.message, {
-                            icon: "error",
-                            buttons: {
-                                confirm: {
-                                    className: "btn btn-danger",
-                                },
-                            },
-                        }
-                        ).then((clickconfirm) => {
-                            if (clickconfirm) {
-                                $("#my_modal").modal("show")
-                                $("#btn_submit").prop("disabled", false);
-                                buttonOnFinish("#btn_submit", "Simpan")
-                            }
-                        })
-                    }
-                },
-                error: function (xhr, status, error) {
-                    //Penanganan kesalahan saat request gagal
-                    console.log(`Error: ${status} - ${error}`);
-                    $("#btn_submit").prop("disabled", false);
-                }
-            })
+            // $.ajax({
+            //     url: "/UserProfil/UbahGambar",
+            //     type: "post",
+            //     data: formData,
+            //     dataType: "json",
+            //     contentType: false,
+            //     processData: false,
+            //     success: function(respon){
+            //         var data = respon.dataRespon
+            //         if (data.success) {
+            //             $("#my_modal").modal("hide")
+            //             swal(
+            //                 "Success",
+            //                 data.message, {
+            //                 icon: "success",
+            //                 buttons: {
+            //                     confirm: {
+            //                         className: "btn btn-success",
+            //                     },
+            //                 },
+            //             }
+            //             ).then((clickconfirm) => {
+            //                 if (clickconfirm) {
+            //                     window.location.reload()
+            //                 }
+            //             })
+            //         }
+            //         else {
+            //             $("#my_modal").modal("hide")
+            //             swal(
+            //                 "Failed",
+            //                 data.message, {
+            //                 icon: "error",
+            //                 buttons: {
+            //                     confirm: {
+            //                         className: "btn btn-danger",
+            //                     },
+            //                 },
+            //             }
+            //             ).then((clickconfirm) => {
+            //                 if (clickconfirm) {
+            //                     $("#my_modal").modal("show")
+            //                     $("#btn_submit").prop("disabled", false);
+            //                     buttonOnFinish("#btn_submit", "Simpan")
+            //                 }
+            //             })
+            //         }
+            //     },
+            //     error: function (xhr, status, error) {
+            //         Penanganan kesalahan saat request gagal
+            //         console.log(`Error: ${status} - ${error}`);
+            //         $("#btn_submit").prop("disabled", false);
+            //     }
+            // })
         }
     })
     jQuery.validator.addMethod("typeFile", function (value, element, param) {
