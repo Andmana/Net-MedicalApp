@@ -30,7 +30,12 @@ namespace Med_341A.api.Controllers
                  join medicalFacilities in db.MMedicalFacilities on doctorOffice.MedicalFaciltyId equals medicalFacilities.Id
                  join kecamatan in db.MLocations on medicalFacilities.LocationId equals kecamatan.Id
                  join kota in db.MLocations on kecamatan.ParentId equals kota.Id
-                 where doctorOffice.IsDelete == false && doctor.IsDelete == false
+                 where
+                    doctorOffice.IsDelete == false
+                    && doctor.IsDelete == false
+                    && currSpecialization.IsDelete == false
+                    && doctorOffice.IsDelete == false
+                    && medicalFacilities.IsDelete == false
                  group new
                  {
                      LocationId = medicalFacilities.LocationId,
@@ -56,9 +61,6 @@ namespace Med_341A.api.Controllers
                      ImagePath = doctorGroup.Key.ImagePath,
                      SpecializationId = doctorGroup.Key.SpecializationId,
                      SpecializationName = doctorGroup.Key.SpecializationName,
-                     EarliestStartWork = doctorGroup.Min(x => x.StartWork),
-                     LatestEndWork = doctorGroup.Any(loc => loc.EndWork == null)
-                          ? null : doctorGroup.Max(loc => loc.EndWork),
                      MedicalFacilities = doctorGroup.Where(loc => loc.EndWork == null).Select(loc => new VMMedicalFacility
                      {
                          MedicalFacilityId = loc.MedicalFacilityId,
@@ -72,9 +74,9 @@ namespace Med_341A.api.Controllers
                          Schedule = (from dfsh in db.TDoctorOfficeSchedules
                                      join mfsh in db.MMedicalFacilitySchedules on dfsh.MedicalFacilitySchedule equals mfsh.Id
                                      where dfsh.DoctorId == doctorGroup.Key.IdDoctor && mfsh.MedicalFacilityId == loc.MedicalFacilityId && !dfsh.IsDelete && !mfsh.IsDelete
-                                     select new DoctorOfficeSchedule
+                                     select new VMDoctorOfficeSchedule
                                      {
-
+                                         DoctorOfficeScheduleId = (int)dfsh.Id,
                                          Day = mfsh.Day,
                                          TimeScheduleStart = mfsh.TimeScheduleStart,
                                          TimeScheduleEnd = mfsh.TimeScheduleEnd,
@@ -126,7 +128,7 @@ namespace Med_341A.api.Controllers
             return data;
         }
 
-        public static double CalculateDoctorExperience(List<VMMedicalFacility> facilities)
+        private static double CalculateDoctorExperience(List<VMMedicalFacility> facilities)
         {
             // Sort periods by StartWork date
             var sortedFacilities = facilities
@@ -171,7 +173,5 @@ namespace Med_341A.api.Controllers
 
             return totalExperienceInYears;
         }
-
-
     }
 }

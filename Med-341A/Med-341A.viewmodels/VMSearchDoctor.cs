@@ -13,10 +13,6 @@ public class VMSearchDoctor
 
     public string? SpecializationName { get; set; }
 
-    public DateOnly? EarliestStartWork { get; set; }
-
-    public DateOnly? LatestEndWork { get; set; }
-
     public int? Experience { get; set; }
 
     public List<VMMedicalFacility> MedicalFacilities { get; set; } = [];
@@ -40,7 +36,7 @@ public class VMSearchDoctor
         {
             foreach (var schedule in facility.Schedule)
             {
-                if (schedule.Day == currentDay) // Membandingkan hari
+                if (schedule.Day == currentDay)
                 {
                     var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
                     var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
@@ -74,10 +70,10 @@ public class VMMedicalFacility
 
     public DateOnly? EndWork { get; set; }
 
-    public List<DoctorOfficeSchedule> Schedule { get; set; } = [];
+    public List<VMDoctorOfficeSchedule> Schedule { get; set; } = [];
 }
 
-public class DoctorOfficeSchedule
+public class VMDoctorOfficeSchedule
 {
     public int? DoctorOfficeScheduleId { get; set; }
 

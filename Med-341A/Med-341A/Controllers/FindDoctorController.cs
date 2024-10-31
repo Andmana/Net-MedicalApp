@@ -3,6 +3,7 @@ using Med_341A.datamodels;
 using Med_341A.Services;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace Med_341A.Controllers
 {
@@ -21,7 +22,7 @@ namespace Med_341A.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(VMSearchPageDoctor dataSearch)
         {
-            List<VMSearchDoctor> dataDoctor = (await findDoctorService.GetAllSearchDoctor()).OrderBy(a => a.Fullname).ToList();
+            List<VMSearchDoctor> dataDoctor = (await findDoctorService.GetAllSearchDoctor()).OrderBy(a => a.IdDoctor).ToList();
 
             ViewBag.LocationName = (await findDoctorService.GetAllCity())
             .Where(a => a.Id == dataSearch.LocationId)
@@ -65,7 +66,7 @@ namespace Med_341A.Controllers
             }
 
 
-            return View(VPaginatedList<VMSearchDoctor>.CreateAsync(dataDoctor, dataSearch.PageNumber ?? 1, dataSearch.PageSize ?? 10));
+            return View(VPaginatedList<VMSearchDoctor>.CreateAsync(dataDoctor, dataSearch.PageNumber ?? 1, dataSearch.PageSize ?? 4));
         }
 
         public async Task<IActionResult> SearchMenu(int locationId, int specializationId, string nameDoctor, int doctorTreatmentId)
@@ -90,6 +91,40 @@ namespace Med_341A.Controllers
             .OrderBy(a => a.Name)
             .Select(a => new MSpecialization { Id = a.Id, Name = textInfo.ToTitleCase(a.Name ?? "") })
             .GroupBy(a => a.Name).Select(g => g.First());
+
+            return PartialView(dataSearch);
+        }
+
+        public async Task<IActionResult> ConfirmSearchDoctor(int locationId, int specializationId, string nameDoctor, int doctorTreatmentId)
+        {
+            VMSearchPageDoctor dataSearch = new VMSearchPageDoctor
+            {
+                LocationId = locationId,
+                SpecializationId = specializationId,
+                NameDoctor = nameDoctor,
+                DoctorTreatmentId = doctorTreatmentId
+            };
+
+            ViewBag.LocationName = (await findDoctorService.GetAllCity())
+            .Where(a => a.Id == dataSearch.LocationId)
+            .Select(loc => loc.Name).FirstOrDefault()!;
+
+            ViewBag.LocationId = dataSearch.LocationId;
+
+            ViewBag.SpecializationName = (await findDoctorService.GetAllSpecialization())
+            .Where(a => a.Id == dataSearch.SpecializationId)
+            .Select(spec => spec.Name).FirstOrDefault()!;
+
+            ViewBag.SpecializationId = dataSearch.SpecializationId;
+
+            ViewBag.DoctorTreatmentName = (await findDoctorService.GetAllDcotorTreatment())
+            .Where(a => a.Id == dataSearch.DoctorTreatmentId)
+            .Select(treat => treat.Name).FirstOrDefault()!;
+
+            ViewBag.LocationId = locationId;
+            ViewBag.SpecializationId = specializationId;
+            ViewBag.CurrentNameDoctor = nameDoctor;
+            ViewBag.DoctorTreatmentId = doctorTreatmentId;
 
             return PartialView(dataSearch);
         }

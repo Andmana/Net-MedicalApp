@@ -1,0 +1,68 @@
+﻿@using Med_341A.viewmodels;
+@using System.Globalization;
+@model VMSearchPageDoctor;
+
+@{
+    ViewData["title"] = "Cari Dokter";
+    TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+}
+
+<div class="justify-content-center" style="no-repeat center center;">
+    <div class="auth-box row">
+        <div class="bg-white">
+            <div class="p-3">
+
+                <h5 class="mt-3 font-weight-bold text-center">Apakah anda yakin anda ingin melakukan pencarian dokter
+                    dengan keyword berikut
+                </h5>
+                @{
+                    if (@ViewBag.LocationName != null)
+                    {
+
+                        <p class="m-0 p-0">Lokasi: <strong>@ViewBag.LocationName</strong></p>
+                    }
+
+                    if (@ViewBag.SpecializationName != null)
+                    {
+                        <p class="m-0 p-0">Spesialisasi/Sub-spesialisasi:
+                            <strong>@textInfo.ToTitleCase(ViewBag.SpecializationName)</strong>
+                        </p>
+                    }
+
+                    if (@ViewBag.CurrentNameDoctor != null)
+                    {
+                        <p class="m-0 p-0">Nama Dokter: <strong>@ViewBag.CurrentNameDoctor</strong></p>
+
+                    }
+
+                    if (@ViewBag.DoctorTreatmentName != null)
+                    {
+                        <p class="m-0 p-0">Tindakan Medis: <strong>@ViewBag.DoctorTreatmentName</strong></p>
+
+                    }
+                }
+
+                <div class="col-lg-12 text-center mt-5">
+                    <button type="button" class="btn btn-border btn-black" id="btn_back">Kembali</button>
+                    <button type="button" class="btn btn-block btn-dark" id="btn_confirm">Konfirmasi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#btn_back").click(function () {
+        $("#modal_body").load("/FindDoctor/SearchMenu", {
+            locationId: @(ViewBag.LocationId ?? 0),
+            specializationId: @(ViewBag.SpecializationId ?? 0),
+            nameDoctor: "@ViewBag.CurrentNameDoctor",
+            DoctorTreatmentId: "@ViewBag.DoctorTreatmentId"
+        })
+    })
+
+    $("#btn_confirm").click(function () {
+        window.location.href = `/FindDoctor?locationId=@(ViewBag.LocationId == 0 ? "" : ViewBag.LocationId)&specializationId=@(ViewBag.SpecializationId)&nameDoctor=@(ViewBag.CurrentNameDoctor)&DoctorTreatmentId=@(ViewBag.DoctorTreatmentId == 0 ? "" : ViewBag.DoctorTreatmentId)`;
+    })
+
+</script>
