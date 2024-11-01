@@ -10,8 +10,8 @@
             <div class="mb-4 row">
                 <label for="EmailBaru" class="col-sm-4 col-form-label">Email*</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control" id="EmailBaru" name="EmailBaru" pattern="^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" 
-           title="Masukkan email yang valid dengan format yang benar (contoh: user@example.com)" placeholder="Masukkan email baru...">
+                    <input type="email" class="form-control" id="EmailBaru" name="EmailBaru" pattern="^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                           title="Masukkan email yang valid dengan format yang benar (contoh: user@example.com)" placeholder="Masukkan email baru...">
                     <div class="text-danger" id="validate_email"></div>
                 </div>
             </div>
@@ -23,9 +23,9 @@
     </div>
 </div>
 <script>
-    $.validator.addMethod("customEmail", function(value, element) {
-    return /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
-}, "Masukkan format email yang valid.");
+    $.validator.addMethod("customEmail", function (value, element) {
+        return /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+    }, "Masukkan format email yang valid.");
 
     $("#form_email").validate({
         errorClass: "is-invalid text-danger",
@@ -57,29 +57,26 @@
                 data: { email: email },
                 dataType: "json",
                 success: function (respon) {
-                    debugger
                     if (!respon) {
-                        // $.ajax({
-                        //     debugger
-                        //     url: "/UserProfil/CheckOTP",
-                        //     type: "post",
-                        //     data: { email: email, id: id },
-                        //     dataType: "json",
-                        //     success: function(respon){
-                        //         if(respon)
-                        //         {
+                        $.ajax({
+                            url: "/UserProfil/CheckOTP",
+                            type: "post",
+                            data: { email: email, id: id },
+                            dataType: "json",
+                            success: function (respon) {
+                                debugger
+                                if (respon) {
                                     $("#modal_body").load("/UserProfil/ValidasiOTP", { email: email, id: id })
                                     $("#my_modal").modal("show")
-                        //         }
-                        //         else
-                        //         {
-                        //             $("#validate_email").text(`OTP Gagal Dikirim, Ulangi kembali`)
-                        //             $("#btn_submit").prop("disabled", false);
-                        //             buttonOnFinish("#btn_submit", "Ubah Email")
-                        //             return true
-                        //         }
-                        //     }
-                        // })
+                                }
+                                else {
+                                    $("#validate_email").text(`OTP Gagal Dikirim, Ulangi kembali`)
+                                    $("#btn_submit").prop("disabled", false);
+                                    buttonOnFinish("#btn_submit", "Ubah Email")
+                                    return true
+                                }
+                            }
+                        })
                     }
                     else {
                         $("#validate_email").text(`Email sudah terdaftar`)

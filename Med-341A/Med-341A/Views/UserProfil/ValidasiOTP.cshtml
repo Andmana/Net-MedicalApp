@@ -69,6 +69,8 @@
         buttonOnLoading("#btn_sendOTP", "Resend OTP...");
         $("#btn_sendOTP").prop('disabled', true)
         $("#btn_confirm").prop('disabled', true)
+        $("#btn_cancel").prop('disabled', true)
+        $(".btn-close").hide()
 
         $.ajax({
             url: "/UserProfil/UlangRequestOTP",
@@ -91,10 +93,14 @@
                 $("#OTP-error").text("");
                 $("#btn_sendOTP").prop('disabled', true)
                 $("#btn_confirm").prop('disabled', true)
+                $("#btn_cancel").prop('disabled', true)
+                $(".btn-close").hide()
             },
             complete: function () {
                 $("#btn_sendOTP").html('Kirim ulang kode OTP <div id="countdown" class="d-inline"></div>');
                 $("#btn_sendOTP").prop('disabled', true);
+                $("#btn_cancel").prop('disabled', false);
+                $(".btn-close").show(); // Tampilkan kembali tombol silang
                 startCountdown(60); // Start the countdown again after OTP is resent
             }
         })

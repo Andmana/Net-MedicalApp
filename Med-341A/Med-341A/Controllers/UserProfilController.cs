@@ -148,6 +148,13 @@ namespace Med_341A.Controllers
             return Json(new { dataResponse = respon });
         }
         [HttpPost]
+        public async Task<JsonResult> CheckOTP(string email, int id)
+        {
+            VMResponse respon = await userProfileService.RequestOTPEmailBaru(email, id);
+            bool isExist = respon.Success;
+            return Json(isExist);
+        }
+        [HttpPost]
         public async Task<JsonResult> VerifikasiOTP(string email, string otp, int id)
         {
             VMResponse respon = await userProfileService.VerifikasiOTP(email, otp, id);
