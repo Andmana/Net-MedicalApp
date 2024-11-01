@@ -126,8 +126,21 @@
                                     <div class="row">
                                         <span>@textInfo.ToTitleCase(item.SpecializationName ?? "")</span>
                                         <span>
-                                            @item.Experience
-                                            Tahun Pengalaman</span>
+                                            @{
+                                                int years = (item.ExperienceInMonth ?? 0) / 12;
+                                                int month = (item.ExperienceInMonth ?? 0) % 12;
+
+                                                if(years != 0 ) {
+                                                    @($"{years} Tahun ")
+
+                                                }
+
+                                                if(month != 0) {
+                                                    @($"{month} Bulan ")
+                                                }
+                                            }
+                                            Pengalaman
+                                            </span>
                                     </div>
 
                                     <div class="row mt-4">

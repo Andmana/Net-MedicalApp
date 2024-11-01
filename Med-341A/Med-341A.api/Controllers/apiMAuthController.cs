@@ -53,6 +53,8 @@ namespace Med_341A.api.Controllers
                         checkUser.IsLocked = true;
                     }
                     checkUser.LoginAttempt = checkUser.LoginAttempt + 1;
+                    checkUser.ModifiedBy = checkUser.Id;
+                    checkUser.ModifiedOn = DateTime.Now;
                 }
                 else
                 {
@@ -88,6 +90,7 @@ namespace Med_341A.api.Controllers
                 checkUser.LoginAttempt = 0;
                 checkUser.LastLogin = DateTime.Now;
                 checkUser.ModifiedBy = checkUser.Id;
+                checkUser.ModifiedOn = DateTime.Now;
 
                 db.Update(checkUser);
                 db.SaveChanges();

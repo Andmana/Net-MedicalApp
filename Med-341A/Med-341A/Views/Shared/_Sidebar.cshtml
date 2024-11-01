@@ -40,7 +40,7 @@
                 <li class="nav-item">
                     <a asp-controller="Home" asp-action="Index">
                         <i class="fas fa-home"></i>
-                        <p>Home</p>
+                        <p class="text-light">Home</p>
                     </a>
                 </li>
                 <li class="nav-section">
@@ -58,7 +58,7 @@
                         <li class="nav-item">
                             <a data-bs-toggle="collapse" href="#@parentId" aria-expanded="false">
                                 <i class="@parent.MenuIconBig"></i>
-                                <p>@parent.MenuName</p>
+                                <p class="text-light">@parent.MenuName</p>
                                 <span class="caret"></span>
                             </a>
                             <div class="collapse" id="@parentId">
@@ -80,7 +80,7 @@
                         <li class="nav-item">
                             <a asp-controller="@(parent.MenuAction.Split("/")[0])" asp-action="@(parent.MenuAction.Split("/")[1])">
                                 <i class="@parent.MenuIconBig"></i>
-                                <p>@parent.MenuName</p>
+                                <p class="text-light">@parent.MenuName</p>
                             </a>
                         </li>
                     }

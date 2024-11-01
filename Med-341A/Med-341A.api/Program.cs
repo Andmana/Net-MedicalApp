@@ -13,6 +13,7 @@ builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<MenuRoleService>();
 builder.Services.AddTransient<ResetPasswordService>();
+builder.Services.AddTransient<FindDoctorService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<Med341aContext>(option =>

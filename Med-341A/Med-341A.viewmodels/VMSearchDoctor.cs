@@ -13,7 +13,7 @@ public class VMSearchDoctor
 
     public string? SpecializationName { get; set; }
 
-    public int? Experience { get; set; }
+    public int? ExperienceInMonth { get; set; }
 
     public List<VMMedicalFacility> MedicalFacilities { get; set; } = [];
 
