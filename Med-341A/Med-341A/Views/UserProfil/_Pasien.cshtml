@@ -136,20 +136,56 @@
     </div>
 </div>
 <script>
-    var listId = []
-    var listNameRelation = []
+    var listId = JSON.parse(localStorage.getItem("selectedIds")) || [];
+    var listNameRelation = JSON.parse(localStorage.getItem("selectedNames")) || [];
+
+    // Function to load selected checkboxes from localStorage
+    function loadSelections() {
+        listId.forEach((id, index) => {
+            let checkbox = $(".mychecked[value='" + id + "']");
+            if (checkbox.length) {
+                checkbox.prop("checked", true);
+            }
+        });
+
+        // Enable the delete button if there are selected items
+        if (listId.length > 0) {
+            $("#btn_multiple_delete").attr("disabled", false);
+        } else {
+            $("#btn_multiple_delete").attr("disabled", true);
+        }
+    }
 
     function selectedItem() {
         var mychecked = $(".mychecked")
-        listId = []
-        listNameRelation = []
-        for (var i = 0; i < mychecked.length; i++) {
-            if (mychecked[i].checked) {
-                listId.push(mychecked[i].value)
-                var nameRelation = $(".value_" + mychecked[i].value).data("fullname")
-                listNameRelation.push(nameRelation)
+        // listId = []
+        // listNameRelation = []
+        // for (var i = 0; i < mychecked.length; i++) {
+        //     if (mychecked[i].checked) {
+        //         listId.push(mychecked[i].value)
+        //         var nameRelation = $(".value_" + mychecked[i].value).data("fullname")
+        //         listNameRelation.push(nameRelation)
+        //     }
+        // }
+        mychecked.each(function () {
+            if (this.checked) {
+                if (!listId.includes(this.value)) {
+                    listId.push(this.value);
+                    var nameRelation = $(".value_" + this.value).data("fullname");
+                    listNameRelation.push(nameRelation);
+                }
+            } else {
+                var index = listId.indexOf(this.value);
+                if (index !== -1) {
+                    listId.splice(index, 1);
+                    listNameRelation.splice(index, 1);
+                }
             }
-        }
+        });
+
+        // Store selected items in localStorage
+        localStorage.setItem("selectedIds", JSON.stringify(listId));
+        localStorage.setItem("selectedNames", JSON.stringify(listNameRelation));
         if (listId.length > 0) {
             $("#btn_multiple_delete").attr("disabled", false)
         }
@@ -157,6 +193,10 @@
             $("#btn_multiple_delete").attr("disabled", true)
         }
     }
+
+    $(document).ready(function () {
+        loadSelections();
+    });
 
     function loadPatients(pageNumber = 1, sortOrder = '', searchString = '', pageSize = '@ViewBag.currentPageSize') {
         $.ajax({
@@ -171,6 +211,7 @@
             success: function (data) {
                 $('#patient-list').empty();
                 $('#patient-list').html(data);
+                loadSelections();
             }
         });
     }
