@@ -82,7 +82,7 @@
             @* Card Section *@
             @{
                 int startData = ((Model.PageIndex - 1) * 4) + 1;
-                int endData = startData; 
+                int endData = startData - 1; 
 
                 if (Model.Count > 0)
                 {
@@ -179,7 +179,7 @@
             <div class="d-flex align-items-center">
                 @{
                     if(Model.TotalData > 0) {
-                        <p class="d-inline me-3 mb-0">Menampilkan @startData - @(endData - 1) dari @Model.TotalData</p>
+                        <p class="d-inline me-3 mb-0">Menampilkan @startData - @(endData) dari @Model.TotalData</p>
                     }
                 }
                 @* <p class="d-inline me-3 mb-0">Halaman ke @Model.PageIndex dari @Model.TotalPages</p> *@

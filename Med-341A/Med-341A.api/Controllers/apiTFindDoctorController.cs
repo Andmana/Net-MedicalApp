@@ -73,7 +73,7 @@ namespace Med_341A.api.Controllers
                      //  Calculate Experience In Month
                      ExperienceInMonth = (Int32)findDoctorService.CalculateDoctorExperience(
                         db.TDoctorOffices
-                        .Where(a => a.DoctorId == doctorGroup.Key.IdDoctor)
+                        .Where(a => a.DoctorId == doctorGroup.Key.IdDoctor && a.IsDelete == false)
                         .Select(loc => new VMMedicalFacility { StartWork = loc.StartDate, EndWork = loc.EndDate }).ToList()),
                      // End Calculate Experience In Month
 

@@ -54,9 +54,10 @@ public class FindDoctorService
         return totalExperienceInMonths;
     }
 
-    // Helper method to calculate the difference in months between two dates
+    // Helper method to calculate the difference in months between two dates, with a minimum of 1 month
     private static int GetMonthDifference(DateOnly start, DateOnly end)
     {
-        return ((end.Year - start.Year) * 12) + end.Month - start.Month;
+        int monthDifference = ((end.Year - start.Year) * 12) + end.Month - start.Month;
+        return Math.Max(1, monthDifference); // Ensure at least 1 month is returned
     }
 }
