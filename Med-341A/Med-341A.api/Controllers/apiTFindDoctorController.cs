@@ -3,7 +3,6 @@ using Med_341A.datamodels;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
-using System.Globalization;
 
 
 namespace Med_341A.api.Controllers
@@ -83,7 +82,7 @@ namespace Med_341A.api.Controllers
                      // End Calculate Experience In Month
 
                      // Mapping Medical Treatment
-                     DoctorTreatment = db.TDoctorTreatments.Where(a => a.DoctorId == doctorGroup.Key.IdDoctor).Select(a => new VMDoctorTreatment
+                     DoctorTreatment = db.TDoctorTreatments.Where(a => a.DoctorId == doctorGroup.Key.IdDoctor && !a.IsDelete).Select(a => new VMDoctorTreatment
                      {
                          Id = (Int32)a.Id,
                          DoctorId = (Int32)(a.DoctorId ?? 0),
@@ -126,42 +125,10 @@ namespace Med_341A.api.Controllers
 
             foreach (var doctor in result)
             {
-                doctor.IsOnline = CheckDoctorAvailability(doctor.MedicalFacilities);
+                doctor.IsOnline = findDoctorService.CheckDoctorAvailability(doctor.MedicalFacilities);
             }
 
             return result;
-        }
-
-        private bool CheckDoctorAvailability(List<VMMedicalFacility> medicalFacilities)
-        {
-            // Menggunakan zona waktu Indonesia (WIB)
-            TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-            DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
-
-            // Mendapatkan hari dan waktu dalam format Indonesia
-            var currentDay = wibNow.ToString("dddd", new CultureInfo("id-ID"));
-            var currentTime = wibNow.TimeOfDay;
-
-            foreach (var facility in medicalFacilities)
-            {
-                if (facility.MedicalFacilityCategoryId != 1)
-                {
-                    foreach (var schedule in facility.Schedule)
-                    {
-                        if (schedule.Day == currentDay)
-                        {
-                            var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
-                            var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
-
-                            if (currentTime >= start && currentTime <= end)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
         }
 
 

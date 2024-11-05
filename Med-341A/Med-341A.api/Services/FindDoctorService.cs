@@ -1,4 +1,5 @@
 using Med_341A.viewmodels;
+using System.Globalization;
 
 namespace Med_341A.api.Services;
 
@@ -6,21 +7,27 @@ public class FindDoctorService
 {
     public double CalculateDoctorExperience(List<VMMedicalFacility> facilities)
     {
-        // Sort periods by StartWork date
+        // Semua riwayat praktek dokter di sorting baik yang masih berjalan atau sudah selesai
+        // dibuatkan object baru yang hanya berisi awal dan akhir praktek di fasilitas kesehatan tersebut
+        // diurutkan berdasarkan waktu terlama pada start date
         var sortedFacilities = facilities
-            .Where(f => f.StartWork.HasValue) // Ensure StartWork date exists
+            .Where(f => f.StartWork.HasValue) // Memastikan startDate tidak null atau harus memiliki isi
             .OrderBy(f => f.StartWork)
             .Select(f => new
             {
                 Start = f.StartWork.Value,
-                End = f.EndWork ?? DateOnly.FromDateTime(DateTime.Today)
+                End = f.EndWork ?? DateOnly.FromDateTime(DateTime.Today) // ketika endWork bernilai null maka assign dengan tanggal dan waktu sekarang
             })
             .ToList();
 
+        // inisialisasi awal currentStart dan currentDate untuk menjadi parameter ketika kalkulasi looping
+        // currentStart dibuat null untuk menghindari kesalahan kalkulasi object pertama yang akan dihitung
+        // totalExperience di set ke 0;
         int totalExperienceInMonths = 0;
         DateOnly? currentStart = null;
         DateOnly? currentEnd = null;
 
+        // example (sudah disorting): [{start: '2021-01-01', end: '2022-10-01'}, {start: '2021-05-01', end: 'now'}]
         foreach (var period in sortedFacilities)
         {
             if (currentStart == null)
@@ -66,5 +73,37 @@ public class FindDoctorService
         }
 
         return monthDifference;
+    }
+
+    public bool CheckDoctorAvailability(List<VMMedicalFacility> medicalFacilities)
+    {
+        // Menggunakan zona waktu Indonesia (WIB)
+        TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
+
+        // Mendapatkan hari dan waktu dalam format Indonesia
+        var currentDay = wibNow.ToString("dddd", new CultureInfo("id-ID"));
+        var currentTime = wibNow.TimeOfDay;
+
+        foreach (var facility in medicalFacilities)
+        {
+            if (facility.MedicalFacilityCategoryId != 1)
+            {
+                foreach (var schedule in facility.Schedule)
+                {
+                    if (schedule.Day == currentDay)
+                    {
+                        var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
+                        var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
+
+                        if (currentTime >= start && currentTime <= end)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
