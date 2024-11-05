@@ -1,5 +1,4 @@
 namespace Med_341A.viewmodels;
-using System.Globalization;
 
 public class VMSearchDoctor
 {
@@ -20,36 +19,7 @@ public class VMSearchDoctor
     public List<VMDoctorTreatment> DoctorTreatment { get; set; } = [];
 
     // Properti baru untuk status online
-    public bool IsOnline => CheckDoctorAvailability();
-
-    private bool CheckDoctorAvailability()
-    {
-        // Menggunakan zona waktu Indonesia (WIB)
-        TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-        DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
-
-        // Mendapatkan hari dan waktu dalam format Indonesia
-        var currentDay = wibNow.ToString("dddd", new CultureInfo("id-ID"));
-        var currentTime = wibNow.TimeOfDay;
-        
-        foreach (var facility in MedicalFacilities)
-        {
-            foreach (var schedule in facility.Schedule)
-            {
-                if (schedule.Day == currentDay)
-                {
-                    var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
-                    var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
-
-                    if (currentTime >= start && currentTime <= end)
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+    public bool IsOnline { get; set; }
 }
 
 public class VMMedicalFacility
@@ -70,14 +40,19 @@ public class VMMedicalFacility
 
     public DateOnly? EndWork { get; set; }
 
+    public long? MedicalFacilityCategoryId { get; set; }
+
+    public string? MedicalFacilityCategoryName { get; set; }
+
+
     public List<VMDoctorOfficeSchedule> Schedule { get; set; } = [];
 }
 
 public class VMDoctorOfficeSchedule
 {
-    public int? DoctorOfficeScheduleId { get; set; }
+    public long? DoctorOfficeScheduleId { get; set; }
 
-    public int? MedicalFacilityId { get; set; }
+    public long? MedicalFacilityId { get; set; }
 
     public string? Day { get; set; }
 

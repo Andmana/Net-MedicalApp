@@ -244,7 +244,7 @@ namespace Med_341A.api.Controllers
                     user.BiodataId = biodata.Id;
                     user.Email = dataUserProfile.Email;
                     user.Password = hashedPassword;
-                    user.RoleId = dataUserProfile.RoleId;
+                    user.RoleId = dataUserProfile.RoleId ?? 3;
                     user.CreatedOn = DateTime.Now;
                     user.IsDelete = false;
                     user.IsLocked = false;

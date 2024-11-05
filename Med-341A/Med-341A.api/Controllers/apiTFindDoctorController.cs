@@ -3,6 +3,8 @@ using Med_341A.datamodels;
 using Med_341A.viewmodels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using System.Globalization;
+
 
 namespace Med_341A.api.Controllers
 {
@@ -33,6 +35,7 @@ namespace Med_341A.api.Controllers
                  join specialization in db.MSpecializations on currSpecialization.SpecializationId equals specialization.Id
                  join doctorOffice in db.TDoctorOffices on doctor.Id equals doctorOffice.DoctorId
                  join medicalFacilities in db.MMedicalFacilities on doctorOffice.MedicalFaciltyId equals medicalFacilities.Id
+                 join medicalFacilityCategories in db.MMedicalFacilityCategories on medicalFacilities.MedicalFacilityCategoryId equals medicalFacilityCategories.Id
                  join kecamatan in db.MLocations on medicalFacilities.LocationId equals kecamatan.Id
                  join kota in db.MLocations on kecamatan.ParentId equals kota.Id
                  where
@@ -53,7 +56,9 @@ namespace Med_341A.api.Controllers
                      MedicalFacilityId = medicalFacilities.Id,
                      MedicalFacilitiesName = medicalFacilities.Name,
                      StartWork = doctorOffice.StartDate,
-                     EndWork = doctorOffice.EndDate
+                     EndWork = doctorOffice.EndDate,
+                     MedicalFacilityCategoryId = medicalFacilities.MedicalFacilityCategoryId,
+                     MedicalFacilityCategory = medicalFacilityCategories.Name
                  } by new
                  {
                      IdDoctor = doctor.Id,
@@ -97,6 +102,8 @@ namespace Med_341A.api.Controllers
                          LocationName = loc.LocationName,
                          StartWork = loc.StartWork,
                          EndWork = loc.EndWork,
+                         MedicalFacilityCategoryId = loc.MedicalFacilityCategoryId,
+                         MedicalFacilityCategoryName = loc.MedicalFacilityCategory,
 
                          // Mapping Medical Facility Schedule inner every medical facility
                          Schedule = (from dfsh in db.TDoctorOfficeSchedules
@@ -105,6 +112,7 @@ namespace Med_341A.api.Controllers
                                      select new VMDoctorOfficeSchedule
                                      {
                                          DoctorOfficeScheduleId = (int)dfsh.Id,
+                                         MedicalFacilityId = mfsh.MedicalFacilityId,
                                          Day = mfsh.Day,
                                          TimeScheduleStart = mfsh.TimeScheduleStart,
                                          TimeScheduleEnd = mfsh.TimeScheduleEnd,
@@ -116,7 +124,41 @@ namespace Med_341A.api.Controllers
 
                  }).ToList();
 
+            foreach (var doctor in result)
+            {
+                doctor.IsOnline = CheckDoctorAvailability(doctor.MedicalFacilities);
+            }
+
             return result;
+        }
+
+        private bool CheckDoctorAvailability(List<VMMedicalFacility> medicalFacilities)
+        {
+            // Menggunakan zona waktu Indonesia (WIB)
+            TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+            DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
+
+            // Mendapatkan hari dan waktu dalam format Indonesia
+            var currentDay = wibNow.ToString("dddd", new CultureInfo("id-ID"));
+            var currentTime = wibNow.TimeOfDay;
+
+            foreach (var facility in medicalFacilities)
+            {
+                foreach (var schedule in facility.Schedule)
+                {
+                    if (schedule.Day == currentDay)
+                    {
+                        var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
+                        var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
+
+                        if (currentTime >= start && currentTime <= end)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
 

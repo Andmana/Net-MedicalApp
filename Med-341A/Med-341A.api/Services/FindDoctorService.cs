@@ -58,6 +58,13 @@ public class FindDoctorService
     private static int GetMonthDifference(DateOnly start, DateOnly end)
     {
         int monthDifference = ((end.Year - start.Year) * 12) + end.Month - start.Month;
-        return Math.Max(1, monthDifference); // Ensure at least 1 month is returned
+
+        // If there are any remaining days after counting full months, count it as an additional month
+        if (end.Day > start.Day || monthDifference == 0)
+        {
+            monthDifference++;
+        }
+
+        return monthDifference;
     }
 }
