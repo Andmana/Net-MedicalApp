@@ -144,16 +144,19 @@ namespace Med_341A.api.Controllers
 
             foreach (var facility in medicalFacilities)
             {
-                foreach (var schedule in facility.Schedule)
+                if (facility.MedicalFacilityCategoryId != 1)
                 {
-                    if (schedule.Day == currentDay)
+                    foreach (var schedule in facility.Schedule)
                     {
-                        var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
-                        var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
-
-                        if (currentTime >= start && currentTime <= end)
+                        if (schedule.Day == currentDay)
                         {
-                            return true;
+                            var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
+                            var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
+
+                            if (currentTime >= start && currentTime <= end)
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
