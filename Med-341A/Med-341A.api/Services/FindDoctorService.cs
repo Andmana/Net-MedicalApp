@@ -75,35 +75,78 @@ public class FindDoctorService
         return monthDifference;
     }
 
+    // public bool CheckDoctorAvailability(List<VMMedicalFacility> medicalFacilities)
+    // {
+    //     // Menggunakan zona waktu Indonesia (WIB)
+    //     TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+    //     DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
+
+    //     // Mendapatkan hari dan waktu dalam format Indonesia
+    //     var currentDay = wibNow.ToString("dddd", new CultureInfo("id-ID"));
+    //     var currentTime = wibNow.TimeOfDay;
+
+    //     foreach (var facility in medicalFacilities)
+    //     {
+    //         if (facility.MedicalFacilityCategoryId == 1)
+    //         {
+    //             foreach (var schedule in facility.Schedule)
+    //             {
+    //                 if (schedule.Day == currentDay)
+    //                 {
+    //                     var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
+    //                     var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
+
+    //                     if (currentTime >= start && currentTime <= end || currentTime >= 22:00wib && currentTime <= 8:00wib)
+    //                     {
+    //                         return false;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return true;
+    // }
+
     public bool CheckDoctorAvailability(List<VMMedicalFacility> medicalFacilities)
     {
-        // Menggunakan zona waktu Indonesia (WIB)
+        // Set Indonesian timezone (WIB)
         TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
 
-        // Mendapatkan hari dan waktu dalam format Indonesia
-        var currentDay = wibNow.ToString("dddd", new CultureInfo("id-ID"));
-        var currentTime = wibNow.TimeOfDay;
+        // Define allowed time range in WIB (08:00 to 22:00)
+        TimeSpan allowedStartTime = new TimeSpan(8, 0, 0);
+        TimeSpan allowedEndTime = new TimeSpan(22, 0, 0);
+        TimeSpan currentTime = wibNow.TimeOfDay;
 
+        if (currentTime < allowedStartTime || currentTime > allowedEndTime)
+        {
+            return false;
+        }
+
+        // Loop through each facility
         foreach (var facility in medicalFacilities)
         {
-            if (facility.MedicalFacilityCategoryId != 1)
+            if (facility.MedicalFacilityCategoryId == 1)
             {
+                // Check if there is a schedule for today
                 foreach (var schedule in facility.Schedule)
                 {
-                    if (schedule.Day == currentDay)
+                    if (schedule.Day == wibNow.ToString("dddd", new CultureInfo("id-ID")))
                     {
-                        var start = TimeSpan.Parse(schedule.TimeScheduleStart!);
-                        var end = TimeSpan.Parse(schedule.TimeScheduleEnd!);
+                        var scheduleStart = TimeSpan.Parse(schedule.TimeScheduleStart!);
+                        var scheduleEnd = TimeSpan.Parse(schedule.TimeScheduleEnd!);
 
-                        if (currentTime >= start && currentTime <= end)
+                        // Check if current time is within the schedule time range
+                        if (currentTime >= scheduleStart && currentTime <= scheduleEnd)
                         {
-                            return true;
+                            return false;
                         }
                     }
                 }
             }
         }
-        return false;
+
+        // Return true if all facilities meet the conditions for availability
+        return true;
     }
 }
