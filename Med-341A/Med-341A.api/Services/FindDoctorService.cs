@@ -65,12 +65,21 @@ public class FindDoctorService
     private static int GetMonthDifference(DateOnly start, DateOnly end)
     {
         int monthDifference = ((end.Year - start.Year) * 12) + end.Month - start.Month;
+        // example start: 2020-05-05, end: 2022-01-10
+        // end.year - start.year = 2022 - 2020 = 2 * 12 = 24
+        // end.mont - start.month = 1 - 5 = -4
+        // totalMonth = 24 + (-4) = 20         
 
         // If there are any remaining days after counting full months, count it as an additional month
         if (end.Day > start.Day || monthDifference == 0)
         {
             monthDifference++;
         }
+        // end.day > start.day = month++ = 21
+
+        // at the front end calculate
+        // 20 / 12 = 1 year
+        // 20 % 12 = 9 month
 
         return monthDifference;
     }
@@ -109,21 +118,20 @@ public class FindDoctorService
 
     public bool CheckDoctorAvailability(List<VMMedicalFacility> medicalFacilities)
     {
-        // Set Indonesian timezone (WIB)
         TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
 
-        // Define allowed time range in WIB (08:00 to 22:00)
-        TimeSpan allowedStartTime = new TimeSpan(8, 0, 0);
-        TimeSpan allowedEndTime = new TimeSpan(22, 0, 0);
-        TimeSpan currentTime = wibNow.TimeOfDay;
+        TimeSpan allowedStartTime = new TimeSpan(8, 0, 0); // set bottom limit of time to 8:00
+        TimeSpan allowedEndTime = new TimeSpan(22, 0, 0); //  set the upper limit of time to 22:00
+        TimeSpan currentTime = wibNow.TimeOfDay; // get the current time on indonesian time zone
 
         if (currentTime < allowedStartTime || currentTime > allowedEndTime)
         {
+            // if current time is out of range the from the limit then return false
             return false;
         }
 
-        // Loop through each facility
+        // Loop through each facility (inner medical facility have the scheduled of the doctor should be stand by on that)
         foreach (var facility in medicalFacilities)
         {
             if (facility.MedicalFacilityCategoryId == 1)
