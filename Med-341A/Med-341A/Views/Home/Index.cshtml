@@ -1,5 +1,12 @@
-﻿@{
+﻿@using Med_341A.Services
+@using Med_341A.viewmodels
+@inject MenuRoleService menuRoleService
+
+@{
     var idUser = Context.Session.GetInt32("IdUser");
+    var idRole = Context.Session.GetInt32("IdRole") ?? 3;
+
+    List<VMenuRole> menuList = await menuRoleService.MenuAccess(idRole)!;
 }
 
 @{
@@ -14,9 +21,12 @@
     <link rel="stylesheet" href="assets/landing-assets/css/nice-select.css">
 }
 
+using Med_341A.Services;
 <div class="landing-scoped" style="zoom: 75%;">
     <main>
+        using Med_341A.viewmodels;
         <!--? slider Area Start-->
+        using Med_341A.viewmodels;
         <div class="slider-area position-relative">
             <div class="slider-active">
                 <!-- Single Slider -->
@@ -59,20 +69,40 @@
                             </div>
                             <p>There arge many variations ohf pacgssages of sorem gpsum ilable, but the majority have
                                 suffered alteration in some form, by ected humour, or randomised words whi.</p>
-                            <div class="about-btn1 mb-30">
-                                <a class="btn about-btn" id="btn_find_doctors">Find Doctors .<i
-                                        class="ti-arrow-right"></i></a>
+                            @{
+                                foreach (var itemMenuParent in menuList)
+                                {
+                                    <div class="about-btn1 mb-30">
+                                        <a class="btn about-btn" href="@itemMenuParent.MenuController">@itemMenuParent.MenuName
+                                            .<i class="ti-arrow-right"></i></a>
+                                    </div>
+                                    foreach (var itemMenuChild in itemMenuParent.List_Child)
+                                    {
+                                        {
+                                            <div class="about-btn1 mb-30">
+                                                <a class="btn about-btn" href="@itemMenuChild.MenuController">@itemMenuChild.MenuName
+                                                    .<i class="ti-arrow-right"></i></a>
+                                            </div>
+                                        }
+                                    }
+                                }
+
+                                <div class="about-btn1 mb-30">
+                                    <a class="btn about-btn" id="btn_find_doctors">Find Doctors .<i
+                                            class="ti-arrow-right"></i></a>
+                                </div>
+
+                                @* <div class="about-btn1 mb-30">
+                            <a class="btn about-btn" id="btn_find_medical">Find Medicals .<i
+                            class="ti-arrow-right"></i></a>
+                            </div> *@
+                                @* <div class="about-btn1 mb-30">
+                            <a class="btn about-btn2">Appointment <i class="ti-arrow-right"></i></a>
                             </div>
                             <div class="about-btn1 mb-30">
-                                <a class="btn about-btn" id="btn_find_medical">Find Medicals .<i
-                                        class="ti-arrow-right"></i></a>
-                            </div>
-                            <div class="about-btn1 mb-30">
-                                <a class="btn about-btn2">Appointment <i class="ti-arrow-right"></i></a>
-                            </div>
-                            <div class="about-btn1 mb-30">
-                                <a class="btn about-btn2">Emargency 1 <i class="ti-arrow-right"></i></a>
-                            </div>
+                            <a class="btn about-btn2">Emargency 1 <i class="ti-arrow-right"></i></a>
+                            </div> *@
+                            }
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-12">

@@ -65,6 +65,10 @@ namespace Med_341A.Controllers
                 dataDoctor = dataDoctor.Where(a => a.DoctorTreatment.Any(dt => dt.Name?.ToLower() == ViewBag.DoctorTreatmentName.ToLower())).ToList();
             }
 
+            if(dataSearch.SpecializationId == null) {
+                dataDoctor = [];
+            }
+
 
             return View(VPaginatedList<VMSearchDoctor>.CreateAsync(dataDoctor, dataSearch.PageNumber ?? 1, dataSearch.PageSize ?? 4));
         }

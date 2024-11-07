@@ -84,6 +84,49 @@ public class FindDoctorService
         return monthDifference;
     }
 
+    public bool CheckDoctorAvailability(List<VMMedicalFacility> medicalFacilities)
+    {
+        TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
+        TimeSpan currentTime = wibNow.TimeOfDay; // get the current time on indonesian time zone
+        
+
+        // TimeSpan allowedStartTime = new TimeSpan(8, 0, 0); // set bottom limit of time to 8:00
+        // TimeSpan allowedEndTime = new TimeSpan(22, 0, 0); //  set the upper limit of time to 22:00
+
+        // if (currentTime < allowedStartTime || currentTime > allowedEndTime)
+        // {
+        //     // if current time is out of range the from the limit then return false
+        //     return false;
+        // }
+
+        // Loop through each facility (inner medical facility have the scheduled of the doctor should be stand by on that)
+        foreach (var facility in medicalFacilities)
+        {
+            if (facility.MedicalFacilityCategoryId == 4)
+            {
+                // Check if there is a schedule for today
+                foreach (var schedule in facility.Schedule)
+                {
+                    if (schedule.Day == wibNow.ToString("dddd", new CultureInfo("id-ID")))
+                    {
+                        var scheduleStart = TimeSpan.Parse(schedule.TimeScheduleStart!);
+                        var scheduleEnd = TimeSpan.Parse(schedule.TimeScheduleEnd!);
+
+                        // Check if current time is within the schedule time range
+                        if (currentTime >= scheduleStart && currentTime <= scheduleEnd)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Return true if all facilities meet the conditions for availability
+        return false;
+    }
+
     // public bool CheckDoctorAvailability(List<VMMedicalFacility> medicalFacilities)
     // {
     //     // Menggunakan zona waktu Indonesia (WIB)
@@ -115,46 +158,4 @@ public class FindDoctorService
     //     }
     //     return true;
     // }
-
-    public bool CheckDoctorAvailability(List<VMMedicalFacility> medicalFacilities)
-    {
-        TimeZoneInfo wibZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-        DateTime wibNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, wibZone);
-
-        TimeSpan allowedStartTime = new TimeSpan(8, 0, 0); // set bottom limit of time to 8:00
-        TimeSpan allowedEndTime = new TimeSpan(22, 0, 0); //  set the upper limit of time to 22:00
-        TimeSpan currentTime = wibNow.TimeOfDay; // get the current time on indonesian time zone
-
-        if (currentTime < allowedStartTime || currentTime > allowedEndTime)
-        {
-            // if current time is out of range the from the limit then return false
-            return false;
-        }
-
-        // Loop through each facility (inner medical facility have the scheduled of the doctor should be stand by on that)
-        foreach (var facility in medicalFacilities)
-        {
-            if (facility.MedicalFacilityCategoryId == 1)
-            {
-                // Check if there is a schedule for today
-                foreach (var schedule in facility.Schedule)
-                {
-                    if (schedule.Day == wibNow.ToString("dddd", new CultureInfo("id-ID")))
-                    {
-                        var scheduleStart = TimeSpan.Parse(schedule.TimeScheduleStart!);
-                        var scheduleEnd = TimeSpan.Parse(schedule.TimeScheduleEnd!);
-
-                        // Check if current time is within the schedule time range
-                        if (currentTime >= scheduleStart && currentTime <= scheduleEnd)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Return true if all facilities meet the conditions for availability
-        return true;
-    }
 }

@@ -64,8 +64,16 @@ namespace Med_341A.api.Controllers
                 db.Update(checkUser);
                 db.SaveChanges();
 
-                response.Success = false;
-                response.Message = "Oops, Email atau Password yang anda masukan salah";
+                if (checkUser.IsLocked == true)
+                {
+                    response.Success = false;
+                    response.Message = "Oops, Email atau Password yang anda masukan salah, Akun Anda telah terkunci silahkan kontak Customer Service kami";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Oops, Email atau Password yang anda masukan salah";
+                }
             }
             else
             {
